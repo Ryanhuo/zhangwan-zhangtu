@@ -1,0 +1,26 @@
+{
+  "name": "zhangtu",
+  "version": "0.1.0",
+  "description": "掌图 Zhangtu — 本地原型预览 / 迭代版本管理 CLI（页面发现、项目预览、版本与问题清单）。",
+  "type": "module",
+  "bin": {
+    "zhangtu": "cli.mjs"
+  },
+  "files": [
+    "cli.mjs",
+    "discovery.mjs",
+    "iterations.mjs",
+    "preview-server.mjs",
+    "shell.html"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "zhangtu",
+    "prototype",
+    "preview",
+    "pm"
+  ],
+  "license": "UNLICENSED"
+}

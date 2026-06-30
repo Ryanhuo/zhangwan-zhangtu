@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dev Explorer - TraeWork</title>
+  <link rel="stylesheet" href="../../colors_and_type.css">
+  <link rel="stylesheet" href="../../components.css">
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --view-min-h: 760px;
+    }
+    * { box-sizing: border-box; }
+    html, body, #root { margin: 0; min-height: 100%; }
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-base-font-family);
+      font-size: var(--body-base-font-size);
+      line-height: var(--body-base-line-height);
+    }
+    img { display: block; }
+    button, input, select, textarea { font: inherit; }
+    .uikit-shell {
+      --uikit-sidebar-w: 220px;
+      width: 100%;
+      max-width: 1184px;
+      margin: 0 auto;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: var(--uikit-sidebar-w, 220px) minmax(0,1fr);
+      gap: var(--spacer-16);
+      min-height: 100vh;
+      padding: var(--spacer-16);
+      background: var(--bg-base-default);
+    }
+    .uikit-sidebar, .uikit-main, .uikit-toolbar { min-width: 0; }
+    .uikit-sidebar {
+      overflow: hidden;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-16);
+      padding: var(--spacer-16);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      background: var(--bg-base-secondary);
+    }
+    [data-component] { min-width: 0; max-width: 100%; overflow: hidden; }
+    .uikit-main {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-16);
+      min-width: 0;
+    }
+    .brand-block, .sidebar-section, .page-top, .view-stage, .content-stack, .card-stack, .table-surface, .dialog-stage, .metric-row, .form-grid, .release-summary, .line-list, .status-row, .title-stack, .table-head, .table-toolbar, .dialog-copy, .form-row, .surface-note, .split-grid, .policy-list, .policy-row, .card-section, .side-note, .summary-row, .card-header, .list-meta, .inline-actions {
+      min-width: 0;
+    }
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-8);
+    }
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-8);
+      border: 1px solid var(--border-neutral-l1);
+      background: var(--bg-base-default);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .brand-title {
+      font-family: var(--heading-md-font-family);
+      font-size: var(--heading-md-font-size);
+      line-height: var(--heading-md-line-height);
+      font-weight: var(--heading-md-font-weight);
+    }
+    .brand-copy {
+      color: var(--text-secondary);
+    }
+    .sidebar-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-12);
+    }
+    .sidebar-note {
+      padding-top: var(--spacer-12);
+      border-top: 1px solid var(--border-neutral-l1);
+      color: var(--text-secondary);
+    }
+    .page-top {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-12);
+      padding: var(--spacer-4) 0;
+    }
+    .title-stack {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--spacer-16);
+      align-items: flex-start;
+    }
+    .page-title {
+      margin: 0;
+      font-family: var(--heading-lg-font-family);
+      font-size: var(--heading-lg-font-size);
+      line-height: var(--heading-lg-line-height);
+      font-weight: var(--heading-lg-font-weight);
+    }
+    .page-copy {
+      margin: 0;
+      color: var(--text-secondary);
+      max-width: 560px;
+    }
+    .uikit-toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-8);
+      flex-wrap: wrap;
+      padding: var(--spacer-12) var(--spacer-16);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      background: var(--bg-base-secondary);
+    }
+    .toolbar-fill { flex: 1 1 220px; min-width: 0; }
+    .toolbar-fixed { flex-shrink: 0; }
+    .view-stage {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-16);
+      min-height: var(--view-min-h);
+      animation: stage-enter 220ms ease both;
+    }
+    .content-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-16);
+      min-width: 0;
+    }
+    .uikit-responsive-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: var(--spacer-16);
+      min-width: 0;
+    }
+    .split-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1.1fr) minmax(0,0.9fr);
+      gap: var(--spacer-16);
+      min-width: 0;
+    }
+    .card-stack, .line-list, .policy-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-12);
+    }
+    .card-header, .table-head, .table-toolbar, .policy-row, .summary-row, .status-row, .inline-actions, .surface-note {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacer-12);
+    }
+    .surface-note {
+      padding-top: var(--spacer-12);
+      border-top: 1px solid var(--border-neutral-l1);
+      color: var(--text-secondary);
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: var(--spacer-12);
+    }
+    .metric-cell {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-4);
+      min-width: 0;
+    }
+    .metric-label {
+      color: var(--text-tertiary);
+      font-size: var(--body-md-font-size);
+      line-height: var(--body-md-line-height);
+    }
+    .metric-value {
+      font-family: var(--font-family-metric);
+      font-size: var(--heading-md-font-size);
+      line-height: var(--heading-md-line-height);
+      font-weight: var(--heading-md-font-weight);
+      font-variant-numeric: tabular-nums;
+    }
+    .metric-foot {
+      color: var(--text-secondary);
+      font-size: var(--body-md-font-size);
+      line-height: var(--body-md-line-height);
+    }
+    .line-item {
+      display: flex;
+      gap: var(--spacer-12);
+      align-items: flex-start;
+      padding-bottom: var(--spacer-12);
+      border-bottom: 1px solid var(--border-neutral-l1);
+      min-width: 0;
+    }
+    .line-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .line-main {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-8);
+      flex: 1;
+      min-width: 0;
+    }
+    .line-title {
+      margin: 0;
+      font-size: var(--heading-xs-font-size);
+      line-height: var(--heading-xs-line-height);
+      font-weight: var(--heading-xs-font-weight);
+    }
+    .line-copy {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: var(--body-md-font-size);
+      line-height: var(--body-md-line-height);
+    }
+    .list-meta {
+      display: flex;
+      gap: var(--spacer-8);
+      flex-wrap: wrap;
+      min-width: 0;
+      align-items: center;
+    }
+    .progress-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-6);
+      min-width: 0;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--spacer-12);
+      color: var(--text-secondary);
+      font-size: var(--body-md-font-size);
+      line-height: var(--body-md-line-height);
+      font-variant-numeric: tabular-nums;
+    }
+    .w-42 { width: 42%; }
+    .w-58 { width: 58%; }
+    .w-64 { width: 64%; }
+    .w-72 { width: 72%; }
+    .w-81 { width: 81%; }
+    .w-88 { width: 88%; }
+    .table-surface {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-16);
+      min-width: 0;
+    }
+    .uikit-table-wrap {
+      max-width: 100%;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+    }
+    .uikit-truncate {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .uikit-nowrap {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .uikit-action-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      max-width: 160px;
+      overflow: hidden;
+    }
+    .uikit-action {
+      min-width: 0;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .avatar-line {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacer-8);
+      min-width: 0;
+    }
+    .release-summary {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: var(--spacer-12);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: var(--spacer-16);
+      min-width: 0;
+    }
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-6);
+      min-width: 0;
+    }
+    .field-label {
+      color: var(--text-default);
+      font-size: var(--body-base-font-size);
+      line-height: var(--body-base-line-height);
+      font-weight: var(--font-weight-medium);
+    }
+    .field-hint {
+      color: var(--text-tertiary);
+      font-size: var(--body-md-font-size);
+      line-height: var(--body-md-line-height);
+    }
+    .dialog-stage {
+      padding: var(--spacer-4);
+      border-radius: var(--radius-12);
+      border: 1px solid var(--border-neutral-l1);
+      background: var(--bg-base-secondary);
+    }
+    .dialog-copy {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-8);
+    }
+    .panel-subtitle {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: var(--body-md-font-size);
+      line-height: var(--body-md-line-height);
+    }
+    .icon-sm {
+      width: var(--icon-size-14);
+      height: var(--icon-size-14);
+      flex: 0 0 var(--icon-size-14);
+      object-fit: contain;
+    }
+    .icon-md {
+      width: var(--icon-size-16);
+      height: var(--icon-size-16);
+      flex: 0 0 var(--icon-size-16);
+      object-fit: contain;
+    }
+    .icon-lg {
+      width: var(--icon-size-20);
+      height: var(--icon-size-20);
+      flex: 0 0 var(--icon-size-20);
+      object-fit: contain;
+    }
+    .footer-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-8);
+      color: var(--text-secondary);
+      font-size: var(--body-md-font-size);
+      line-height: var(--body-md-line-height);
+      min-width: 0;
+    }
+    @keyframes stage-enter {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    @media (max-width: 900px) {
+      .uikit-shell { grid-template-columns: minmax(0,1fr); }
+      .uikit-responsive-grid, .split-grid, .metric-row, .release-summary, .form-grid { grid-template-columns: minmax(0,1fr); }
+      .title-stack { flex-direction: column; }
+    }
+    @media (max-width: 640px) {
+      .uikit-toolbar { flex-direction: column; align-items: stretch; }
+      .uikit-responsive-grid { grid-template-columns: minmax(0,1fr); }
+      .metric-row, .release-summary { grid-template-columns: minmax(0,1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useMemo, useState } = React;
+
+    const workspaceThreads = [
+      { name: "Agent runtime", branch: "core/runtime", owner: "AV", state: "Reviewing", tone: "brand", progress: "w-81", value: "81%" },
+      { name: "Search fallback", branch: "cli/search", owner: "ML", state: "Needs notes", tone: "warning", progress: "w-58", value: "58%" },
+      { name: "Token cleanup", branch: "design/tokens", owner: "IK", state: "Ready", tone: "success", progress: "w-88", value: "88%" },
+      { name: "Spec sync", branch: "docs/specs", owner: "TR", state: "Paused", tone: "danger", progress: "w-42", value: "42%" },
+      { name: "Patch review", branch: "ui/dev-kit", owner: "HN", state: "Queued", tone: "", progress: "w-64", value: "64%" },
+      { name: "Automation hook", branch: "ops/policy", owner: "CP", state: "Ready", tone: "success", progress: "w-72", value: "72%" }
+    ];
+
+    const reviewRows = [
+      { name: "Session renderer", owner: "AV", email: "av@trae.work", branch: "ui/session", age: "8m", reviewer: "Nina Park", status: "Ready", tone: "success" },
+      { name: "Policy matcher", owner: "IK", email: "ik@trae.work", branch: "ops/policy", age: "13m", reviewer: "Sam Wu", status: "Watch", tone: "warning" },
+      { name: "Table density", owner: "TR", email: "tr@trae.work", branch: "ui/review", age: "19m", reviewer: "Milo Chen", status: "Queued", tone: "" },
+      { name: "Search latency", owner: "ML", email: "ml@trae.work", branch: "cli/search", age: "23m", reviewer: "Ava Lin", status: "Blocked", tone: "danger" },
+      { name: "Dialog polish", owner: "CP", email: "cp@trae.work", branch: "ui/dialog", age: "31m", reviewer: "Lena Hart", status: "Ready", tone: "success" },
+      { name: "Trace export", owner: "HN", email: "hn@trae.work", branch: "ops/export", age: "47m", reviewer: "Owen Pike", status: "Queued", tone: "" }
+    ];
+
+    const policyRows = [
+      { name: "Release gate", desc: "Block deploys when unresolved review tags exceed two.", progress: "w-88", value: "88%", status: "Stable", tone: "success" },
+      { name: "Owner fallback", desc: "Route unassigned tasks to the active workspace owner.", progress: "w-72", value: "72%", status: "Testing", tone: "brand" },
+      { name: "Branch hygiene", desc: "Flag inactive branches after twelve idle hours.", progress: "w-64", value: "64%", status: "Review", tone: "warning" },
+      { name: "Dialog approvals", desc: "Require two reviewers for production-impact prompts.", progress: "w-58", value: "58%", status: "Review", tone: "warning" },
+      { name: "Noise limit", desc: "Mute duplicate notifications inside the same release window.", progress: "w-81", value: "81%", status: "Stable", tone: "success" },
+      { name: "Audit export", desc: "Generate daily handoff snapshots for workspace leads.", progress: "w-42", value: "42%", status: "Needs edits", tone: "danger" }
+    ];
+
+    const views = {
+      workspace: {
+        label: "Workspace",
+        subtitle: "Active sessions, handoffs, and low-noise operator signals.",
+        cta: "Create session"
+      },
+      review: {
+        label: "Review",
+        subtitle: "Release triage with clear row ownership and dense action rails.",
+        cta: "Promote release"
+      },
+      automation: {
+        label: "Automation",
+        subtitle: "Policy setup, rollout checks, and confirmation without extra chrome.",
+        cta: "Apply policy"
+      }
+    };
+
+    function toneTagClass(tone) {
+      if (tone === "success") return "ds-tag ds-tag--success";
+      if (tone === "warning") return "ds-tag ds-tag--warning";
+      if (tone === "danger") return "ds-tag ds-tag--danger";
+      if (tone === "brand") return "ds-tag ds-tag--brand";
+      return "ds-tag";
+    }
+
+    function Breadcrumb() {
+      return (
+        <nav className="ds-breadcrumb" aria-label="Breadcrumb" data-component="breadcrumb">
+          <a href="#" onClick={(e) => e.preventDefault()}>TraeWork</a>
+          <span className="ds-breadcrumb__sep">/</span>
+          <a href="#" onClick={(e) => e.preventDefault()}>UI Kit</a>
+          <span className="ds-breadcrumb__sep">/</span>
+          <span className="ds-breadcrumb__current">Dev Explorer</span>
+        </nav>
+      );
+    }
+
+    function Sidebar({ view, setView }) {
+      return (
+        <aside className="uikit-sidebar">
+          <div className="brand-block">
+            <div className="brand-mark">
+              <img src="../../assets/icons/TRAE-1.svg" width="20" height="20" alt="" />
+            </div>
+            <div className="brand-title">TRAE Work</div>
+            <div className="brand-copy">Light-mode system scenes for real front-end workflows.</div>
+          </div>
+
+          <div className="sidebar-section" data-component="menu">
+            <div className="ds-menu">
+              <div className="ds-menu__group-label">Views</div>
+              <button className="ds-menu__item" onClick={() => setView("workspace")} aria-label="Open workspace">
+                <img className="ds-menu__icon" src="../../assets/icons/Workspace-Base.svg" width="16" height="16" alt="" />
+                <span className="uikit-truncate">Workspace</span>
+                {view === "workspace" ? <span className="ds-tag ds-tag--brand">Now</span> : <span className="ds-menu__shortcut">6</span>}
+              </button>
+              <button className="ds-menu__item" onClick={() => setView("review")} aria-label="Open review">
+                <img className="ds-menu__icon" src="../../assets/icons/DocumentFeedback.svg" width="16" height="16" alt="" />
+                <span className="uikit-truncate">Review</span>
+                {view === "review" ? <span className="ds-tag ds-tag--brand">Now</span> : <span className="ds-menu__shortcut">18</span>}
+              </button>
+              <button className="ds-menu__item" onClick={() => setView("automation")} aria-label="Open automation">
+                <img className="ds-menu__icon" src="../../assets/icons/automation.svg" width="16" height="16" alt="" />
+                <span className="uikit-truncate">Automation</span>
+                {view === "automation" ? <span className="ds-tag ds-tag--brand">Now</span> : <span className="ds-menu__shortcut">9</span>}
+              </button>
+              <div className="ds-menu__divider"></div>
+              <div className="ds-menu__group-label">Pinned</div>
+              <div className="ds-menu__item">
+                <img className="ds-menu__icon" src="../../assets/icons/Preview.svg" width="16" height="16" alt="" />
+                <span className="uikit-truncate">Preview drift</span>
+                <span className="ds-menu__shortcut">2</span>
+              </div>
+              <div className="ds-menu__item">
+                <img className="ds-menu__icon" src="../../assets/icons/clock_time.svg" width="16" height="16" alt="" />
+                <span className="uikit-truncate">Nightly audit</span>
+                <span className="ds-menu__shortcut">23:00</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar-section" data-component="alert">
+            <div className="ds-notif ds-notif--info ds-notif--simple">
+              <span className="ds-notif__icon">
+                <img className="icon-md" src="../../assets/icons/Tips.svg" width="16" height="16" alt="" />
+              </span>
+              <div className="ds-notif__body">
+                <div className="ds-notif__title">Quiet accents</div>
+                <div className="ds-notif__text">Brand color stays on CTA, active tabs, and compact state markers.</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar-note">
+            <div className="footer-meta">
+              <img className="icon-sm" src="../../assets/icons/check-small.svg" width="14" height="14" alt="" />
+              <span className="uikit-truncate">Reuse baseline upgraded for this kit view.</span>
+            </div>
+          </div>
+        </aside>
+      );
+    }
+
+    function WorkspaceView() {
+      return (
+        <div className="view-stage">
+          <div className="uikit-toolbar">
+            <div className="toolbar-fill" data-component="forms">
+              <label className="uikit-truncate" aria-label="Search session">
+                <div className="ds-input ds-search">
+                  <img className="icon-img" src="../../assets/icons/Search.svg" width="16" height="16" alt="" />
+                  <input defaultValue="agent" aria-label="Search session input" />
+                </div>
+              </label>
+            </div>
+            <div className="toolbar-fixed" data-component="forms">
+              <div className="ds-select-wrap">
+                <select className="ds-select" defaultValue="all" aria-label="Filter environment">
+                  <option value="all">All environments</option>
+                  <option value="dev">Dev only</option>
+                  <option value="prod">Production</option>
+                </select>
+                <img className="ds-select__icon" src="../../assets/icons/Down.svg" width="16" height="16" alt="" />
+              </div>
+            </div>
+            <div className="toolbar-fixed inline-actions" data-component="buttons">
+              <button className="ds-btn ds-btn--secondary ds-btn--md">
+                <img className="icon icon--16" src="../../assets/icons/Refresh.svg" width="16" height="16" alt="" />
+                Refresh
+              </button>
+              <button className="ds-btn ds-btn--secondary ds-btn--md" disabled>Merge frozen</button>
+              <button className="ds-btn ds-btn--brand ds-btn--md">Create session</button>
+            </div>
+          </div>
+
+          <div className="ds-tabs" data-component="tabs">
+            <button className="ds-tab is-active">Sessions <span className="ds-tab__count">12</span></button>
+            <button className="ds-tab">Handoffs <span className="ds-tab__count">4</span></button>
+            <button className="ds-tab">Approvals <span className="ds-tab__count">3</span></button>
+          </div>
+
+          <div className="uikit-responsive-grid">
+            <section className="ds-card card-stack" data-component="cards">
+              <div className="card-header">
+                <div>
+                  <div className="ds-card__title">Live threads</div>
+                  <p className="panel-subtitle">One surface for active branch work, review drift, and handoff status.</p>
+                </div>
+                <span className="ds-tag ds-tag--brand" data-component="tag">Focus</span>
+              </div>
+              <div className="line-list">
+                {workspaceThreads.map((item) => (
+                  <div className="line-item" key={item.name}>
+                    <div className="ds-avatar" data-component="avatar">{item.owner}</div>
+                    <div className="line-main">
+                      <p className="line-title uikit-truncate">{item.name}</p>
+                      <div className="list-meta">
+                        <span className="ds-tag">{item.branch}</span>
+                        <span className={toneTagClass(item.tone)} data-component="tag">{item.state}</span>
+                      </div>
+                      <div className="progress-row" data-component="progress">
+                        <div className="progress-meta">
+                          <span className="uikit-truncate">Execution depth</span>
+                          <span className="uikit-nowrap">{item.value}</span>
+                        </div>
+                        <div className="ds-progress ds-progress--brand">
+                          <div className={`ds-progress__bar ${item.progress}`}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="ds-card card-stack" data-component="cards">
+              <div className="card-header">
+                <div>
+                  <div className="ds-card__title">Operator pulse</div>
+                  <p className="panel-subtitle">Structured metrics, then one compact feedback strip.</p>
+                </div>
+                <img className="icon-lg" src="../../assets/icons/brainAI.svg" width="20" height="20" alt="" />
+              </div>
+              <div className="metric-row">
+                <div className="metric-cell">
+                  <span className="metric-label">Open sessions</span>
+                  <span className="metric-value">12</span>
+                  <span className="metric-foot">Across design, runtime, and policy work.</span>
+                </div>
+                <div className="metric-cell">
+                  <span className="metric-label">Review debt</span>
+                  <span className="metric-value">04</span>
+                  <span className="metric-foot">Two tagged for policy follow-up.</span>
+                </div>
+                <div className="metric-cell">
+                  <span className="metric-label">Queue freshness</span>
+                  <span className="metric-value">93%</span>
+                  <span className="metric-foot">No stale rows beyond one hour.</span>
+                </div>
+              </div>
+              <div className="surface-note" data-component="alert">
+                <div className="ds-alert ds-alert--info">
+                  <span className="ds-alert__icon">
+                    <img className="icon-md" src="../../assets/icons/Notification.svg" width="16" height="16" alt="" />
+                  </span>
+                  <div>
+                    <div className="ds-alert__title">Surface discipline</div>
+                    <div className="ds-alert__desc">Workspace keeps one neutral container depth and lets tags, progress, and the main CTA carry emphasis.</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section className="ds-card card-stack" data-component="cards">
+            <div className="card-header">
+              <div>
+                <div className="ds-card__title">Release handoff</div>
+                <p className="panel-subtitle">Shared ownership and sign-off context without opening another panel.</p>
+              </div>
+              <div className="inline-actions" data-component="buttons">
+                <button className="ds-btn ds-btn--ghost ds-btn--md">Open review</button>
+              </div>
+            </div>
+            <div className="release-summary">
+              <div className="metric-cell">
+                <span className="metric-label">Queued handoffs</span>
+                <span className="metric-value">06</span>
+                <span className="metric-foot">Four need reviewer pairing.</span>
+              </div>
+              <div className="metric-cell">
+                <span className="metric-label">Ready for QA</span>
+                <span className="metric-value">03</span>
+                <span className="metric-foot">All on the current light-mode pass.</span>
+              </div>
+              <div className="metric-cell">
+                <span className="metric-label">Automation linked</span>
+                <span className="metric-value">09</span>
+                <span className="metric-foot">Policy coverage attached to each branch.</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+    }
+
+    function ReviewView() {
+      return (
+        <div className="view-stage">
+          <div className="uikit-toolbar">
+            <div className="toolbar-fill" data-component="forms">
+              <label className="uikit-truncate" aria-label="Search queue">
+                <div className="ds-input ds-search">
+                  <img className="icon-img" src="../../assets/icons/Search.svg" width="16" height="16" alt="" />
+                  <input defaultValue="release" aria-label="Search release queue input" />
+                </div>
+              </label>
+            </div>
+            <div className="toolbar-fixed" data-component="forms">
+              <div className="ds-select-wrap">
+                <select className="ds-select" defaultValue="current" aria-label="Choose branch window">
+                  <option value="current">Current release</option>
+                  <option value="next">Next release</option>
+                  <option value="hold">Hold list</option>
+                </select>
+                <img className="ds-select__icon" src="../../assets/icons/Down.svg" width="16" height="16" alt="" />
+              </div>
+            </div>
+            <div className="toolbar-fixed inline-actions" data-component="buttons">
+              <button className="ds-btn ds-btn--secondary ds-btn--md">
+                <img className="icon icon--16" src="../../assets/icons/list-filter.svg" width="16" height="16" alt="" />
+                Filter
+              </button>
+              <button className="ds-btn ds-btn--ghost ds-btn--md">Export</button>
+              <button className="ds-btn ds-btn--brand ds-btn--md">Promote release</button>
+            </div>
+          </div>
+
+          <div className="ds-tabs" data-component="tabs">
+            <button className="ds-tab is-active">Queue <span className="ds-tab__count">18</span></button>
+            <button className="ds-tab">Risks <span className="ds-tab__count">5</span></button>
+            <button className="ds-tab">History <span className="ds-tab__count">24</span></button>
+          </div>
+
+          <div data-component="alert">
+            <div className="ds-notif ds-notif--warning">
+              <span className="ds-notif__icon">
+                <img className="icon-md" src="../../assets/icons/warning_simple.svg" width="16" height="16" alt="" />
+              </span>
+              <div className="ds-notif__body">
+                <div className="ds-notif__title">Review window</div>
+                <div className="ds-notif__text">Three branches share the same release slot. Keep one row owner, one text action, and one overflow action per record.</div>
+                <div className="ds-notif__actions" data-component="buttons">
+                  <button className="ds-btn ds-btn--secondary ds-btn--sm">View blockers</button>
+                </div>
+              </div>
+              <button className="ds-notif__close" aria-label="Close notification">
+                <img className="icon-sm" src="../../assets/icons/close-small.svg" width="14" height="14" alt="" />
+              </button>
+            </div>
+          </div>
+
+          <section className="ds-card table-surface" data-component="cards">
+            <div className="table-head">
+              <div>
+                <div className="ds-card__title">Release queue</div>
+                <p className="panel-subtitle">Dense review rows with neutral structure, compact tags, and readable ownership.</p>
+              </div>
+              <div className="inline-actions">
+                <span className="ds-tag ds-tag--brand" data-component="tag">Current batch</span>
+              </div>
+            </div>
+            <div className="uikit-table-wrap" data-component="table">
+              <table className="ds-table ds-table--fixed">
+                <thead>
+                  <tr>
+                    <th className="ds-table__col-member uikit-nowrap">Branch</th>
+                    <th className="ds-table__col-role uikit-nowrap">Age</th>
+                    <th className="ds-table__col-active uikit-nowrap">Reviewer</th>
+                    <th className="ds-table__col-status uikit-nowrap">State</th>
+                    <th className="ds-table__col-actions uikit-nowrap">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reviewRows.map((row) => (
+                    <tr key={row.branch}>
+                      <td>
+                        <div className="ds-table__member">
+                          <div className="ds-avatar" data-component="avatar">{row.owner}</div>
+                          <div className="ds-table__member-meta">
+                            <span className="ds-table__member-name uikit-truncate">{row.name}</span>
+                            <span className="ds-table__member-email uikit-truncate">{row.email}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="uikit-nowrap">{row.age}</td>
+                      <td className="uikit-truncate">{row.reviewer}</td>
+                      <td><span className={toneTagClass(row.tone)} data-component="tag">{row.status}</span></td>
+                      <td className="ds-table__actions">
+                        <div className="uikit-action-cell" data-component="buttons">
+                          <button className="ds-btn ds-btn--ghost ds-btn--sm uikit-action">View</button>
+                          <button className="ds-btn ds-btn--ghost ds-btn--icon ds-btn--sm" aria-label="More actions">
+                            <img className="icon icon--16" src="../../assets/icons/More.svg" width="16" height="16" alt="" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="table-toolbar">
+              <div className="footer-meta" data-component="progress">
+                <span className="uikit-nowrap">Policy coverage</span>
+                <div className="ds-progress ds-progress--brand toolbar-fill">
+                  <div className="ds-progress__bar w-72"></div>
+                </div>
+                <span className="uikit-nowrap">72%</span>
+              </div>
+              <div className="inline-actions" data-component="pagination">
+                <div className="ds-pagination">
+                  <button className="ds-pagination__item" disabled aria-label="Previous page">
+                    <img className="icon-sm" src="../../assets/icons/Left.svg" width="14" height="14" alt="" />
+                  </button>
+                  <button className="ds-pagination__item is-active">1</button>
+                  <button className="ds-pagination__item">2</button>
+                  <button className="ds-pagination__item">3</button>
+                  <button className="ds-pagination__item" aria-label="Next page">
+                    <img className="icon-sm" src="../../assets/icons/Right.svg" width="14" height="14" alt="" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+    }
+
+    function AutomationView() {
+      return (
+        <div className="view-stage">
+          <div className="uikit-toolbar">
+            <div className="toolbar-fill" data-component="forms">
+              <label className="uikit-truncate" aria-label="Search automation">
+                <div className="ds-input ds-search">
+                  <img className="icon-img" src="../../assets/icons/Search.svg" width="16" height="16" alt="" />
+                  <input defaultValue="policy" aria-label="Search automation input" />
+                </div>
+              </label>
+            </div>
+            <div className="toolbar-fixed" data-component="forms">
+              <div className="ds-select-wrap">
+                <select className="ds-select" defaultValue="shared" aria-label="Select rollout scope">
+                  <option value="shared">Shared workspace</option>
+                  <option value="review">Review queue</option>
+                  <option value="ops">Ops only</option>
+                </select>
+                <img className="ds-select__icon" src="../../assets/icons/Down.svg" width="16" height="16" alt="" />
+              </div>
+            </div>
+            <div className="toolbar-fixed inline-actions" data-component="buttons">
+              <button className="ds-btn ds-btn--secondary ds-btn--md">Preview</button>
+              <button className="ds-btn ds-btn--brand ds-btn--md">Apply policy</button>
+            </div>
+          </div>
+
+          <div className="ds-tabs" data-component="tabs">
+            <button className="ds-tab is-active">Rules <span className="ds-tab__count">9</span></button>
+            <button className="ds-tab">Escalations <span className="ds-tab__count">3</span></button>
+            <button className="ds-tab">Delivery <span className="ds-tab__count">5</span></button>
+          </div>
+
+          <div className="split-grid">
+            <section className="ds-card card-stack" data-component="cards">
+              <div className="card-header">
+                <div>
+                  <div className="ds-card__title">Policy editor</div>
+                  <p className="panel-subtitle">Form anatomy stays shared, while layout handles grouping and narrative.</p>
+                </div>
+                <span className="ds-tag" data-component="tag">Draft</span>
+              </div>
+              <div className="form-grid" data-component="forms">
+                <label className="form-row">
+                  <span className="field-label">Policy title</span>
+                  <div className="ds-input">
+                    <img className="icon-img" src="../../assets/icons/edit.svg" width="16" height="16" alt="" />
+                    <input defaultValue="Release gate policy" aria-label="Policy title" />
+                  </div>
+                </label>
+                <label className="form-row">
+                  <span className="field-label">Target queue</span>
+                  <div className="ds-select-wrap">
+                    <select className="ds-select" defaultValue="review" aria-label="Target queue">
+                      <option value="review">Review queue</option>
+                      <option value="workspace">Workspace threads</option>
+                      <option value="automation">Automation list</option>
+                    </select>
+                    <img className="ds-select__icon" src="../../assets/icons/Down.svg" width="16" height="16" alt="" />
+                  </div>
+                </label>
+                <label className="form-row">
+                  <span className="field-label">Escalation owner</span>
+                  <div className="ds-input">
+                    <img className="icon-img" src="../../assets/icons/user_add.svg" width="16" height="16" alt="" />
+                    <input defaultValue="Nina Park" aria-label="Escalation owner" />
+                  </div>
+                </label>
+                <label className="form-row">
+                  <span className="field-label">Manual hold</span>
+                  <div className="ds-input is-disabled">
+                    <img className="icon-img" src="../../assets/icons/Lock.svg" width="16" height="16" alt="" />
+                    <input defaultValue="Disabled during rollout" disabled aria-label="Manual hold" />
+                  </div>
+                </label>
+                <label className="form-row" style={{ gridColumn: "1 / -1" }}>
+                  <span className="field-label">Rule note</span>
+                  <textarea className="ds-textarea" defaultValue="Escalate when unresolved review tags remain on a branch after the second pass." aria-label="Rule note"></textarea>
+                </label>
+              </div>
+              <div className="status-row" data-component="forms">
+                <label className="avatar-line">
+                  <span className="field-label">Auto route</span>
+                  <span className="ds-switch">
+                    <input type="checkbox" defaultChecked aria-label="Auto route toggle" />
+                    <span className="ds-switch__thumb"></span>
+                  </span>
+                </label>
+                <label className="avatar-line">
+                  <input type="checkbox" defaultChecked />
+                  <span className="ds-tag ds-tag--brand" data-component="tag">Escalate on blocker</span>
+                </label>
+              </div>
+            </section>
+
+            <section className="ds-card card-stack" data-component="cards">
+              <div className="card-header">
+                <div>
+                  <div className="ds-card__title">Coverage map</div>
+                  <p className="panel-subtitle">Compact status, then progress, then the confirmation surface.</p>
+                </div>
+                <img className="icon-lg" src="../../assets/icons/automation.svg" width="20" height="20" alt="" />
+              </div>
+              <div className="policy-list">
+                {policyRows.map((row) => (
+                  <div className="policy-row" key={row.name}>
+                    <div className="line-main">
+                      <p className="line-title uikit-truncate">{row.name}</p>
+                      <p className="line-copy">{row.desc}</p>
+                      <div className="progress-row" data-component="progress">
+                        <div className="progress-meta">
+                          <span className="uikit-truncate">Coverage</span>
+                          <span className="uikit-nowrap">{row.value}</span>
+                        </div>
+                        <div className="ds-progress ds-progress--brand">
+                          <div className={`ds-progress__bar ${row.progress}`}></div>
+                        </div>
+                      </div>
+                    </div>
+                    <span className={toneTagClass(row.tone)} data-component="tag">{row.status}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <section className="dialog-stage" data-component="dialog">
+            <div className="ds-backdrop">
+              <div className="ds-dialog ds-dialog--form">
+                <div className="ds-dialog__head">
+                  <div className="ds-dialog__title">Confirm rollout</div>
+                  <button className="ds-dialog__close" aria-label="Close dialog">
+                    <img className="icon-md" src="../../assets/icons/Close.svg" width="16" height="16" alt="" />
+                  </button>
+                </div>
+                <div className="ds-dialog__body">
+                  <div className="dialog-copy">
+                    <p className="panel-subtitle">The rollout will update review gates, quiet duplicate alerts, and keep workspace ownership intact.</p>
+                    <div className="status-row">
+                      <span className="ds-tag ds-tag--success" data-component="tag">4 queues ready</span>
+                      <span className="ds-tag ds-tag--warning" data-component="tag">1 queue needs notes</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="ds-dialog__foot" data-component="buttons">
+                  <button className="ds-btn ds-btn--secondary ds-btn--md">Back</button>
+                  <button className="ds-btn ds-btn--ghost ds-btn--md">Save draft</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      );
+    }
+
+    function ViewContent({ view }) {
+      if (view === "review") return <ReviewView />;
+      if (view === "automation") return <AutomationView />;
+      return <WorkspaceView />;
+    }
+
+    function App() {
+      const [view, setView] = useState("workspace");
+      const current = useMemo(() => views[view], [view]);
+
+      return (
+        <div className="uikit-shell" data-layout-guard="uikit-v1">
+          <Sidebar view={view} setView={setView} />
+          <main className="uikit-main">
+            <header className="page-top">
+              <Breadcrumb />
+              <div className="title-stack">
+                <div>
+                  <h1 className="page-title">Dev Explorer</h1>
+                  <p className="page-copy">{current.subtitle}</p>
+                </div>
+                <div className="footer-meta">
+                  <span className="ds-tag" data-component="tag">{current.label}</span>
+                  <span className="uikit-nowrap">Light mode</span>
+                </div>
+              </div>
+            </header>
+            <ViewContent view={view} />
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

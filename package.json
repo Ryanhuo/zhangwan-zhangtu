@@ -1,0 +1,55 @@
+{
+  "name": "zhangwan-zhangtu",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "掌图 — 产品经理本地原型系统（页面发现、预览、迭代管理）",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GITHUB_OWNER/zhangwan-zhangtu.git"
+  },
+  "bin": {
+    "zhangtu": "./scripts/zhangtu/cli.mjs",
+    "zhangtu-check": "./scripts/check-pages.mjs"
+  },
+  "files": [
+    "scripts/",
+    "src/common/",
+    "src/styles/",
+    "src/assets/",
+    "src/vite-env.d.ts",
+    "templates/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check:pages": "node scripts/check-pages.mjs",
+    "typecheck": "tsc --noEmit",
+    "zhangtu": "node scripts/zhangtu/cli.mjs",
+    "zhangtu:inspect": "node scripts/zhangtu/cli.mjs inspect-pages --json",
+    "zhangtu:iterations": "node scripts/zhangtu/cli.mjs list-iterations --json"
+  },
+  "peerDependencies": {
+    "lucide-react": ">=0.4.0",
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@ant-design/icons": "^6.1.0",
+    "@types/node": "^24.10.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.0",
+    "antd": "^6.1.2",
+    "lucide-react": "^0.562.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.0.0"
+  }
+}

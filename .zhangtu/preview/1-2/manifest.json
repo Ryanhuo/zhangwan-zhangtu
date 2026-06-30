@@ -1,0 +1,256 @@
+{
+  "version": 1,
+  "title": "测试1.2",
+  "scope": {
+    "kind": "iteration",
+    "id": "itr_8d30b265ed74",
+    "name": "测试1.2",
+    "slug": "1-2",
+    "description": "页面范围测试",
+    "pageIds": [
+      "src-pages-hr-management-index",
+      "src-pages-hr-attendance-statistics-index"
+    ],
+    "publishedAt": "2026-06-30T05:54:53.051Z",
+    "publishedMeta": {
+      "provider": "proto-hub",
+      "systemName": "罗盘",
+      "baseUrl": "https://chanyan.wozhangwan.com",
+      "shareUrl": "https://chanyan.wozhangwan.com/s/3yf5tehrcp",
+      "cli": "proto-hub-mcp",
+      "bundleDir": "/Users/ryan/Desktop/zhangwan-zhangtu/.zhangtu/publish/1-2",
+      "prd": "PRD：1-2-prd.md",
+      "resultMessage": "已在「罗盘」创建版本「测试1.2」。"
+    }
+  },
+  "pages": [
+    {
+      "id": "src-pages-hr-attendance-statistics-index",
+      "name": "HR 考勤管理统计",
+      "group": "独立页面",
+      "sourceKind": "file",
+      "sourcePath": "src/pages/hr-attendance-statistics/index.tsx",
+      "htmlPath": "src/pages/hr-attendance-statistics/index.html",
+      "pageDirectory": "src/pages/hr-attendance-statistics",
+      "specPath": "src/pages/hr-attendance-statistics/spec.md",
+      "requirementsPath": "src/pages/hr-attendance-statistics/zhangtu.requirements.ts",
+      "requirementModules": [
+        {
+          "id": "attendance-overview",
+          "order": 1,
+          "title": "考勤统计概览与主操作",
+          "anchorId": "attendance-overview",
+          "bodyMarkdown": "### 目标\n\n- 在首屏交代统计周期、覆盖范围、数据口径和关键操作。\n- 用指标卡快速表达出勤率、异常人数、申诉积压和排班风险。",
+          "category": "操作",
+          "color": "",
+          "ref": "PRD 3.1"
+        },
+        {
+          "id": "attendance-insight",
+          "order": 2,
+          "title": "趋势分析与部门洞察",
+          "anchorId": "attendance-insight",
+          "bodyMarkdown": "### 目标\n\n- 通过近 7 日趋势、部门异常排行和班次分布帮助评审对齐问题集中区。\n- 当前只承载原型表达，不接真实 BI 图表服务。",
+          "category": "图表",
+          "color": "",
+          "ref": "PRD 3.2"
+        },
+        {
+          "id": "attendance-exception-table",
+          "order": 3,
+          "title": "异常明细筛选与跟进",
+          "anchorId": "attendance-exception-table",
+          "bodyMarkdown": "### 目标\n\n- 支持按城市、部门、异常类型和关键词筛选异常员工记录。\n- 让 HRBP 和行政可以快速定位重点补卡、迟到和排班冲突对象。",
+          "category": "筛选",
+          "color": "",
+          "ref": "PRD 3.3"
+        },
+        {
+          "id": "attendance-collaboration",
+          "order": 4,
+          "title": "申诉与制度协同提醒",
+          "anchorId": "attendance-collaboration",
+          "bodyMarkdown": "### 目标\n\n- 承载待处理申诉、节假日排班和制度提醒，便于评审协同节奏。\n- 当前仅表达页面信息架构，不串联真实流程或消息中心。",
+          "category": "列表",
+          "color": "",
+          "ref": "PRD 3.4"
+        }
+      ],
+      "directPagePath": "/src/pages/hr-attendance-statistics/index.html",
+      "sourceName": "HR 考勤管理统计",
+      "folderId": "folder-mqz4gku6-0y33px",
+      "sortOrder": 1
+    },
+    {
+      "id": "src-pages-hr-management-index",
+      "name": "HR 管理",
+      "group": "独立页面",
+      "sourceKind": "file",
+      "sourcePath": "src/pages/hr-management/index.tsx",
+      "htmlPath": "src/pages/hr-management/index.html",
+      "pageDirectory": "src/pages/hr-management",
+      "specPath": "src/pages/hr-management/spec.md",
+      "requirementsPath": "src/pages/hr-management/zhangtu.requirements.ts",
+      "requirementModules": [
+        {
+          "id": "hr-overview",
+          "order": 1,
+          "title": "HR 概览与主操作",
+          "anchorId": "hr-overview",
+          "bodyMarkdown": "### 目标\n\n- 在首屏交代 HR 管理后台的业务场景、数据更新时间和主操作入口。\n- 用指标卡快速展示员工规模、组织异动、出勤表现和风险数量。",
+          "category": "操作",
+          "color": "",
+          "ref": "PRD 2.1"
+        },
+        {
+          "id": "hr-employee-roster",
+          "order": 2,
+          "title": "员工名册与筛选",
+          "anchorId": "hr-employee-roster",
+          "bodyMarkdown": "### 目标\n\n- 支持按员工状态、部门、城市和关键词筛选员工名册。\n- 让 HRBP、组织发展和业务负责人能够快速定位重点跟进对象。",
+          "category": "筛选",
+          "color": "",
+          "ref": "PRD 2.2"
+        },
+        {
+          "id": "hr-approval-workbench",
+          "order": 3,
+          "title": "审批待办与协同节奏",
+          "anchorId": "hr-approval-workbench",
+          "bodyMarkdown": "### 目标\n\n- 用轻量待办列表承载调岗、转正、入职和备份计划等组织协同事项。\n- 当前仅表达原型流程，不接真实审批流、消息或权限系统。",
+          "category": "列表",
+          "color": "",
+          "ref": "PRD 2.3"
+        },
+        {
+          "id": "hr-org-insight",
+          "order": 4,
+          "title": "组织健康与风险提醒",
+          "anchorId": "hr-org-insight",
+          "bodyMarkdown": "### 目标\n\n- 通过部门编制、空编率和组织信号辅助管理层判断资源配置。\n- 突出关键岗位空编、试用期跟进和异动交接等风险，支持评审讨论。",
+          "category": "其他",
+          "color": "",
+          "ref": "PRD 2.4"
+        }
+      ],
+      "directPagePath": "/src/pages/hr-management/index.html",
+      "sourceName": "HR 管理",
+      "folderId": "folder-mqz4gku6-0y33px",
+      "sortOrder": 0
+    }
+  ],
+  "skillsPage": null,
+  "pageLibrary": {
+    "version": 1,
+    "rootPageIds": [],
+    "folders": [
+      {
+        "id": "folder-mqz4gku6-0y33px",
+        "name": "新建文件夹",
+        "pageIds": [
+          "src-pages-hr-management-index",
+          "src-pages-hr-attendance-statistics-index"
+        ]
+      }
+    ],
+    "pageMeta": {
+      "src-pages-hr-attendance-statistics-index": {
+        "title": null,
+        "folderId": "folder-mqz4gku6-0y33px",
+        "order": 1
+      },
+      "src-pages-hr-management-index": {
+        "title": null,
+        "folderId": "folder-mqz4gku6-0y33px",
+        "order": 0
+      }
+    }
+  },
+  "iterationRequirementSnapshots": {
+    "src-pages-hr-attendance-statistics-index": [
+      {
+        "id": "attendance-overview",
+        "order": 1,
+        "title": "考勤统计概览与主操作",
+        "anchorId": "attendance-overview",
+        "bodyMarkdown": "### 目标\n\n- 在首屏交代统计周期、覆盖范围、数据口径和关键操作。\n- 用指标卡快速表达出勤率、异常人数、申诉积压和排班风险。",
+        "category": "操作",
+        "color": "",
+        "ref": "PRD 3.1"
+      },
+      {
+        "id": "attendance-insight",
+        "order": 2,
+        "title": "趋势分析与部门洞察",
+        "anchorId": "attendance-insight",
+        "bodyMarkdown": "### 目标\n\n- 通过近 7 日趋势、部门异常排行和班次分布帮助评审对齐问题集中区。\n- 当前只承载原型表达，不接真实 BI 图表服务。",
+        "category": "图表",
+        "color": "",
+        "ref": "PRD 3.2"
+      },
+      {
+        "id": "attendance-exception-table",
+        "order": 3,
+        "title": "异常明细筛选与跟进",
+        "anchorId": "attendance-exception-table",
+        "bodyMarkdown": "### 目标\n\n- 支持按城市、部门、异常类型和关键词筛选异常员工记录。\n- 让 HRBP 和行政可以快速定位重点补卡、迟到和排班冲突对象。",
+        "category": "筛选",
+        "color": "",
+        "ref": "PRD 3.3"
+      },
+      {
+        "id": "attendance-collaboration",
+        "order": 4,
+        "title": "申诉与制度协同提醒",
+        "anchorId": "attendance-collaboration",
+        "bodyMarkdown": "### 目标\n\n- 承载待处理申诉、节假日排班和制度提醒，便于评审协同节奏。\n- 当前仅表达页面信息架构，不串联真实流程或消息中心。",
+        "category": "列表",
+        "color": "",
+        "ref": "PRD 3.4"
+      }
+    ],
+    "src-pages-hr-management-index": [
+      {
+        "id": "hr-overview",
+        "order": 1,
+        "title": "HR 概览与主操作",
+        "anchorId": "hr-overview",
+        "bodyMarkdown": "### 目标\n\n- 在首屏交代 HR 管理后台的业务场景、数据更新时间和主操作入口。\n- 用指标卡快速展示员工规模、组织异动、出勤表现和风险数量。",
+        "category": "操作",
+        "color": "",
+        "ref": "PRD 2.1"
+      },
+      {
+        "id": "hr-employee-roster",
+        "order": 2,
+        "title": "员工名册与筛选",
+        "anchorId": "hr-employee-roster",
+        "bodyMarkdown": "### 目标\n\n- 支持按员工状态、部门、城市和关键词筛选员工名册。\n- 让 HRBP、组织发展和业务负责人能够快速定位重点跟进对象。",
+        "category": "筛选",
+        "color": "",
+        "ref": "PRD 2.2"
+      },
+      {
+        "id": "hr-approval-workbench",
+        "order": 3,
+        "title": "审批待办与协同节奏",
+        "anchorId": "hr-approval-workbench",
+        "bodyMarkdown": "### 目标\n\n- 用轻量待办列表承载调岗、转正、入职和备份计划等组织协同事项。\n- 当前仅表达原型流程，不接真实审批流、消息或权限系统。",
+        "category": "列表",
+        "color": "",
+        "ref": "PRD 2.3"
+      },
+      {
+        "id": "hr-org-insight",
+        "order": 4,
+        "title": "组织健康与风险提醒",
+        "anchorId": "hr-org-insight",
+        "bodyMarkdown": "### 目标\n\n- 通过部门编制、空编率和组织信号辅助管理层判断资源配置。\n- 突出关键岗位空编、试用期跟进和异动交接等风险，支持评审讨论。",
+        "category": "其他",
+        "color": "",
+        "ref": "PRD 2.4"
+      }
+    ]
+  },
+  "generatedAt": "2026-06-30T05:55:29.995Z"
+}

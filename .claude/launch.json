@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "zhangtu-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["scripts/zhangtu/cli.mjs", "preview"],
+      "port": 51730
+    }
+  ]
+}

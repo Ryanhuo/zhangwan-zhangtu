@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "title": "原型工作区",
+  "brandName": "掌图",
+  "includeDirectories": ["src/pages"],
+  "excludeDirectories": ["node_modules", "dist", ".git", ".zhangtu", "coverage"],
+  "pageNameMap": {},
+  "theme": {
+    "primaryColor": "#2563eb",
+    "accentColor": "#0f766e",
+    "backgroundColor": "#f6f8fb",
+    "surfaceColor": "#ffffff",
+    "textColor": "#111827"
+  }
+}
