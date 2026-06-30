@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
-import { dirname, fileURLToPath } from "node:url";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { discoverPages } from "./discovery.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
