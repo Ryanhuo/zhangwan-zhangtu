@@ -1,1 +1,81 @@
-cat: /Users/ryan/Desktop/原型测试/zhangwan-zhangtu/index.html: No such file or directory
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg?v=20260630b" />
+    <title>掌图 · 原型预览</title>
+    <style>
+      :root {
+        --brand: #16a56f;
+        --canvas: #f4f6f8;
+        --card: #ffffff;
+        --text: #1f2733;
+        --muted: #6b7683;
+        --border: #d8e0e6;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Noto Sans SC", "Inter", system-ui, sans-serif;
+        background: var(--canvas);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 56px 24px 64px; }
+      header { margin-bottom: 32px; }
+      h1 { font-size: 22px; font-weight: 600; margin: 0 0 8px; }
+      .sub { color: var(--muted); font-size: 14px; margin: 0; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+      a.page {
+        display: block;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color .15s, box-shadow .15s, transform .15s;
+      }
+      a.page:hover {
+        border-color: var(--brand);
+        box-shadow: 0 4px 16px rgba(22, 165, 111, .12);
+        transform: translateY(-1px);
+      }
+      .page .name { font-size: 16px; font-weight: 600; margin: 0 0 6px; }
+      .page .slug { font-family: "Inter", monospace; font-size: 12px; color: var(--muted); }
+      .tip {
+        margin-top: 32px;
+        font-size: 13px;
+        color: var(--muted);
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 14px 16px;
+      }
+      .tip code { background: var(--canvas); padding: 2px 6px; border-radius: 4px; font-family: "Inter", monospace; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>掌图 · 原型预览</h1>
+        <p class="sub">本地页面列表 · 点击进入对应原型页面</p>
+      </header>
+      <div class="grid">
+        <a class="page" href="./src/pages/hr-management/index.html">
+          <p class="name">HR 管理后台</p>
+          <span class="slug">hr-management</span>
+        </a>
+        <a class="page" href="./src/pages/skills/index.html">
+          <p class="name">技能管理</p>
+          <span class="slug">skills</span>
+        </a>
+      </div>
+      <div class="tip">
+        想要完整的掌图 shell(文件夹树、设备框、需求抽屉、版本管理),运行
+        <code>npm run zhangtu -- preview</code>。
+      </div>
+    </div>
+  </body>
+</html>

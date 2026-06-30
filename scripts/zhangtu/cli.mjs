@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { spawn } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -122,8 +123,8 @@ function handleInit(positionals, options) {
     console.log(`\n下一步：`);
     console.log(`  cd ${projectName}`);
     console.log(`  npm install`);
-    console.log(`  npm run dev    # 开发预览（Vite）`);
-    console.log(`  npm run zhangtu -- preview    # 掌图预览 Shell`);
+    console.log(`  npm start    # 启动掌图预览 Shell 并自动打开浏览器`);
+    console.log(`  npm run dev    # 仅开发预览单页（Vite，调试用）`);
     console.log(`\n在 src/pages/ 下添加新目录即可创建更多原型页面。`);
     if (pkg.devDependencies["zhangwan-zhangtu"]?.includes("GITHUB_OWNER")) {
       console.log(`\n注意：请将 package.json 中 zhangwan-zhangtu 的版本源替换为你的 GitHub 仓库地址。`);
@@ -382,6 +383,19 @@ function printPreviewResult(preview, options) {
   print(result, options);
   if (!options.json) {
     console.log("\nPress Ctrl+C to stop the preview server.");
+    if (options.open) {
+      openInBrowser(preview.url);
+    }
+  }
+}
+
+function openInBrowser(url) {
+  const command =
+    process.platform === "darwin" ? "open" : process.platform === "win32" ? "start" : "xdg-open";
+  try {
+    spawn(command, [url], { stdio: "ignore", detached: true, shell: process.platform === "win32" }).unref();
+  } catch {
+    // 打开浏览器失败不影响服务运行,用户可手动访问打印出的 URL
   }
 }
 
@@ -487,8 +501,8 @@ function parseArgs(args) {
     const item = rest[index];
     if (item.startsWith("--")) {
       const key = item.slice(2);
-      if (key === "json") {
-        options.json = true;
+      if (key === "json" || key === "open") {
+        options[key] = true;
       } else {
         options[key] = rest[index + 1];
         index += 1;

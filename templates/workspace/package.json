@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "zhangtu preview --open",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "check:pages": "zhangtu-check",
