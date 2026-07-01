@@ -150,7 +150,9 @@ zhangwan-zhangtu/
 
 ```bash
 npm install
-npm run dev                                    # Vite 开发（端口 51720）
+npm start                                      # 启动掌图预览 Shell 并自动打开浏览器（主入口）
+npm run dev                                    # 同 npm start
+npm run dev:page                               # 仅裸 Vite，调试单个原型页时用
 npm run build                                  # 生产构建
 npm run typecheck                              # tsc --noEmit
 npm run check:pages                            # 页面入口契约校验
@@ -187,6 +189,6 @@ npm run zhangtu -- inspect-pages --json
 2. **页面发现三处同步**：改识别规则时，`discovery.mjs`、`vite.config.ts`、`check-pages.mjs` 三处同步修改。
 3. **Shell 是单文件**：`shell.html` 包含全部 CSS/JS，修改后即时生效，无需重启 Vite。
 4. **需求 sidecar 约束**：`zhangtu.requirements.ts` 必须是无 import 的纯字面量文件，否则 vm 沙箱执行会失败。
-5. **zhangwanUI 优先**：新建页面必须先读取 zhangwanUI 设计令牌（`.agents/skills/project/zhangwanUI/`）再动手实现。
+5. **zhangwanUI 优先，且必须读本项目文件**：新建页面必须先读取本项目 `.agents/skills/project/zhangwanUI/` 下的令牌与组件合同（`README.md`、`css.json`、`components/*.json`）再动手实现，每次都读取当前文件内容、不依赖记忆或缓存——该资产由用户持续维护更新。**不要信任任何外部/全局同名技能或缓存定义**（不同 AI 工具的个人技能库里可能存在名字相似但内容完全无关的设计系统，按名调用可能静默拿到错误规范）；本项目目录下的文件是唯一权威来源。
 6. **`.zhangtu/` 只读**：该目录是运行时生成的，不要手动编辑；版本状态通过 CLI 或 API 操作。
 7. **发布 body 读取**：`/api/versions/:id/publish` 的 POST handler 需先 `await readJsonBody(req).catch(() => ({}))` 再访问 body 字段。
