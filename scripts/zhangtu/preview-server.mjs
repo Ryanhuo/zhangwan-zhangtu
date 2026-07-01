@@ -2,7 +2,17 @@ import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import http from "node:http";
 import net from "node:net";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../");
+const SYSTEM_VERSION = (() => {
+  try {
+    return JSON.parse(readFileSync(join(PACKAGE_ROOT, "package.json"), "utf-8")).version || "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+})();
 import { discoverPages } from "./discovery.mjs";
 import { createIteration, deleteIteration, listIterations, updateIteration } from "./iterations.mjs";
 import {
@@ -153,6 +163,7 @@ function buildManifest(rootDir, discovery, scope, runtime) {
 
   return {
     version: 1,
+    systemVersion: SYSTEM_VERSION,
     title: scope.title || discovery.title,
     brandName: discovery.brandName,
     brandLogo: discovery.brandLogo,
@@ -181,6 +192,7 @@ function buildIterationManifest({ rootDir, discovery, runtime, scope, iteration 
 
   return {
     version: 1,
+    systemVersion: SYSTEM_VERSION,
     title: scope.title || iteration.name || discovery.title,
     brandName: discovery.brandName,
     brandLogo: discovery.brandLogo,

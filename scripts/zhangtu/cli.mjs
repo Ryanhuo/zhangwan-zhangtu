@@ -22,6 +22,14 @@ import { startPreviewServer } from "./preview-server.mjs";
 
 const rootDir = process.cwd();
 
+const SYSTEM_VERSION = (() => {
+  try {
+    return JSON.parse(readFileSync(join(PACKAGE_ROOT, "package.json"), "utf-8")).version || "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+})();
+
 main().catch((error) => {
   console.error(error.message);
   process.exit(1);
@@ -30,7 +38,15 @@ main().catch((error) => {
 async function main() {
   const { command, positionals, options } = parseArgs(process.argv.slice(2));
 
+  if (options.version || options.v) {
+    console.log(`zhangtu v${SYSTEM_VERSION}`);
+    return;
+  }
+
   switch (command) {
+    case "version":
+      console.log(`zhangtu v${SYSTEM_VERSION}`);
+      return;
     case "init":
       return handleInit(positionals, options);
     case "inspect-pages":
@@ -530,9 +546,10 @@ function parseArgs(args) {
 }
 
 function printHelp() {
-  console.log(`zhangtu
+  console.log(`zhangtu v${SYSTEM_VERSION}
 
 Commands:
+  version
   init <project-name>
   inspect-pages [--json]
   list-pages [--json]
