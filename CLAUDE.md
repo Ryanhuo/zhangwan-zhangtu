@@ -65,14 +65,16 @@ npm run zhangtu -- preview-iteration <id|slug|name>
 
 Vite + React 18 + TypeScript(strict)。当前仓库已安装 `antd` 与 `@ant-design/icons`，其中 `src/pages/skills/` 直接使用 `antd`；业务原型页也可能只用页面级 CSS 和 `lucide-react` 实现。若引入其他组件库，需同步补齐 npm 依赖、版本和 import 说明。路径别名 `@` → `src`。全局样式在 `src/styles/tokens.css` 和 `src/styles/app.css`;项目名称品牌逻辑集中在 `src/common/branding.ts`(localStorage 存储、事件驱动)。
 
-**zhangwanUI** 是本项目的设计系统(高密度中文运营后台风格),实际资产在 `.agents/skills/project/zhangwanUI/`,通过 `zhangwan-ui` 技能调用(token `css.json`、运行时样式 `colors_and_type.css`、组件合同 `components/*.json`、预览 `preview/*.html`)。它是文档/参考,不被运行时页面 import —— 页面通过在自己的 `styles/page.css` 中落地 zhangwanUI 令牌来套用它的视觉规范。
+**zhangwanUI** 是本项目的设计系统(高密度中文运营后台风格),唯一权威资产在 `.agents/skills/project/zhangwanUI/`(token `css.json`、运行时样式 `colors_and_type.css`、组件合同 `components/*.json`、预览 `preview/*.html`)。它是文档/参考,不被运行时页面 import —— 页面通过在自己的 `styles/page.css` 中落地 zhangwanUI 令牌来套用它的视觉规范。
+
+> ⚠️ **不要通过 Skill 工具按名字 `zhangwan-ui` 调用。** 这个名字在个人全局技能库(`~/.claude/skills/zhangwan-ui/`)里可能已被另一套无关的设计系统占用(不同的主色、不同的令牌,和本项目无关),按名调用会静默拿到错误的设计规范。**必须直接读取本项目 `.agents/skills/project/zhangwanUI/` 目录下的文件**作为唯一来源。
 
 ## 新建页面的前端设计:必须用 zhangwanUI
 
 **新建页面时一律按 zhangwanUI 设计系统设计前端。** 在写页面实现前:
 
-1. 先调用 `zhangwan-ui` 技能(或读取 `.agents/skills/project/zhangwanUI/README.md` 与 `css.json`、相关 `components/*.json` + `preview/*.html`),理解令牌与组件合同。
-2. 用 zhangwanUI 令牌设计页面并落到该页 `styles/page.css`:主色 `#16a56f`(仅主操作/成功)、画布 `#f4f6f8` + 白卡片 `#ffffff`、正文中性 `#6b7683`、描边 `#d8e0e6`、输入 32px / 按钮 36px / 导航 56px、间距 `4/8/12/16/20/24/32`、圆角 `4/6/8`(卡片/导航到 10、状态胶囊 9999)、字体 `Noto Sans SC`(中文)+ `Inter`(数字/拉丁)、弱阴影分级。
+1. 直接读取 `.agents/skills/project/zhangwanUI/README.md`、`css.json`、相关 `components/*.json` + `preview/*.html`(每次都读取当前文件内容,不要依赖记忆或缓存——该 Skill 由用户持续维护更新,必须拿到最新版本),理解令牌与组件合同。
+2. 用 zhangwanUI 令牌设计页面并落到该页 `styles/page.css`:主色 `#16a56f`(仅主操作/成功)、画布 `#f4f6f8` + 白卡片 `#ffffff`、正文中性 `#6b7683`、描边 `#d8e0e6`、输入 32px / 按钮 36px / 导航 56px、间距 `4/8/12/16/20/24/32`、圆角 `4/6/8`(卡片/导航到 10、状态胶囊 9999)、字体 `Noto Sans SC`(中文)+ `Inter`(数字/拉丁)、弱阴影分级。这组值可能随 Skill 更新而变化,以第 1 步实际读到的内容为准,本条仅为当前值的备忘。
 3. 结构优先复用 zhangwanUI 组件:Smart Button、Metric Card、Filter Form、Data Table、Top Navigation、Sidebar Navigation。`antd` 仅用于 zhangwanUI 未覆盖的复杂交互控件,并对齐其令牌与密度。文案中文优先、专业克制、数据导向。
 
 仅当用户明确要求别的视觉风格/品牌时才偏离 zhangwanUI。
