@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品需求文档 (PRD) - [项目名称] v[版本号]</title>
+    <style>
+/* Ant Design 5 设计令牌 — HTML PRD 文档主题 */
+:root {
+    --primary-color: #1677ff;
+    --primary-hover: #4096ff;
+    --primary-active: #0958d9;
+    --primary-light: #e6f4ff;
+    --primary-border: #91caff;
+    --success-color: #52c41a;
+    --warning-color: #faad14;
+    --error-color: #ff4d4f;
+    --text-primary: rgba(0, 0, 0, 0.88);
+    --text-secondary: rgba(0, 0, 0, 0.65);
+    --text-muted: rgba(0, 0, 0, 0.45);
+    --text-disabled: rgba(0, 0, 0, 0.25);
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-sidebar: #ffffff;
+    --bg-table-head: #fafafa;
+    --border-color: #d9d9d9;
+    --border-secondary: #f0f0f0;
+    --code-bg: rgba(0, 0, 0, 0.06);
+    --code-text: rgba(0, 0, 0, 0.88);
+    --code-block-bg: #f5f5f5;
+    --code-block-border: #f0f0f0;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    --sidebar-width: 280px;
+    --transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.5714285714285714;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    display: flex;
+    min-height: 100vh;
+    font-size: 14px;
+}
+
+/* 侧边栏 — Ant Design Menu / Sider */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-secondary);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: var(--transition);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+}
+
+.sidebar-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-secondary);
+    background: var(--primary-color);
+    color: #fff;
+}
+
+.sidebar-header h1 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.sidebar-header-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.sidebar-header-title-row h1 {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-doc-hint {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: help;
+    line-height: 1;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.sidebar-doc-hint:hover,
+.sidebar-doc-hint:focus-visible {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #fff;
+    outline: none;
+}
+
+.sidebar-version {
+    font-size: 12px;
+    opacity: 0.85;
+    font-weight: 400;
+}
+
+.toc-container {
+    flex: 1;
+    padding: 8px 0 16px;
+    overflow-y: auto;
+}
+
+.toc-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 8px 16px 4px;
+    font-weight: 500;
+}
+
+.toc-list {
+    list-style: none;
+    padding: 0;
+}
+
+.toc-item {
+    margin: 1px 0;
+}
+
+.toc-item.collapsed > .toc-list {
+    display: none;
+}
+
+.toc-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 8px 0 4px;
+    margin: 0 8px;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.toc-row:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.toc-row.active {
+    background: var(--primary-light);
+}
+
+.toc-toggle {
+    flex-shrink: 0;
+    width: 22px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 10px;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+}
+
+.toc-toggle:hover {
+    background: rgba(22, 119, 255, 0.08);
+    color: var(--primary-color);
+}
+
+.toc-toggle--placeholder {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.toc-number {
+    flex-shrink: 0;
+    min-width: 36px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--primary-color);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+}
+
+.toc-link {
+    flex: 1;
+    display: block;
+    padding: 5px 8px 5px 2px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: var(--transition);
+    cursor: pointer;
+    line-height: 1.5714;
+}
+
+.toc-link:hover {
+    color: var(--primary-color);
+}
+
+.toc-row.active .toc-link {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Popover — Ant Design */
+.prd-hint-panel {
+    position: fixed;
+    z-index: 2000;
+    width: min(400px, calc(100vw - var(--sidebar-width) - 32px));
+    max-height: min(480px, 75vh);
+    overflow-y: auto;
+    padding: 12px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    font-size: 14px;
+    line-height: 1.5714;
+    color: var(--text-secondary);
+    pointer-events: auto;
+}
+
+.prd-hint-panel[hidden] {
+    display: none !important;
+}
+
+.prd-hint-panel h5 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.prd-hint-panel p {
+    margin: 0 0 8px;
+}
+
+.prd-hint-panel ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.prd-hint-panel li + li {
+    margin-top: 4px;
+}
+
+.prd-hint-panel code {
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 0 6px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-secondary);
+    word-break: break-all;
+}
+
+.toc-list .toc-list {
+    padding-left: 12px;
+}
+
+.toc-list .toc-list .toc-link {
+    font-size: 13px;
+}
+
+.toc-list .toc-list .toc-list .toc-link {
+    font-size: 12px;
+}
+
+/* Button — Ant Design Primary */
+.menu-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.menu-toggle:hover {
+    background: var(--primary-hover);
+}
+
+.menu-icon {
+    width: 24px;
+    height: 18px;
+    position: relative;
+}
+
+.menu-icon span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    transition: var(--transition);
+}
+
+.menu-icon span:nth-child(1) { top: 0; }
+.menu-icon span:nth-child(2) { top: 8px; }
+.menu-icon span:nth-child(3) { bottom: 0; }
+
+.menu-toggle.active .menu-icon span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 8px;
+}
+
+.menu-toggle.active .menu-icon span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active .menu-icon span:nth-child(3) {
+    transform: rotate(-45deg);
+    bottom: 8px;
+}
+
+/* Layout — Ant Design Content */
+.main-content {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    min-width: 0;
+}
+
+.content-wrapper {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 32px 48px 48px;
+    background: var(--bg-primary);
+    min-height: calc(100vh - 48px);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-secondary);
+}
+
+/* Typography — Ant Design Title */
+h1 {
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-secondary);
+    line-height: 1.35;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-secondary);
+    line-height: 1.35;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 32px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 24px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+h6 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+p {
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Table — Ant Design Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-secondary);
+    font-size: 14px;
+}
+
+thead {
+    background: var(--bg-table-head);
+}
+
+th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-secondary);
+    background: var(--bg-table-head);
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-secondary);
+    font-size: 14px;
+    color: var(--text-secondary);
+    vertical-align: top;
+    transition: background 0.2s;
+}
+
+tbody tr:hover td {
+    background: #fafafa;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-secondary);
+}
+
+.table-responsive table {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    min-width: 800px;
+}
+
+/* Code — Ant Design Typography code */
+code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.2em 0.4em;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-secondary);
+}
+
+pre {
+    background: var(--code-block-bg);
+    color: var(--text-primary);
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    border: 1px solid var(--code-block-border);
+    position: relative;
+}
+
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: inherit;
+}
+
+pre.mermaid,
+div.mermaid {
+    background: var(--bg-primary);
+    border: 1px dashed var(--border-color);
+    padding: 24px;
+    text-align: center;
+    border-radius: var(--radius-lg);
+}
+
+.keyword { color: #722ed1; }
+.string { color: #52c41a; }
+.comment { color: rgba(0, 0, 0, 0.45); font-style: italic; }
+.function { color: #1677ff; }
+.number { color: #fa8c16; }
+.operator { color: #eb2f96; }
+
+/* Alert — Ant Design Alert info */
+blockquote {
+    margin: 16px 0 24px;
+    padding: 12px 16px;
+    border: 1px solid var(--primary-border);
+    background: var(--primary-light);
+    border-radius: var(--radius-lg);
+}
+
+blockquote p {
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+ul, ol {
+    margin: 12px 0;
+    padding-left: 24px;
+}
+
+li {
+    margin-bottom: 4px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5714;
+}
+
+ul ul, ol ol, ul ol, ol ul {
+    margin: 4px 0;
+}
+
+li > ul, li > ol {
+    margin-top: 4px;
+}
+
+/* Image */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    margin: 12px 0;
+    border: 1px solid var(--border-secondary);
+}
+
+img:hover {
+    box-shadow: var(--shadow-md);
+}
+
+img.screenshot {
+    border: 1px solid var(--border-secondary);
+}
+
+/* Lightbox */
+.lightbox-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.lightbox-overlay.active {
+    display: flex;
+}
+
+.lightbox-image {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.lightbox-close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 2100;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.25);
+    transition: var(--transition);
+}
+
+.lightbox-close:hover {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* FloatButton — Ant Design */
+.back-to-top {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: var(--primary-hover);
+}
+
+/* Card + Tabs — Ant Design */
+.prototype-section {
+    margin: 24px 0;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.prototype-tabs {
+    display: flex;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-secondary);
+    padding: 0 8px;
+    gap: 0;
+}
+
+.prototype-tab {
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-primary);
+    transition: var(--transition);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    position: relative;
+}
+
+.prototype-tab:hover {
+    color: var(--primary-color);
+}
+
+.prototype-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    font-weight: 500;
+}
+
+.prototype-content {
+    padding: 24px;
+    background: var(--bg-primary);
+    min-height: 320px;
+}
+
+.prototype-panel {
+    display: none;
+}
+
+.prototype-panel.active {
+    display: block;
+}
+
+.prototype-iframe-preview {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    cursor: zoom-in;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-secondary);
+}
+
+.prototype-iframe-scale {
+    transform-origin: top left;
+}
+
+iframe.interactive-prototype {
+    display: block;
+    border: none;
+    background: var(--bg-primary);
+}
+
+iframe.interactive-prototype--preview {
+    width: 1280px;
+    height: 800px;
+    pointer-events: none;
+}
+
+.prototype-iframe-hint {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    padding: 1px 8px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    pointer-events: none;
+}
+
+.prototype-iframe-preview.is-fullscreen-active {
+    cursor: default;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+}
+
+.prototype-iframe-placeholder {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 24px;
+    text-align: center;
+}
+
+.prototype-fullscreen-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.88);
+}
+
+.prototype-fullscreen-overlay.active {
+    display: flex;
+}
+
+.prototype-fullscreen-toolbar {
+    flex-shrink: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: #001529;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.prototype-fullscreen-title {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.prototype-fullscreen-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.prototype-fullscreen-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.prototype-fullscreen-body {
+    flex: 1;
+    min-height: 0;
+    background: var(--bg-primary);
+}
+
+iframe.interactive-prototype--fullscreen {
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
+
+.prototype-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 12px 0 8px;
+}
+
+.prototype-figure {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: zoom-in;
+    padding: 12px;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    background: var(--bg-primary);
+    transition: var(--transition);
+}
+
+.prototype-figure:hover {
+    border-color: var(--primary-border);
+    box-shadow: var(--shadow-sm);
+}
+
+.prototype-figure img.screenshot {
+    width: 100%;
+    margin: 0;
+    border-radius: var(--radius-md);
+}
+
+.prototype-figure::after {
+    content: '点击放大';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 1px 8px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.prototype-figure:hover::after {
+    opacity: 1;
+}
+
+img.screenshot {
+    cursor: zoom-in;
+}
+
+.prototype-figure figcaption {
+    margin-top: 8px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Tag — Ant Design */
+.prd-color-chip,
+.prd-status-tag,
+.prd-hex-tag {
+    display: inline-block;
+    padding: 0 7px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+.prd-hex-tag {
+    font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+    font-size: 12px;
+}
+
+.prd-status-tag,
+.prd-hex-tag {
+    border: 1px solid transparent;
+}
+
+.prd-status-未处理,
+.prd-hex-ff4d4f {
+    color: var(--error-color);
+    background: #fff2f0;
+    border-color: #ffccc7;
+}
+
+.prd-status-挂起,
+.prd-hex-fa8c16 {
+    color: #d46b08;
+    background: #fff7e6;
+    border-color: #ffd591;
+}
+
+.prd-status-已确认,
+.prd-hex-1677ff {
+    color: var(--primary-color);
+    background: var(--primary-light);
+    border-color: var(--primary-border);
+}
+
+.prd-notice-加载 {
+    color: var(--primary-color);
+    background: var(--primary-light);
+    border: 1px solid var(--primary-border);
+}
+
+.prd-notice-成功 {
+    color: #389e0d;
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+}
+
+.prd-notice-失败 {
+    color: #cf1322;
+    background: #fff2f0;
+    border: 1px solid #ffccc7;
+}
+
+.prd-notice-警告 {
+    color: #d48806;
+    background: #fffbe6;
+    border: 1px solid #ffe58f;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: var(--border-secondary);
+    margin: 24px 0;
+}
+
+strong, b {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+em, i {
+    font-style: italic;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 999;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+@media print {
+    .sidebar,
+    .menu-toggle,
+    .back-to-top,
+    .sidebar-overlay,
+    .lightbox-overlay {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .content-wrapper {
+        max-width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+        border: none;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+
+    table, pre, blockquote, img {
+        page-break-inside: avoid;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    @page {
+        margin: 2cm;
+        size: A4;
+
+        @top-center {
+            content: "PRD - [项目名称]";
+            font-size: 10pt;
+            color: #666;
+        }
+
+        @bottom-center {
+            content: "第 " counter(page) " 页";
+            font-size: 10pt;
+            color: #666;
+        }
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .content-wrapper {
+        margin: 16px;
+        padding: 28px 32px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .content-wrapper {
+        margin: 0;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        padding: 24px 20px;
+        padding-top: 72px;
+    }
+
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+    h3 { font-size: 18px; }
+
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .content-wrapper {
+        padding: 20px 16px;
+        padding-top: 64px;
+    }
+
+    h1 { font-size: 20px; }
+    h2 { font-size: 18px; }
+
+    th, td {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    pre {
+        padding: 12px;
+        font-size: 12px;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- 移动端菜单按钮 -->
+    <button class="menu-toggle" id="menuToggle" aria-label="切换导航菜单">
+        <div class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+
+    <!-- 侧边栏遮罩 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- 左侧导航栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-header-title-row">
+                <h1>[项目名称]</h1>
+                <button type="button" class="sidebar-doc-hint" id="sidebarDocHint" aria-label="文档维护说明">?</button>
+            </div>
+            <div class="sidebar-version">v[版本号] | [日期]</div>
+        </div>
+        <nav class="toc-container">
+            <div class="toc-title">文档目录</div>
+            <ul class="toc-list" id="tocList">
+                <!-- 目录将由 JavaScript 自动生成 -->
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <div class="content-wrapper" id="content">
+
+            <script type="application/json" id="prd-update-meta">
+            {
+                "productName": "[项目名称]",
+                "prototypeName": "[prototype-name]",
+                "htmlFile": "src/docs/PRD/[文档名称]/[文档名称]_PRD_V[版本].html",
+                "mdFile": "src/docs/PRD/[文档名称]/[文档名称]_PRD_V[版本].md",
+                "devUrl": "http://127.0.0.1:51720/prototypes/[prototype-name]/"
+            }
+            </script>
+
+            <!-- ==================== 示例内容开始 ==================== -->
+
+            <h1 id="第一章-项目概述">第一章 项目概述</h1>
+
+            <h2 id="11-项目背景">1.1 项目背景</h2>
+            <p>本项目旨在解决用户在特定场景下的核心痛点，通过创新的技术方案提供高效、便捷的解决方案。项目基于深入的市场调研和用户需求分析，结合行业最佳实践进行设计。</p>
+
+            <blockquote>
+                <p><strong>核心目标：</strong>打造一款用户体验优秀、功能完善、性能稳定的产品。</p>
+            </blockquote>
+
+            <h2 id="12-目标用户">1.2 目标用户</h2>
+            <ul>
+                <li>主要用户群体：25-45岁的职场专业人士
+                    <ul>
+                        <li>对效率工具有强烈需求</li>
+                        <li>具备一定的技术理解能力</li>
+                        <li>愿意为优质服务付费</li>
+                    </ul>
+                </li>
+                <li>次要用户群体：学生和自由职业者</li>
+            </ul>
+
+            <h2 id="13-项目范围">1.3 项目范围</h2>
+            <ol>
+                <li>核心功能模块开发</li>
+                <li>用户管理系统实现</li>
+                <li>数据统计与分析功能</li>
+                <li>移动端适配与优化</li>
+            </ol>
+
+            <hr>
+
+            <h1 id="第二章-需求分析">第二章 需求分析</h1>
+
+            <h2 id="21-功能需求">2.1 功能需求</h2>
+
+            <h3 id="211-用户管理模块">2.1.1 用户管理模块</h3>
+
+            <h4 id="用户信息字段表">用户信息字段表</h4>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>类型</th>
+                            <th>长度</th>
+                            <th>必填</th>
+                            <th>说明</th>
+                            <th>示例值</th>
+                            <th>约束条件</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>user_id</code></td>
+                            <td>VARCHAR</td>
+                            <td>32</td>
+                            <td>是</td>
+                            <td>用户唯一标识</td>
+                            <td>USR202401001</td>
+                            <td>主键，唯一</td>
+                            <td>UUID生成</td>
+                        </tr>
+                        <tr>
+                            <td><code>username</code></td>
+                            <td>VARCHAR</td>
+                            <td>50</td>
+                            <td>是</td>
+                            <td>用户名</td>
+                            <td>zhangsan</td>
+                            <td>唯一，字母数字</td>
+                            <td>登录凭证</td>
+                        </tr>
+                        <tr>
+                            <td><code>email</code></td>
+                            <td>VARCHAR</td>
+                            <td>100</td>
+                            <td>是</td>
+                            <td>电子邮箱</td>
+                            <td>zhang@example.com</td>
+                            <td>Email格式验证</td>
+                            <td>用于找回密码</td>
+                        </tr>
+                        <tr>
+                            <td><code>phone</code></td>
+                            <td>VARCHAR</td>
+                            <td>20</td>
+                            <td>否</td>
+                            <td>手机号码</td>
+                            <td>13800138000</td>
+                            <td>手机号格式</td>
+                            <td>可选填</td>
+                        </tr>
+                        <tr>
+                            <td><code>status</code></td>
+                            <td>TINYINT</td>
+                            <td>1</td>
+                            <td>是</td>
+                            <td>账户状态</td>
+                            <td>1</td>
+                            <td>0禁用/1正常/2锁定</td>
+                            <td>默认为1</td>
+                        </tr>
+                        <tr>
+                            <td><code>created_at</code></td>
+                            <td>DATETIME</td>
+                            <td>-</td>
+                            <td>是</td>
+                            <td>创建时间</td>
+                            <td>2024-01-01 00:00:00</td>
+                            <td>自动生成</td>
+                            <td>不可修改</td>
+                        </tr>
+                        <tr>
+                            <td><code>updated_at</code></td>
+                            <td>DATETIME</td>
+                            <td>-</td>
+                            <td>是</td>
+                            <td>更新时间</td>
+                            <td>2024-01-01 00:00:00</td>
+                            <td>自动更新</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 id="页面按钮清单">页面按钮清单</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>按钮名称</th>
+                        <th>位置</th>
+                        <th>类型</th>
+                        <th>触发条件</th>
+                        <th>执行动作</th>
+                        <th>权限要求</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>新建用户</td>
+                        <td>列表页顶部</td>
+                        <td>主要按钮</td>
+                        <td>点击</td>
+                        <td>打开创建弹窗</td>
+                        <td>管理员</td>
+                    </tr>
+                    <tr>
+                        <td>编辑</td>
+                        <td>操作列</td>
+                        <td>次要按钮</td>
+                        <td>点击</td>
+                        <td>打开编辑弹窗</td>
+                        <td>管理员/本人</td>
+                    </tr>
+                    <tr>
+                        <td>删除</td>
+                        <td>操作列</td>
+                        <td>危险按钮</td>
+                        <td>点击</td>
+                        <td>弹出确认框后删除</td>
+                        <td>超级管理员</td>
+                    </tr>
+                    <tr>
+                        <td>搜索</td>
+                        <td>搜索栏右侧</td>
+                        <td>默认按钮</td>
+                        <td>点击或回车</td>
+                        <td>根据条件筛选</td>
+                        <td>所有用户</td>
+                    </tr>
+                    <tr>
+                        <td>导出</td>
+                        <td>工具栏</td>
+                        <td>次要按钮</td>
+                        <td>点击</td>
+                        <td>导出Excel文件</td>
+                        <td>管理员</td>
+                    </tr>
+                    <tr>
+                        <td>批量启用</td>
+                        <td>批量操作栏</td>
+                        <td>主要按钮</td>
+                        <td>选中项后点击</td>
+                        <td>批量更新状态</td>
+                        <td>管理员</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 id="212-业务流程图">2.1.2 业务流程图</h3>
+            <p>以下是用户注册的核心业务流程：</p>
+
+            <pre class="mermaid"><code>flowchart TD
+    A([开始]) --> B{是否已注册?}
+    B -->|否| C[填写注册信息]
+    C --> D[验证邮箱/手机]
+    D --> E{验证通过?}
+    E -->|是| F[创建账户]
+    E -->|否| G[提示重新验证]
+    G --> C
+    F --> H[发送欢迎邮件]
+    H --> I([完成])
+    B -->|是| J[直接登录]
+    J --> I
+
+    style A fill:#2563EB,color:#fff
+    style I fill:#10B981,color:#fff
+    style B fill:#F59E0B,color:#fff</code></pre>
+
+            <h2 id="22-非功能需求">2.2 非功能需求</h2>
+
+            <h3 id="221-性能要求">2.2.1 性能要求</h3>
+            <ul>
+                <li>页面加载时间 &lt; 2秒（3G网络环境下）</li>
+                <li>API响应时间 &lt; 500ms（P95）</li>
+                <li>支持并发用户数 ≥ 1000</li>
+                <li>系统可用性 ≥ 99.9%</li>
+            </ul>
+
+            <h3 id="222-安全要求">2.2.2 安全要求</h3>
+            <ol>
+                <li>数据传输必须使用 HTTPS 加密</li>
+                <li>敏感数据存储需加密处理</li>
+                <li>实施完善的身份认证机制</li>
+                <li>定期进行安全漏洞扫描</li>
+            </ol>
+
+            <blockquote>
+                <p><strong>安全提醒：</strong>所有涉及用户隐私的数据操作都必须记录审计日志，确保可追溯性。</p>
+            </blockquote>
+
+            <h2 id="23-接口定义">2.3 接口定义</h2>
+
+            <h4 id="api-示例代码">API 示例代码</h4>
+            <pre><code><span class="comment">// 用户信息查询 API 接口示例</span>
+<span class="keyword">const</span> <span class="function">fetchUserInfo</span> = <span class="keyword">async</span> (userId) => {
+  <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`/api/v1/users/${userId}`</span>, {
+    method: <span class="string">'GET'</span>,
+    headers: {
+      <span class="string">'Authorization'</span>: <span class="string">`Bearer ${token}`</span>,
+      <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>
+    }
+  });
+
+  <span class="keyword">if</span> (!response.<span class="function">ok</span>) {
+    <span class="keyword">throw new</span> <span class="function">Error</span>(<span class="string">'获取用户信息失败'</span>);
+  }
+
+  <span class="keyword">return await</span> response.<span class="function">json</span>();
+};
+
+<span class="comment">// 使用示例</span>
+<span class="keyword">const</span> userData = <span class="keyword">await</span> <span class="function">fetchUserInfo</span>(<span class="string">'USR202401001'</span>);
+console.<span class="function">log</span>(userData);</code></pre>
+
+            <hr>
+
+            <h1 id="第三章-原型设计">第三章 原型设计</h1>
+
+            <h2 id="31-界面原型">3.1 界面原型</h2>
+            <p>以下展示了产品的关键界面原型设计，包括静态截图和可交互原型两种查看方式：</p>
+
+            <div class="prototype-section">
+                <div class="prototype-tabs">
+                    <button class="prototype-tab active" data-tab="screenshot">静态截图</button>
+                    <button class="prototype-tab" data-tab="interactive">交互原型</button>
+                </div>
+                <div class="prototype-content">
+                    <div class="prototype-panel active" id="panel-screenshot">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect fill='%23f1f5f9' width='800' height='450'/%3E%3Crect fill='%232563EB' x='250' y='180' width='300' height='90' rx='8'/%3E%3Ctext fill='white' x='400' y='230' text-anchor='middle' font-size='18' font-family='Arial'%3E界面截图占位符%3C/text%3E%3Ctext fill='%2364748b' x='400' y='300' text-anchor='middle' font-size='14' font-family='Arial'%3E请替换为实际截图%3C/text%3E%3C/svg%3E"
+                             alt="界面原型截图"
+                             class="screenshot">
+                        <p style="text-align:center;margin-top:12px;color:var(--text-muted);font-size:14px;">图 3-1：用户管理主界面截图</p>
+                    </div>
+                    <div class="prototype-panel" id="panel-interactive">
+                        <div class="prototype-iframe-preview" data-design-width="1280" data-design-height="800">
+                            <div class="prototype-iframe-hint">点击全屏交互</div>
+                            <div class="prototype-iframe-scale">
+                                <iframe class="interactive-prototype interactive-prototype--preview"
+                                        src="./assets/prototypes/[prototype-name]/index.html"
+                                        title="交互式原型预览"
+                                        sandbox="allow-scripts allow-same-origin allow-forms"
+                                        loading="lazy">
+                                </iframe>
+                            </div>
+                            <div class="prototype-iframe-placeholder" hidden>全屏交互中，关闭全屏后恢复此处预览</div>
+                        </div>
+                        <p style="text-align:center;margin-top:12px;color:var(--text-muted);font-size:14px;">图 3-2：交互式原型（预览区按比例展示完整布局，点击可全屏操作）</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id="32-交互流程">3.2 交互流程</h2>
+
+            <pre class="mermaid"><code>flowchart LR
+    subgraph 用户端
+        A[打开应用] --> B[进入首页]
+        B --> C[选择功能]
+        C --> D[填写表单]
+        D --> E[提交请求]
+    end
+
+    subgraph 服务端
+        E --> F[接收请求]
+        F --> G[数据校验]
+        G --> H{校验通过?}
+        H -->|是| I[处理业务]
+        H -->|否| J[返回错误]
+        I --> K[保存数据]
+        K --> L[返回结果]
+    end
+
+    L --> M[显示结果]
+    J --> N[提示错误]
+    N --> D
+
+    style A fill:#2563EB,color:#fff
+    style M fill:#10B981,color:#fff
+    style N fill:#EF4444,color:#fff</code></pre>
+
+            <hr>
+
+            <h1 id="第四章-技术方案">第四章 技术方案</h1>
+
+            <h2 id="41-技术架构">4.1 技术架构</h2>
+
+            <h3 id="411-前端技术栈">4.1.1 前端技术栈</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>技术组件</th>
+                        <th>版本</th>
+                        <th>用途</th>
+                        <th>选型理由</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>React</td>
+                        <td>18.x</td>
+                        <td>UI框架</td>
+                        <td>生态成熟，组件化开发</td>
+                    </tr>
+                    <tr>
+                        <td>TypeScript</td>
+                        <td>5.x</td>
+                        <td>类型系统</td>
+                        <td>提升代码质量与维护性</td>
+                    </tr>
+                    <tr>
+                        <td>Tailwind CSS</td>
+                        <td>3.x</td>
+                        <td>样式框架</td>
+                        <td>快速构建响应式界面</td>
+                    </tr>
+                    <tr>
+                        <td>Vite</td>
+                        <td>5.x</td>
+                        <td>构建工具</td>
+                        <td>极速的开发体验</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 id="412-后端技术栈">4.1.2 后端技术栈</h3>
+            <ul>
+                <li>运行环境：Node.js 20 LTS / Python 3.11+</li>
+                <li>Web框架：Express / FastAPI</li>
+                <li>数据库：PostgreSQL 15 + Redis 7</li>
+                <li>消息队列：RabbitMQ / Kafka</li>
+                <li>容器化：Docker + Kubernetes</li>
+            </ul>
+
+            <h2 id="42-数据库设计">4.2 数据库设计</h2>
+
+            <h4 id="er-关系图">ER 关系图</h4>
+            <pre class="mermaid"><code>erDiagram
+    USER ||--o{ ORDER : places
+    USER ||--o{ ADDRESS : has
+    ORDER ||--|{ ORDER_ITEM : contains
+    PRODUCT ||--o{ ORDER_ITEM : included_in
+
+    USER {
+        VARCHAR user_id PK
+        VARCHAR username
+        VARCHAR email
+        DATETIME created_at
+    }
+
+    ORDER {
+        VARCHAR order_id PK
+        VARCHAR user_id FK
+        DECIMAL total_amount
+        VARCHAR status
+        DATETIME created_at
+    }
+
+    PRODUCT {
+        VARCHAR product_id PK
+        VARCHAR name
+        DECIMAL price
+        INT stock
+    }</code></pre>
+
+            <h2 id="43-部署架构">4.3 部署架构</h2>
+            <blockquote>
+                <p><strong>部署策略：</strong>采用蓝绿部署方式，确保零停机发布。生产环境至少保持两个可用区的高可用部署。</p>
+            </blockquote>
+
+            <ol>
+                <li>开发环境（Development）
+                    <ul>
+                        <li>用于日常开发和单元测试</li>
+                        <li>自动部署至测试服务器</li>
+                    </ul>
+                </li>
+                <li>测试环境（Staging）
+                    <ul>
+                        <li>模拟生产环境的完整配置</li>
+                        <li>用于集成测试和验收测试</li>
+                    </ul>
+                </li>
+                <li>生产环境（Production）
+                    <ul>
+                        <li>正式对外提供服务</li>
+                        <li>配备完整的监控和告警体系</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <hr>
+
+            <h1 id="第五章-项目计划">第五章 项目计划</h1>
+
+            <h2 id="51-里程碑规划">5.1 里程碑规划</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>阶段</th>
+                        <th>里程碑</th>
+                        <th>计划时间</th>
+                        <th>交付物</th>
+                        <th>负责人</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>第一阶段</td>
+                        <td>需求确认</td>
+                        <td>第1-2周</td>
+                        <td>PRD文档 v1.0</td>
+                        <td>产品经理</td>
+                        <td>✅ 已完成</td>
+                    </tr>
+                    <tr>
+                        <td>第二阶段</td>
+                        <td>UI设计定稿</td>
+                        <td>第3-4周</td>
+                        <td>设计规范 + 高保真原型</td>
+                        <td>UI设计师</td>
+                        <td>🔄 进行中</td>
+                    </tr>
+                    <tr>
+                        <td>第三阶段</td>
+                        <td>核心功能开发</td>
+                        <td>第5-10周</td>
+                        <td>MVP版本</td>
+                        <td>开发团队</td>
+                        <td>⏳ 待开始</td>
+                    </tr>
+                    <tr>
+                        <td>第四阶段</td>
+                        <td>测试与优化</td>
+                        <td>第11-12周</td>
+                        <td>测试报告 + 性能报告</td>
+                        <td>QA团队</td>
+                        <td>⏳ 待开始</td>
+                    </tr>
+                    <tr>
+                        <td>第五阶段</td>
+                        <td>正式上线</td>
+                        <td>第13周</td>
+                        <td>生产环境部署</td>
+                        <td>运维团队</td>
+                        <td>⏳ 待开始</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="52-风险评估">5.2 风险评估</h2>
+
+            <h3 id="521-风险矩阵">5.2.1 风险矩阵</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>风险项</th>
+                        <th>可能性</th>
+                        <th>影响程度</th>
+                        <th>应对措施</th>
+                        <th>责任人</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>需求变更频繁</td>
+                        <td>高</td>
+                        <td>中</td>
+                        <td>建立变更评审流程，控制范围蔓延</td>
+                        <td>项目经理</td>
+                    </tr>
+                    <tr>
+                        <td>关键技术难点</td>
+                        <td>中</td>
+                        <td>高</td>
+                        <td>提前进行技术预研，准备备选方案</td>
+                        <td>技术负责人</td>
+                    </tr>
+                    <tr>
+                        <td>人员流动</td>
+                        <td>低</td>
+                        <td>高</td>
+                        <td>完善文档沉淀，推行结对编程</td>
+                        <td>HR/PM</td>
+                    </tr>
+                    <tr>
+                        <td>第三方依赖问题</td>
+                        <td>中</td>
+                        <td>中</td>
+                        <td>评估替代方案，建立监控告警</td>
+                        <td>开发团队</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="53-验收标准">5.3 验收标准</h2>
+            <ul>
+                <li>所有功能需求已实现并通过测试用例验证</li>
+                <li>性能指标达到非功能需求中的规定值</li>
+                <li>安全扫描无高危及以上漏洞</li>
+                <li>用户验收测试（UAT）通过签字确认</li>
+                <li>完整的项目文档交付（含运维手册）</li>
+            </ul>
+
+            <blockquote>
+                <p><strong>最终声明：</strong>本PRD文档将作为项目开发的权威依据，任何需求的变更都应遵循正式的变更管理流程，并同步更新本文档。</p>
+            </blockquote>
+
+            <!-- ==================== 示例内容结束 ==================== -->
+
+        </div>
+    </main>
+
+    <!-- 图片放大查看器 (Lightbox) -->
+    <div class="prototype-fullscreen-overlay" id="prototypeFullscreen" aria-hidden="true">
+        <div class="prototype-fullscreen-toolbar">
+            <span class="prototype-fullscreen-title" id="prototypeFullscreenTitle">交互原型</span>
+            <button type="button" class="prototype-fullscreen-close" id="prototypeFullscreenClose" aria-label="退出全屏">&times;</button>
+        </div>
+        <div class="prototype-fullscreen-body" id="prototypeFullscreenBody"></div>
+    </div>
+
+    <div class="lightbox-overlay" id="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-image" id="lightboxImage" src="" alt="放大图片">
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop" aria-label="返回顶部">↑</button>
+
+    <div class="prd-hint-panel" id="prdHintPanel" hidden role="tooltip"></div>
+
+    <script src="./assets/scripts/mermaid.min.js" defer></script>
+    <script src="./assets/scripts/prd-inline-editor.js" defer></script>
+    <script defer>
+        (function() {
+            'use strict';
+
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const tocList = document.getElementById('tocList');
+            const content = document.getElementById('content');
+            const backToTopBtn = document.getElementById('backToTop');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImage');
+
+            function parseTocHeading(text) {
+                const trimmed = text.trim();
+                const numeric = trimmed.match(/^(\d+(?:\.\d+)*)\s+/);
+                if (numeric) {
+                    return { number: numeric[1], title: trimmed.slice(numeric[0].length).trim() };
+                }
+                const chinese = trimmed.match(/^([一二三四五六七八九十百千万]+、)\s*/);
+                if (chinese) {
+                    return { number: chinese[1], title: trimmed.slice(chinese[0].length).trim() };
+                }
+                return { number: '', title: trimmed };
+            }
+
+            function getContentHeadings() {
+                return Array.from(content.querySelectorAll('h1, h2, h3, h4, h5, h6')).filter(
+                    (heading) => !heading.closest('header') && !heading.closest('footer')
+                );
+            }
+
+            function getPrdUpdateMeta() {
+                const el = document.getElementById('prd-update-meta');
+                if (!el) return {};
+                try {
+                    return JSON.parse(el.textContent);
+                } catch (err) {
+                    console.warn('prd-update-meta JSON 解析失败', err);
+                    return {};
+                }
+            }
+
+            function buildDocMaintenanceHintHtml() {
+                const meta = getPrdUpdateMeta();
+                const proto = meta.prototypeName || '[prototype-name]';
+                const htmlFile = meta.htmlFile || 'src/docs/PRD/[文档名称]/[文档名称]_PRD_V[版本].html';
+                const mdFile = meta.mdFile || 'src/docs/PRD/[文档名称]/[文档名称]_PRD_V[版本].md';
+                const productFolder = meta.productName || '[文档名称]';
+                const devUrl = meta.devUrl || `http://127.0.0.1:51720/prototypes/${proto}/`;
+                const prdAssets = `src/docs/PRD/${productFolder}/assets`;
+
+                return `
+                    <h5>修改 PRD 时请同步更新全部内容</h5>
+                    <p>本页由<strong>文字文档、界面截图、离线可交互原型</strong>三部分组成，任一项变更后都应检查其余项是否仍一致，避免「文档写了但图还是旧的」。</p>
+                    <ol>
+                        <li><strong>文字文档</strong>：同步 <code>${mdFile}</code>（源稿）与 <code>${htmlFile}</code>（HTML 评审版），并更新版本号、修订历史。</li>
+                        <li><strong>可运行原型</strong>：UI 或交互变更时，先改 <code>src/prototypes/${proto}/</code> 及 <code>spec.md</code>，再回写 PRD 正文。</li>
+                        <li><strong>界面截图</strong>：原型界面有变化时，执行 <code>capture-prototype-states.mjs --url ${devUrl}</code>，更新 <code>${prdAssets}/screenshots/${proto}/</code>，并在 HTML 对应「界面原型」节核对图注。</li>
+                        <li><strong>离线可交互原型</strong>：执行 <code>export-prototype-for-prd.mjs --prototype ${proto} --prd ${htmlFile}</code>，更新 <code>${prdAssets}/prototypes/${proto}/</code>，确保 HTML 内 iframe 可离线点击。</li>
+                        <li><strong>验收与交付</strong>：运行 <code>validate-assets.mjs ${htmlFile}</code>；确认 <code>src/docs/PRD/${productFolder}/</code> 内 HTML 与 <code>assets/</code> 完整自包含。</li>
+                    </ol>
+                    <p><strong>推荐顺序</strong>：改原型 → 改 MD/HTML → 重截截图 → 导出离线原型 → 验证 → 更新交付目录。</p>
+                `;
+            }
+
+            function setupPrdHintPanel(anchor, getHtml) {
+                const panel = document.getElementById('prdHintPanel');
+                if (!panel || !anchor) return;
+
+                let hideTimer = null;
+
+                function positionPanel() {
+                    panel.hidden = false;
+                    panel.innerHTML = getHtml();
+                    const rect = anchor.getBoundingClientRect();
+                    const panelWidth = panel.offsetWidth || 380;
+                    let left = rect.right + 10;
+                    if (left + panelWidth > window.innerWidth - 12) {
+                        left = Math.max(12, rect.left - panelWidth - 10);
+                    }
+                    let top = rect.top - 4;
+                    const maxTop = window.innerHeight - panel.offsetHeight - 12;
+                    if (top > maxTop) top = Math.max(12, maxTop);
+                    panel.style.left = `${left}px`;
+                    panel.style.top = `${top}px`;
+                }
+
+                function scheduleHide() {
+                    clearTimeout(hideTimer);
+                    hideTimer = setTimeout(() => {
+                        panel.hidden = true;
+                    }, 180);
+                }
+
+                function bindHover(el) {
+                    el.addEventListener('mouseenter', () => {
+                        clearTimeout(hideTimer);
+                        positionPanel();
+                    });
+                    el.addEventListener('mouseleave', (e) => {
+                        if (e.relatedTarget && panel.contains(e.relatedTarget)) return;
+                        scheduleHide();
+                    });
+                    el.addEventListener('focus', () => {
+                        clearTimeout(hideTimer);
+                        positionPanel();
+                    });
+                    el.addEventListener('blur', (e) => {
+                        if (e.relatedTarget && panel.contains(e.relatedTarget)) return;
+                        scheduleHide();
+                    });
+                }
+
+                bindHover(anchor);
+                panel.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+                panel.addEventListener('mouseleave', scheduleHide);
+            }
+
+            function setupSidebarDocHint() {
+                const btn = document.getElementById('sidebarDocHint');
+                setupPrdHintPanel(btn, buildDocMaintenanceHintHtml);
+            }
+
+            function generateTOC() {
+                const headings = getContentHeadings();
+                if (headings.length === 0) return;
+
+                tocList.innerHTML = '';
+                const stack = [{ level: 0, list: tocList }];
+
+                headings.forEach((heading, index) => {
+                    const level = parseInt(heading.tagName.charAt(1), 10);
+                    const id = heading.id || `section-${index}`;
+                    if (!heading.id) heading.id = id;
+
+                    while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+                        stack.pop();
+                    }
+
+                    const parent = stack[stack.length - 1];
+                    const parsed = parseTocHeading(heading.textContent);
+
+                    const li = document.createElement('li');
+                    li.className = 'toc-item';
+
+                    const row = document.createElement('div');
+                    row.className = 'toc-row';
+
+                    const toggle = document.createElement('button');
+                    toggle.type = 'button';
+                    toggle.className = 'toc-toggle toc-toggle--placeholder';
+                    toggle.setAttribute('aria-label', '展开子目录');
+                    toggle.textContent = '▾';
+
+                    const numberSpan = document.createElement('span');
+                    numberSpan.className = 'toc-number';
+                    numberSpan.textContent = parsed.number;
+
+                    const link = document.createElement('a');
+                    link.className = 'toc-link';
+                    link.textContent = parsed.title || heading.textContent.trim();
+                    link.setAttribute('data-target', id);
+                    link.href = `#${id}`;
+
+                    row.appendChild(toggle);
+                    row.appendChild(numberSpan);
+                    row.appendChild(link);
+                    li.appendChild(row);
+
+                    const childList = document.createElement('ul');
+                    childList.className = 'toc-list';
+                    li.appendChild(childList);
+
+                    parent.list.appendChild(li);
+                    stack.push({ level, list: childList });
+                });
+
+                tocList.querySelectorAll('.toc-item').forEach((item) => {
+                    const childList = item.querySelector(':scope > .toc-list');
+                    const toggle = item.querySelector('.toc-toggle');
+                    if (!childList || !toggle || childList.children.length === 0) return;
+
+                    toggle.classList.remove('toc-toggle--placeholder');
+                    toggle.setAttribute('aria-expanded', 'true');
+                    toggle.textContent = '▾';
+                });
+            }
+
+            function setupTOCClicks() {
+                tocList.addEventListener('click', function(e) {
+                    const toggle = e.target.closest('.toc-toggle');
+                    if (toggle && !toggle.classList.contains('toc-toggle--placeholder')) {
+                        e.preventDefault();
+                        const item = toggle.closest('.toc-item');
+                        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+                        toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+                        toggle.textContent = expanded ? '▸' : '▾';
+                        item.classList.toggle('collapsed', expanded);
+                        return;
+                    }
+
+                    const link = e.target.closest('.toc-link');
+                    if (!link) return;
+                    e.preventDefault();
+
+                    const targetId = link.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                        history.pushState(null, null, `#${targetId}`);
+                        if (window.innerWidth <= 768) closeSidebar();
+                    }
+                });
+            }
+
+            function setupScrollSpy() {
+                const headings = getContentHeadings();
+                const tocRows = tocList.querySelectorAll('.toc-row');
+                if (headings.length === 0 || tocRows.length === 0) return;
+
+                function updateActiveTOC() {
+                    const scrollPos = window.scrollY + 100;
+                    let currentHeading = null;
+                    headings.forEach((heading) => {
+                        if (heading.offsetTop <= scrollPos) currentHeading = heading;
+                    });
+                    tocRows.forEach((row) => {
+                        row.classList.remove('active');
+                        const link = row.querySelector('.toc-link');
+                        if (currentHeading && link && link.getAttribute('data-target') === currentHeading.id) {
+                            row.classList.add('active');
+                        }
+                    });
+                }
+
+                let ticking = false;
+                window.addEventListener('scroll', function() {
+                    if (!ticking) {
+                        window.requestAnimationFrame(function() {
+                            updateActiveTOC();
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+                updateActiveTOC();
+            }
+
+            function setupBackToTop() {
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY > 300) {
+                        backToTopBtn.classList.add('visible');
+                    } else {
+                        backToTopBtn.classList.remove('visible');
+                    }
+                });
+                backToTopBtn.addEventListener('click', function() {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            function openLightbox(src, alt) {
+                lightboxImg.src = src;
+                lightboxImg.alt = alt || '放大图片';
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function setupLightbox() {
+                content.addEventListener('click', function(e) {
+                    const img = e.target.closest('img.screenshot');
+                    if (!img || img.classList.contains('lightbox-image')) return;
+                    e.preventDefault();
+                    openLightbox(img.currentSrc || img.src, img.alt);
+                });
+                lightboxImg.addEventListener('click', function(e) { e.stopPropagation(); });
+                lightbox.querySelector('.lightbox-close').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeLightbox();
+                });
+                lightbox.addEventListener('click', function(e) {
+                    if (e.target === lightbox) closeLightbox();
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox();
+                });
+            }
+
+            function setupMobileNav() {
+                menuToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    sidebar.classList.toggle('open');
+                    sidebarOverlay.classList.toggle('active');
+                });
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
+
+            function closeSidebar() {
+                menuToggle.classList.remove('active');
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('active');
+            }
+
+            let activePrototypePreviewHost = null;
+
+            function updatePrototypePreviewScales() {
+                document.querySelectorAll('.prototype-iframe-preview').forEach((preview) => {
+                    if (preview.classList.contains('is-fullscreen-active')) return;
+
+                    const designWidth = parseFloat(preview.dataset.designWidth) || 1280;
+                    const designHeight = parseFloat(preview.dataset.designHeight) || 800;
+                    const width = preview.clientWidth || preview.getBoundingClientRect().width;
+                    if (!width) return;
+
+                    const scale = width / designWidth;
+                    preview.style.height = Math.round(designHeight * scale) + 'px';
+
+                    const scaleWrap = preview.querySelector('.prototype-iframe-scale');
+                    if (scaleWrap) {
+                        scaleWrap.style.width = designWidth + 'px';
+                        scaleWrap.style.height = designHeight + 'px';
+                        scaleWrap.style.transform = 'scale(' + scale + ')';
+                    }
+                });
+            }
+
+            function openPrototypeFullscreen(preview, iframe) {
+                const overlay = document.getElementById('prototypeFullscreen');
+                const body = document.getElementById('prototypeFullscreenBody');
+                const titleEl = document.getElementById('prototypeFullscreenTitle');
+                if (!overlay || !body) return;
+
+                activePrototypePreviewHost = preview;
+                preview.classList.add('is-fullscreen-active');
+
+                const placeholder = preview.querySelector('.prototype-iframe-placeholder');
+                if (placeholder) placeholder.hidden = false;
+
+                iframe.classList.remove('interactive-prototype--preview');
+                iframe.classList.add('interactive-prototype--fullscreen');
+                body.appendChild(iframe);
+
+                if (titleEl) {
+                    titleEl.textContent = iframe.getAttribute('title') || '交互原型';
+                }
+
+                overlay.classList.add('active');
+                overlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closePrototypeFullscreen() {
+                const overlay = document.getElementById('prototypeFullscreen');
+                const body = document.getElementById('prototypeFullscreenBody');
+                if (!overlay || !body || !activePrototypePreviewHost) return;
+
+                const iframe = body.querySelector('iframe.interactive-prototype');
+                const scaleWrap = activePrototypePreviewHost.querySelector('.prototype-iframe-scale');
+
+                if (iframe && scaleWrap) {
+                    iframe.classList.remove('interactive-prototype--fullscreen');
+                    iframe.classList.add('interactive-prototype--preview');
+                    scaleWrap.appendChild(iframe);
+                }
+
+                const placeholder = activePrototypePreviewHost.querySelector('.prototype-iframe-placeholder');
+                if (placeholder) placeholder.hidden = true;
+
+                activePrototypePreviewHost.classList.remove('is-fullscreen-active');
+                activePrototypePreviewHost = null;
+
+                overlay.classList.remove('active');
+                overlay.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+
+                updatePrototypePreviewScales();
+            }
+
+            function setupPrototypeFullscreen() {
+                const overlay = document.getElementById('prototypeFullscreen');
+                const closeBtn = document.getElementById('prototypeFullscreenClose');
+                if (!overlay) return;
+
+                document.querySelectorAll('.prototype-iframe-preview').forEach((preview) => {
+                    const iframe = preview.querySelector('iframe.interactive-prototype');
+                    if (!iframe) return;
+
+                    preview.addEventListener('click', function() {
+                        if (preview.classList.contains('is-fullscreen-active')) return;
+                        openPrototypeFullscreen(preview, iframe);
+                    });
+
+                    iframe.addEventListener('load', updatePrototypePreviewScales);
+                });
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        closePrototypeFullscreen();
+                    });
+                }
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && overlay.classList.contains('active')) {
+                        closePrototypeFullscreen();
+                    }
+                });
+
+                window.addEventListener('resize', updatePrototypePreviewScales);
+                updatePrototypePreviewScales();
+            }
+
+            function setupPrototypeTabs() {
+                document.querySelectorAll('.prototype-section').forEach((section) => {
+                    const tabs = section.querySelectorAll('.prototype-tab');
+                    const panels = section.querySelectorAll('.prototype-panel');
+                    tabs.forEach(tab => {
+                        tab.addEventListener('click', function() {
+                            const targetTab = this.getAttribute('data-tab');
+                            tabs.forEach(t => t.classList.remove('active'));
+                            panels.forEach(p => p.classList.remove('active'));
+                            this.classList.add('active');
+                            const targetPanel =
+                                section.querySelector(`.prototype-panel[data-panel="${targetTab}"]`) ||
+                                section.querySelector(`#panel-${targetTab}`);
+                            if (targetPanel) {
+                                targetPanel.classList.add('active');
+                                if (targetPanel.querySelector('.prototype-iframe-preview')) {
+                                    requestAnimationFrame(updatePrototypePreviewScales);
+                                }
+                            }
+                        });
+                    });
+                });
+            }
+
+            function prepareMermaidSources() {
+                document.querySelectorAll('.mermaid').forEach((el) => {
+                    const codeEl = el.querySelector('code');
+                    const source = (codeEl ? codeEl.textContent : el.textContent).trim();
+                    el.dataset.originalCode = source;
+                    if (codeEl) codeEl.remove();
+                    if (el.tagName === 'PRE') {
+                        const div = document.createElement('div');
+                        div.className = 'mermaid';
+                        div.dataset.originalCode = source;
+                        div.textContent = source;
+                        el.replaceWith(div);
+                    } else {
+                        el.textContent = source;
+                    }
+                });
+            }
+
+            function showMermaidFallback(message) {
+                document.querySelectorAll('.mermaid').forEach((el) => {
+                    if (el.querySelector('svg')) return;
+                    const source = el.dataset.originalCode || el.textContent;
+                    el.innerHTML = '<div class="mermaid-fallback"><p>⚠️ ' + message + '</p><details><summary>查看流程图源代码</summary><pre style="margin-top:8px;padding:12px;background:#f3f4f6;border-radius:4px;overflow:auto;font-size:12px;white-space:pre-wrap;">' +
+                        source.replace(/</g, '&lt;') + '</pre></details></div>';
+                });
+            }
+
+            async function initMermaid() {
+                prepareMermaidSources();
+                const nodes = document.querySelectorAll('.mermaid');
+                if (nodes.length === 0) return;
+
+                if (typeof mermaid === 'undefined') {
+                    showMermaidFallback('流程图库未加载，请将 mermaid.min.js 放入 ./assets/scripts/');
+                    return;
+                }
+
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: 'base',
+                    themeVariables: {
+                        fontSize: '14px',
+                        primaryColor: '#DBEAFE',
+                        primaryTextColor: '#1E3A8A',
+                        primaryBorderColor: '#2563EB',
+                        lineColor: '#64748B',
+                        secondaryColor: '#FFEDD5',
+                        tertiaryColor: '#FEE2E2',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                    },
+                    flowchart: {
+                        htmlLabels: true,
+                        curve: 'basis',
+                        padding: 20,
+                        nodeSpacing: 60,
+                        rankSpacing: 70,
+                        diagramPadding: 12,
+                        useMaxWidth: true
+                    },
+                    securityLevel: 'loose'
+                });
+
+                try {
+                    await mermaid.run({ nodes });
+                } catch (err) {
+                    console.error('Mermaid render error:', err);
+                    showMermaidFallback('流程图渲染失败：' + (err.message || '语法错误'));
+                }
+            }
+
+            window.PrdDocHooks = window.PrdDocHooks || {};
+            window.PrdDocHooks.regenerateTOC = generateTOC;
+            window.addEventListener('prd:toc-refresh', generateTOC);
+
+            async function init() {
+                generateTOC();
+                setupSidebarDocHint();
+                setupTOCClicks();
+                setupScrollSpy();
+                setupBackToTop();
+                setupLightbox();
+                setupMobileNav();
+                setupPrototypeTabs();
+                setupPrototypeFullscreen();
+                await initMermaid();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+</html>

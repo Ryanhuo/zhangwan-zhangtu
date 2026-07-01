@@ -1,173 +1,71 @@
 ---
-name: zhangwan-ui
-description: 掌图项目默认设计系统技能，提供 zhangwanUI 的设计令牌、组件合同、预览与消费规范，用于新页面设计、视觉对齐和组件复用。
-author: Ryan
-metadata:
-  category: project
-  maintainer: Ryan
+name: zhangwanui-design
+description: Use this skill to generate well-branded interfaces and assets for zhangwanUI — a Chinese ad-operations dashboard. Contains essential design guidelines, colors, type, fonts, and UI kit components for prototyping dashboard UIs.
+user-invocable: true
+---
+# zhangwanUI Design Skill
+
+先读 `README.md`，再按需浏览其他文件；做视觉产物时优先产出可预览的静态 HTML，做工程实现时直接复用这里的规则与资产。
+
+若用户只调用本技能而未说明目标，先询问要设计的页面、场景与交付形式，再以品牌设计专家身份输出方案。
+
+## Quick map
+
+- `README.md` — 品牌背景、内容语气与视觉基础（先读）
+- `css.json` — 设计令牌理解源；用于程序化读取颜色、字号、圆角、阴影、间距
+- `colors_and_type.css` — 运行时样式入口；直接 link/import，不作为首选理解源
+- `components.css` — 组件聚合 CSS，来自预览页抽取结果
+- `components/index.json` — 组件索引与优先级
+- `preview/component-{slug}.html` — 第一组件来源，优先读取 DOM/CSS 结构
+- `components/{slug}.json` — 第二组件来源，读取意图、变体与使用提示；无 `_evidence/` 时即为最终合同
+- `library-consumption.json` — 推荐下游读取顺序
+
+UIKit 或页面生成时，组件读取顺序固定为：`preview/component-{slug}.html` → `components/{slug}.json`；仅当预览不足且存在 `_evidence/` 时才回退到证据文件。`css.json` 负责理解，`colors_and_type.css` 负责运行时接入。
+
+### 编码规范
+
+*   Vue 页面/组件**优先采用 Vue 3 Composition API + TypeScript**。
+*   组件默认使用**单文件组件 (SFC)**，输出 `.vue` 文件。
+*   `<script>` 块必须使用 `<script setup lang="ts">`。
+*   业务相关样式写在组件 `<style scoped>` 中，全局样式仅放 Element Plus 覆盖和 CSS 变量。
+
+### 依赖安装
+
+```bash
+npm install vue@3.5.22 element-plus @element-plus/icons-vue
+npm install -D typescript@^5.6.3
+```
+
+> Element Plus 图标在 `main.ts` 全局注册：
+> ```ts
+> import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+> for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+>   app.component(key, component)
+> }
+> ```
+
+> 如用户指定其他技术栈（React、Naive UI 等），以用户要求为准。
+
 ---
 
-# TraeWork Design System
+## Essentials at a glance
 
-## Library Layout
-
-```
-TraeWork/
-├── colors_and_type.css        # Authoritative Light token source + compatibility aliases
-├── css.json                   # Machine-readable token projection
-├── scaffold.css               # Reset, typography utilities, layout helpers, shared atoms
-├── components.css             # Aggregated component definitions from preview marker blocks
-├── library-consumption.json   # Downstream consumption contract
-├── uikit-plan.json            # Component whitelist + UIKit screen blueprint
-├── assets/icons/              # Canonical bundled SVG icons
-├── components/                # Component contracts with token, DOM, asset, and provenance metadata
-├── preview/                   # Component preview pages
-└── ui_kits/                   # Page-level Light-mode showcases
-```
-
-## Source Boundary
-
-This skill operates on the files shipped in this TraeWork package. Do not assume access to original Figma, product, or upstream design-source evidence unless the user explicitly provides it. Current component contracts use `sourceKind: "preview-contract"` and medium confidence, so treat preview pages, `components.css`, and component JSON as the executable contract, not as proof of original design intent.
-
-## Required Consumption Order
-
-1. Read `README.md` first for package scope, known limitations, and authoring rules.
-2. Read `library-consumption.json` to choose the correct layer for the task.
-3. Read `uikit-plan.json` for the current component whitelist and UIKit blueprint.
-4. Read `colors_and_type.css` and `css.json` for tokens.
-5. Read `components/index.json` and `components/{slug}.json` for component relationships.
-6. Read `components.css` and the closest `preview/component-*.html` for reusable markup.
-7. Use `ui_kits/*/index.html` only as page-level showcase evidence, not as a production page template.
-
-## Design Principles
-
-- Light mode only: do not add Dark-mode token blocks, theme toggles, or `prefers-color-scheme` behavior unless the project explicitly reopens Dark-mode migration.
-- Token-first: every color, radius, spacing, and typography choice must resolve to the existing TraeWork tokens or component classes.
-- Quiet by default: neutral surfaces, restrained borders, and typography carry the hierarchy. Use brand color only when an action or status truly needs it.
-- Type-first, decoration-last: solve hierarchy with copy, layout, font size, weight, and spacing before adding icons or illustrations.
-- Keep the product baseline at `body-base` (`14px / 20px`). Smaller text is reserved for existing micro or dense primitives only.
-- Use one locale per screen. If the prompt does not explicitly request Chinese, default to English copy.
-
-## Brand Essentials
-
-- Theme scope: Light mode only for this migration.
-- Brand accent: `--bg-brand`.
-- Page surface: `--bg-base-default`.
-- Card / panel surface: `--bg-base-secondary`.
-- Body baseline: `--body-base-font-size`, `--body-base-line-height`.
-- Default container radius: `--radius-8`; default card/dialog radius: `--radius-12`.
-- Metric display numbers use `--font-family-metric`; compact numeric values use `--code-editor-font-family`.
-
-## Token And Color Discipline
-
-- Do not hardcode new palettes, raw status hues, or ad hoc alpha overlays. Use the semantic tokens in `colors_and_type.css`.
-- Brand color is scarce: use it for the primary brand action, brand identity moments, and small meaningful status accents. Do not use brand color for generic hover rows, inactive borders, tab underlines, or decorative fills.
-- Interactive neutral states should move through the overlay ladder: default surface, `--bg-overlay-l1`, `--bg-overlay-l2`, then `--bg-overlay-l3` for pressed or selected states.
-- Status colors are semantic. Use `--status-*-default` and matching `--status-*-surface-*` only for actual info, success, warning, alert, or error meaning.
-- When a token already encodes alpha, do not add extra `opacity` on top of it.
-
-## Compatibility Contract
-
-Standard variables remain available and must not be removed without a breaking-change note:
-
-- `--radius-2 / 4 / 6 / 8 / 10 / 12 / 16 / 20 / 24 / 32`
-- `--radius-xs / sm / md / lg / xl`
-- `--color-*`
-- `--bg-layout-1`, `--bg-layout-2`, `--border-1`
-- `--brand-green-*`
-- `--brand-1..4`
-
-The alias values intentionally resolve to the new Light-mode visual system.
-
-## Layout And Surface Discipline
-
-- Default page background is `--bg-base-default`; cards and panels use `--bg-base-secondary`; fields and inline controls use `--bg-overlay-l1`; floating menus use `--bg-menu`.
-- Step surface depth one level at a time. Do not place `--bg-base-default` panels inside `--bg-base-secondary` containers, because it visually cuts through the surface.
-- Page padding defaults to `--spacer-32` on desktop and `--spacer-16` on mobile.
-- Inter-container gaps must breathe: use at least `--spacer-16` between related cards, `--spacer-24` between different card groups, `--spacer-32` between page sections, and `--spacer-48` between major regions.
-- Do not use `--spacer-4`, `--spacer-6`, or `--spacer-8` as the gap between containers. Those are for icon-label pairs, inline controls, and tight row internals.
-- Avoid nested bordered or filled containers. Do not put `.ds-card` inside `.ds-card`; use a single surface with internal dividers and spacing.
-
-## Typography And Data
-
-- Use typography tokens as complete sets: family, size, line-height, weight, and letter-spacing should come from the same text style.
-- Body copy, controls, list rows, table cells, form labels, helper text, tags, and chips default to `body-base` unless an existing component defines a denser style.
-- Compact numeric values, counts, IDs, table numbers, chart axes, code, and keyboard hints use `--code-editor-font-family` with tabular figures.
-- Large KPI, scorecard, analytics, revenue, usage, and conversion display numbers use `--font-family-metric`, not mono.
-- Hero and marketing display text is typeset content, not data; do not apply mono or numeric utility styles to it.
+- 主色是 `#16a56f`，绿色只承担主操作与成功反馈，不做大面积装饰渐变。
+- 背景 `#f4f6f8` 配白色工作面 `#ffffff`，形成浅灰画布 + 白卡片的低干扰后台结构。
+- 中性色以 `#6b7683` 为正文辅助基准，边框 `#d8e0e6` 保持轻描边，优先服务扫读。
+- 默认输入高 `32px`、按钮高 `36px`、导航高 `56px`，间距基线从 `4px` 起按 `4/8/12/16/20/24/32` 递增。
+- 圆角以 `4px / 6px / 8px` 为主，卡片到导航可放宽到 `10px`，只有状态胶囊使用 `9999px`。
+- 字体使用 `Noto Sans SC` 承担中文标题与正文，`Inter` 承担拉丁字形、数字与等宽数据展示。
+- 阴影是“弱存在”策略：常态卡片 `--shadow-1`，悬停 `--shadow-2`，浮层再逐级上升，不靠重阴影制造层次。
+- 品牌语气为中文优先、专业克制、数据导向；界面文案短促直接，如“智能创建”“ROI”“点击率”，不使用表情和营销腔。
 
 ## Components
 
-Use these classes as the stable component API:
-
-| Group | Classes |
-|---|---|
-| Action | `.ds-btn`, `.ds-btn-group` |
-| Form | `.ds-input`, `.ds-textarea`, `.ds-select`, `.ds-check`, `.ds-radio`, `.ds-switch`, `.ds-slider` |
-| Display | `.ds-card`, `.ds-tag`, `.ds-avatar`, `.ds-table`, `.ds-progress`, `.ds-code`, `.ds-kbd` |
-| Navigation | `.ds-tabs`, `.ds-breadcrumb`, `.ds-pagination`, `.ds-menu` |
-| Overlay | `.ds-dialog`, `.ds-popover` |
-| Feedback | `.ds-notif`, `.ds-alert`, `.ds-skeleton` |
-
-The component inventory is TraeWork-specific. Do not add or infer components solely to match another design-system package; extend only when the TraeWork source evidence requires it.
-
-## Iconography
-
-Icon dimensions refer to rendered width and height, regardless of the SVG `viewBox`.
-
-- Use local TraeWork SVG assets from `assets/icons/`; do not add external icon libraries, icon fonts, emoji icons, CDN icon packs, or runtime-generated icon packages.
-- Functional monochrome icons should use local SVG assets from `assets/icons/` with reserved dimensions and decorative `aria-hidden="true"` when paired with visible text. Inside token-colored controls such as `.ds-btn`, prefer `currentColor` CSS masks with verified local URLs so icons inherit the button variant color in direct `file://` previews. Resolve `--icon-url` paths against the CSS rule that consumes them: `components.css` for shared component rules, or the page file for page-local rules. Use `<img>` for multi-color brand artwork.
-- Preserve SVG geometry, viewBox, fill/stroke model, and visual proportions. Do not rewrite paths, normalize strokes, or hand-draw replacement glyphs.
-- Default icons must render at `16px` by `16px`.
-- Compact icons may render at `14px` by `14px` in dense controls, menus, input adornments, tags, and other tight UI rows.
-- Large supporting icons may render at `24px` by `24px` on copy-led pages or cards where the icon is used as a stronger visual anchor.
-- Do not introduce other icon sizes unless the component explicitly requires an exception and the exception is documented with the component.
-- Every icon placeholder must reserve its final width and height before the asset loads to avoid layout shift.
-- Do not mix icon sources or visual styles in a single view.
-- If a matching icon asset is missing, choose text, choose a semantically close local SVG, or remove the icon. Do not substitute an external glyph.
-
-## Component Usage Rules
-
-- Compose new UI from `.ds-*` primitives before adding page-local styles.
-- Use at most one brand CTA per view. If two actions have equal weight, demote both to neutral variants.
-- Form focus uses contrast and neutral overlays, not brand glow or decorative rings.
-- Cards use surface tint and borders for elevation. Avoid drop shadows unless an existing component already defines them.
-- Selected rows, menu items, tabs, and pagination states use neutral overlays. Do not use brand fill for generic selection.
-- Notifications and alerts keep body text neutral; status is conveyed through the icon and status surface/border tokens.
-- Tables should use row dividers and inline status tags. Do not tint whole rows for status.
-
-## Visual Composition
-
-- Prefer refined component composition over decorative illustration. Big visual cards should be assembled from `.ds-card`, `.ds-tag`, `.ds-avatar`, `.ds-progress`, `.ds-code`, `.ds-table`, text styles, and 1px rule lines.
-- Avoid decorative SVG backgrounds, gradient blobs, icon clusters used as decoration, mascots, glow effects, fake charts, and arbitrary abstract shapes.
-- If illustration is necessary, keep it flat, token-based, and restrained: use `currentColor` plus at most one brand accent.
-- Charts must use chart and semantic tokens for series, axes, labels, legends, tooltips, and backgrounds. Do not introduce random chart palettes.
-
-## Motion And Interaction
-
-- Keep motion short and functional: 120ms for hover or focus, 200ms for component state changes, and 300ms maximum for layout reveal.
-- Prefer opacity and small translation. Translation should stay within 4px; avoid scale above 1.05.
-- State changes must not shift layout geometry. Hover, active, selected, and disabled states should preserve component size.
-- Respect `prefers-reduced-motion` by removing nonessential transitions and translation.
-
-## Accessibility
-
-- Maintain readable contrast: 4.5:1 for body text and at least 3:1 for icons and large text.
-- Focus must remain visible. Do not remove focus rings without an equivalent.
-- Interactive elements must be keyboard reachable in visual order.
-- Icon-only buttons must provide an `aria-label`.
-- Decorative icons and illustrations should use `aria-hidden="true"`; meaningful SVGs need accessible text.
-
-## Authoring Rules
-
-1. Do not change file names or directory names.
-2. Do not hardcode a new palette. Use semantic tokens from `colors_and_type.css`.
-3. Keep old token aliases intact for downstream compatibility.
-4. Keep component CSS inside the matching `preview/component-*.html` marker block, then regenerate `components.css` from those blocks.
-5. Keep preview-only layout, demo, and showcase helper styles outside component marker blocks so they do not enter `components.css`.
-6. When regenerating `components.css`, normalize local asset URLs so paths remain valid from `components.css` itself.
-7. Update these maintenance notes when changing stable `.ds-*` component APIs; call out any breaking change explicitly.
-8. Use local TraeWork SVG assets from `assets/icons/`, and follow the Iconography rules above; do not add external icon libraries.
-9. Preserve Light-mode behavior unless the project explicitly reopens Dark-mode migration.
-10. Keep `components/{slug}.json`, `components/index.json`, `library-consumption.json`, `uikit-plan.json`, and `ui_kits/*/quality-report.json` synchronized when component APIs or UIKit usage changes.
-11. Before shipping, compare against the closest preview or UI kit and verify surface depth, icon size, typography scale, brand color usage, and accessibility labels.
+| 组件 | 预览 | 合同 | 关键提示 |
+|---|---|---|---|
+| Smart Button | `preview/component-smart-button.html` | `components/smart-button.json` | 绿色主按钮建立操作优先级，次操作退回白底细边框。 |
+| Metric Card | `preview/component-metric-card.html` | `components/metric-card.json` | 指标卡突出数值与趋势，不用装饰性块面抢注意力。 |
+| Filter Form | `preview/component-filter-form.html` | `components/filter-form.json` | 筛选栏强调紧凑并排与固定操作区，适合高频查询。 |
+| Data Table | `preview/component-data-table.html` | `components/data-table.json` | 表格是核心工作面，边框、对齐和选中态都服务扫读效率。 |
+| Top Navigation | `preview/component-top-navigation.html` | `components/top-navigation.json` | 顶部导航负责上下文切换，保持轻边框和低视觉噪声。 |
+| Sidebar Navigation | `preview/component-sidebar-nav.html` | `components/sidebar-nav.json` | 侧栏是后台骨架，当前态依赖浅绿容器与清晰分组。 |

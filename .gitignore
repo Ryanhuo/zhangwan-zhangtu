@@ -1,6 +1,16 @@
 node_modules
 dist
-.zhangtu/publish
+
+# 本地运行时状态（不进系统仓库）
+.zhangtu/publish/
 .zhangtu/publish-config.json
+.zhangtu/preview/
+.zhangtu/iterations/
+.zhangtu/page-library.json
+
+# 用户原型页面（不属于系统，放在独立工作区）
+src/pages/*/
+!src/pages/skills/
+
 .DS_Store
 *.local

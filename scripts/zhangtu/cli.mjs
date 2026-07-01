@@ -94,6 +94,19 @@ function handleInit(positionals, options) {
   cpSync(resolve(PACKAGE_ROOT, "src/styles"), join(targetDir, "src/styles"), { recursive: true });
   cpSync(resolve(PACKAGE_ROOT, "src/assets"), join(targetDir, "src/assets"), { recursive: true });
 
+  // Seed baseline project skills so the 掌图 shell skills panel is populated
+  const skillsProjectSrc = resolve(PACKAGE_ROOT, ".agents/skills/project");
+  if (existsSync(skillsProjectSrc)) {
+    cpSync(skillsProjectSrc, join(targetDir, ".agents/skills/project"), { recursive: true });
+  }
+
+  // Seed the skills-management page: it is the shell's "技能" system tab UI,
+  // hidden from the regular page list (see splitPreviewPages in preview-server.mjs).
+  const skillsPageSrc = resolve(PACKAGE_ROOT, "src/pages/skills");
+  if (existsSync(skillsPageSrc)) {
+    cpSync(skillsPageSrc, join(targetDir, "src/pages/skills"), { recursive: true });
+  }
+
   // Rename _gitignore → .gitignore (npm strips leading-dot files from published packages)
   const gitignoreSrc = join(targetDir, "_gitignore");
   if (existsSync(gitignoreSrc)) {
@@ -124,7 +137,8 @@ function handleInit(positionals, options) {
     console.log(`  cd ${projectName}`);
     console.log(`  npm install`);
     console.log(`  npm start    # 启动掌图预览 Shell 并自动打开浏览器`);
-    console.log(`  npm run dev    # 仅开发预览单页（Vite，调试用）`);
+    console.log(`  npm run dev    # 同上（掌图 Shell）`);
+    console.log(`  npm run dev:page    # 仅裸 Vite 单页调试`);
     console.log(`\n在 src/pages/ 下添加新目录即可创建更多原型页面。`);
     if (pkg.devDependencies["zhangwan-zhangtu"]?.includes("GITHUB_OWNER")) {
       console.log(`\n注意：请将 package.json 中 zhangwan-zhangtu 的版本源替换为你的 GitHub 仓库地址。`);

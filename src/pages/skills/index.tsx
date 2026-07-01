@@ -137,6 +137,15 @@ function markdownToHtml(markdown: string) {
   return html;
 }
 
+function ColumnsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="3.5" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M12 5.8V18.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function SkillFolder({
   title,
   icon,
@@ -204,9 +213,16 @@ function SkillsPage() {
   const [detailError, setDetailError] = useState<string | null>(null);
   const [detailSkill, setDetailSkill] = useState<SkillDetail | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
+    () => window.sessionStorage.getItem("zhangtu:skillsSidebarCollapsed") === "true",
+  );
 
   const projectSkills = useMemo(() => skills.filter((s) => s.category === "project"), [skills]);
   const userSkills = useMemo(() => skills.filter((s) => s.category === "user"), [skills]);
+
+  useEffect(() => {
+    window.sessionStorage.setItem("zhangtu:skillsSidebarCollapsed", String(isSidebarCollapsed));
+  }, [isSidebarCollapsed]);
 
   const loadSkills = async (preferredId?: string) => {
     setSkillsLoading(true);
@@ -370,6 +386,15 @@ function SkillsPage() {
     <main className="skills-page">
       <nav className="skills-nav">
         <div className="skills-nav-left">
+          <button
+            type="button"
+            className="skills-sidebar-toggle"
+            onClick={() => setIsSidebarCollapsed((current) => !current)}
+            aria-label="展开/收起侧边栏"
+            title="展开/收起侧边栏"
+          >
+            <ColumnsIcon />
+          </button>
           <span className="skills-nav-title">技能库</span>
           <span className="skills-nav-counts">
             {projectSkills.length + userSkills.length} 项
@@ -385,7 +410,7 @@ function SkillsPage() {
         </Button>
       </nav>
 
-      <div className="skills-layout">
+      <div className={`skills-layout ${isSidebarCollapsed ? "is-sidebar-collapsed" : ""}`}>
         <aside className="skills-sidebar">
           <SkillFolder
             title="项目自带"

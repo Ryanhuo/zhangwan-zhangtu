@@ -1,0 +1,109 @@
+{
+  "slug": "metric-card",
+  "schemaVersion": 2,
+  "name": "Metric Card",
+  "category": "data-display",
+  "sourceKind": "from-scratch",
+  "confidence": "medium",
+  "variantCount": 3,
+  "semanticTypeCandidates": [
+    {
+      "type": "dashboard-metric-card",
+      "evidence": "服务花费、点击、转化、ROI 等指标汇总"
+    },
+    {
+      "type": "summary-panel",
+      "evidence": "位于列表上方，用于快速扫数"
+    }
+  ],
+  "variantDimensions": [
+    {
+      "name": "emphasis",
+      "values": [
+        "default",
+        "positive",
+        "warning"
+      ]
+    },
+    {
+      "name": "layout",
+      "values": [
+        "single-metric",
+        "metric-with-trend"
+      ]
+    }
+  ],
+  "representativeVariants": [
+    {
+      "id": "default-trend",
+      "whySelected": "最适合投放概览首屏。",
+      "traits": {
+        "padding": "var(--space-5)",
+        "radius": "var(--radius-lg)",
+        "background": "var(--color-card)",
+        "borderColor": "var(--color-border)",
+        "shadow": "var(--shadow-1)"
+      },
+      "childrenDigest": [
+        "label",
+        "value",
+        "delta",
+        "subnote"
+      ]
+    },
+    {
+      "id": "positive-trend",
+      "whySelected": "用于 ROI 改善、转化提升等正向指标。",
+      "traits": {
+        "accent": "var(--color-success)",
+        "accentBg": "var(--color-primary-container)"
+      },
+      "childrenDigest": [
+        "label",
+        "value",
+        "trend-up",
+        "comparison"
+      ]
+    },
+    {
+      "id": "warning-single",
+      "whySelected": "用于成本升高、预算预警等风险提示。",
+      "traits": {
+        "accent": "var(--color-warning)",
+        "accentBg": "var(--color-surface-container-low)"
+      },
+      "childrenDigest": [
+        "label",
+        "value",
+        "status"
+      ]
+    }
+  ],
+  "anatomy": [
+    "container",
+    "metric-label",
+    "metric-value",
+    "delta",
+    "footnote"
+  ],
+  "structurePatterns": [
+    "标题轻、数字重，支持金额与百分比混排",
+    "卡片边框弱于表格边框，避免抢占数据主区注意力"
+  ],
+  "usageHints": {
+    "priorityHint": "high",
+    "placement": [
+      "dashboard-header",
+      "table-top-summary"
+    ],
+    "density": "compact"
+  },
+  "doNotInvent": [
+    "大面积插画",
+    "营销文案式标题"
+  ],
+  "unknowns": [
+    "具体图标系统未定义，趋势图形采用最简箭头语言"
+  ],
+  "keyInsightSeed": "指标卡是扫数入口，强调数值对比而非装饰。"
+}

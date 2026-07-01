@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "zhangtu preview --open",
+    "dev:page": "vite",
     "start": "zhangtu preview --open",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
@@ -12,6 +13,7 @@
     "zhangtu": "zhangtu"
   },
   "dependencies": {
+    "antd": "^6.1.2",
     "lucide-react": "^0.562.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -23,6 +25,6 @@
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "^5.9.3",
     "vite": "^5.0.0",
-    "zhangwan-zhangtu": "github:GITHUB_OWNER/zhangwan-zhangtu"
+    "zhangwan-zhangtu": "github:Ryanhuo/zhangwan-zhangtu"
   }
 }

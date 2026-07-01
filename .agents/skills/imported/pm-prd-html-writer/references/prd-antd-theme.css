@@ -1,0 +1,1139 @@
+/* Ant Design 5 设计令牌 — HTML PRD 文档主题 */
+:root {
+    --primary-color: #1677ff;
+    --primary-hover: #4096ff;
+    --primary-active: #0958d9;
+    --primary-light: #e6f4ff;
+    --primary-border: #91caff;
+    --success-color: #52c41a;
+    --warning-color: #faad14;
+    --error-color: #ff4d4f;
+    --text-primary: rgba(0, 0, 0, 0.88);
+    --text-secondary: rgba(0, 0, 0, 0.65);
+    --text-muted: rgba(0, 0, 0, 0.45);
+    --text-disabled: rgba(0, 0, 0, 0.25);
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-sidebar: #ffffff;
+    --bg-table-head: #fafafa;
+    --border-color: #d9d9d9;
+    --border-secondary: #f0f0f0;
+    --code-bg: rgba(0, 0, 0, 0.06);
+    --code-text: rgba(0, 0, 0, 0.88);
+    --code-block-bg: #f5f5f5;
+    --code-block-border: #f0f0f0;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    --sidebar-width: 280px;
+    --transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.5714285714285714;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    display: flex;
+    min-height: 100vh;
+    font-size: 14px;
+}
+
+/* 侧边栏 — Ant Design Menu / Sider */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-secondary);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: var(--transition);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+}
+
+.sidebar-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-secondary);
+    background: var(--primary-color);
+    color: #fff;
+}
+
+.sidebar-header h1 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.sidebar-header-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.sidebar-header-title-row h1 {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-doc-hint {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: help;
+    line-height: 1;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.sidebar-doc-hint:hover,
+.sidebar-doc-hint:focus-visible {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #fff;
+    outline: none;
+}
+
+.sidebar-version {
+    font-size: 12px;
+    opacity: 0.85;
+    font-weight: 400;
+}
+
+.toc-container {
+    flex: 1;
+    padding: 8px 0 16px;
+    overflow-y: auto;
+}
+
+.toc-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 8px 16px 4px;
+    font-weight: 500;
+}
+
+.toc-list {
+    list-style: none;
+    padding: 0;
+}
+
+.toc-item {
+    margin: 1px 0;
+}
+
+.toc-item.collapsed > .toc-list {
+    display: none;
+}
+
+.toc-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 8px 0 4px;
+    margin: 0 8px;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.toc-row:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.toc-row.active {
+    background: var(--primary-light);
+}
+
+.toc-toggle {
+    flex-shrink: 0;
+    width: 22px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 10px;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+}
+
+.toc-toggle:hover {
+    background: rgba(22, 119, 255, 0.08);
+    color: var(--primary-color);
+}
+
+.toc-toggle--placeholder {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.toc-number {
+    flex-shrink: 0;
+    min-width: 36px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--primary-color);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+}
+
+.toc-link {
+    flex: 1;
+    display: block;
+    padding: 5px 8px 5px 2px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: var(--transition);
+    cursor: pointer;
+    line-height: 1.5714;
+}
+
+.toc-link:hover {
+    color: var(--primary-color);
+}
+
+.toc-row.active .toc-link {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Popover — Ant Design */
+.prd-hint-panel {
+    position: fixed;
+    z-index: 2000;
+    width: min(400px, calc(100vw - var(--sidebar-width) - 32px));
+    max-height: min(480px, 75vh);
+    overflow-y: auto;
+    padding: 12px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    font-size: 14px;
+    line-height: 1.5714;
+    color: var(--text-secondary);
+    pointer-events: auto;
+}
+
+.prd-hint-panel[hidden] {
+    display: none !important;
+}
+
+.prd-hint-panel h5 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.prd-hint-panel p {
+    margin: 0 0 8px;
+}
+
+.prd-hint-panel ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.prd-hint-panel li + li {
+    margin-top: 4px;
+}
+
+.prd-hint-panel code {
+    font-size: 12px;
+    background: var(--code-bg);
+    padding: 0 6px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-secondary);
+    word-break: break-all;
+}
+
+.toc-list .toc-list {
+    padding-left: 12px;
+}
+
+.toc-list .toc-list .toc-link {
+    font-size: 13px;
+}
+
+.toc-list .toc-list .toc-list .toc-link {
+    font-size: 12px;
+}
+
+/* Button — Ant Design Primary */
+.menu-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.menu-toggle:hover {
+    background: var(--primary-hover);
+}
+
+.menu-icon {
+    width: 24px;
+    height: 18px;
+    position: relative;
+}
+
+.menu-icon span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    transition: var(--transition);
+}
+
+.menu-icon span:nth-child(1) { top: 0; }
+.menu-icon span:nth-child(2) { top: 8px; }
+.menu-icon span:nth-child(3) { bottom: 0; }
+
+.menu-toggle.active .menu-icon span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 8px;
+}
+
+.menu-toggle.active .menu-icon span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active .menu-icon span:nth-child(3) {
+    transform: rotate(-45deg);
+    bottom: 8px;
+}
+
+/* Layout — Ant Design Content */
+.main-content {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    min-width: 0;
+}
+
+.content-wrapper {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 32px 48px 48px;
+    background: var(--bg-primary);
+    min-height: calc(100vh - 48px);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-secondary);
+}
+
+/* Typography — Ant Design Title */
+h1 {
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-secondary);
+    line-height: 1.35;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-secondary);
+    line-height: 1.35;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 32px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 24px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+h6 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+
+p {
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Table — Ant Design Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-secondary);
+    font-size: 14px;
+}
+
+thead {
+    background: var(--bg-table-head);
+}
+
+th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-secondary);
+    background: var(--bg-table-head);
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-secondary);
+    font-size: 14px;
+    color: var(--text-secondary);
+    vertical-align: top;
+    transition: background 0.2s;
+}
+
+tbody tr:hover td {
+    background: #fafafa;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-secondary);
+}
+
+.table-responsive table {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    min-width: 800px;
+}
+
+/* Code — Ant Design Typography code */
+code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.2em 0.4em;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-secondary);
+}
+
+pre {
+    background: var(--code-block-bg);
+    color: var(--text-primary);
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    border: 1px solid var(--code-block-border);
+    position: relative;
+}
+
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: inherit;
+}
+
+pre.mermaid,
+div.mermaid {
+    background: var(--bg-primary);
+    border: 1px dashed var(--border-color);
+    padding: 24px;
+    text-align: center;
+    border-radius: var(--radius-lg);
+}
+
+.keyword { color: #722ed1; }
+.string { color: #52c41a; }
+.comment { color: rgba(0, 0, 0, 0.45); font-style: italic; }
+.function { color: #1677ff; }
+.number { color: #fa8c16; }
+.operator { color: #eb2f96; }
+
+/* Alert — Ant Design Alert info */
+blockquote {
+    margin: 16px 0 24px;
+    padding: 12px 16px;
+    border: 1px solid var(--primary-border);
+    background: var(--primary-light);
+    border-radius: var(--radius-lg);
+}
+
+blockquote p {
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+ul, ol {
+    margin: 12px 0;
+    padding-left: 24px;
+}
+
+li {
+    margin-bottom: 4px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5714;
+}
+
+ul ul, ol ol, ul ol, ol ul {
+    margin: 4px 0;
+}
+
+li > ul, li > ol {
+    margin-top: 4px;
+}
+
+/* Image */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    margin: 12px 0;
+    border: 1px solid var(--border-secondary);
+}
+
+img:hover {
+    box-shadow: var(--shadow-md);
+}
+
+img.screenshot {
+    border: 1px solid var(--border-secondary);
+}
+
+/* Lightbox */
+.lightbox-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.lightbox-overlay.active {
+    display: flex;
+}
+
+.lightbox-image {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.lightbox-close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 2100;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.25);
+    transition: var(--transition);
+}
+
+.lightbox-close:hover {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* FloatButton — Ant Design */
+.back-to-top {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: var(--primary-hover);
+}
+
+/* Card + Tabs — Ant Design */
+.prototype-section {
+    margin: 24px 0;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.prototype-tabs {
+    display: flex;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-secondary);
+    padding: 0 8px;
+    gap: 0;
+}
+
+.prototype-tab {
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-primary);
+    transition: var(--transition);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    position: relative;
+}
+
+.prototype-tab:hover {
+    color: var(--primary-color);
+}
+
+.prototype-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    font-weight: 500;
+}
+
+.prototype-content {
+    padding: 24px;
+    background: var(--bg-primary);
+    min-height: 320px;
+}
+
+.prototype-panel {
+    display: none;
+}
+
+.prototype-panel.active {
+    display: block;
+}
+
+.prototype-iframe-preview {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    cursor: zoom-in;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-secondary);
+}
+
+.prototype-iframe-scale {
+    transform-origin: top left;
+}
+
+iframe.interactive-prototype {
+    display: block;
+    border: none;
+    background: var(--bg-primary);
+}
+
+iframe.interactive-prototype--preview {
+    width: 1280px;
+    height: 800px;
+    pointer-events: none;
+}
+
+.prototype-iframe-hint {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    padding: 1px 8px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    pointer-events: none;
+}
+
+.prototype-iframe-preview.is-fullscreen-active {
+    cursor: default;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+}
+
+.prototype-iframe-placeholder {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 24px;
+    text-align: center;
+}
+
+.prototype-fullscreen-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.88);
+}
+
+.prototype-fullscreen-overlay.active {
+    display: flex;
+}
+
+.prototype-fullscreen-toolbar {
+    flex-shrink: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: #001529;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.prototype-fullscreen-title {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.prototype-fullscreen-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.prototype-fullscreen-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.prototype-fullscreen-body {
+    flex: 1;
+    min-height: 0;
+    background: var(--bg-primary);
+}
+
+iframe.interactive-prototype--fullscreen {
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
+
+.prototype-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 12px 0 8px;
+}
+
+.prototype-figure {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: zoom-in;
+    padding: 12px;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-lg);
+    background: var(--bg-primary);
+    transition: var(--transition);
+}
+
+.prototype-figure:hover {
+    border-color: var(--primary-border);
+    box-shadow: var(--shadow-sm);
+}
+
+.prototype-figure img.screenshot {
+    width: 100%;
+    margin: 0;
+    border-radius: var(--radius-md);
+}
+
+.prototype-figure::after {
+    content: '点击放大';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 1px 8px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.prototype-figure:hover::after {
+    opacity: 1;
+}
+
+img.screenshot {
+    cursor: zoom-in;
+}
+
+.prototype-figure figcaption {
+    margin-top: 8px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Tag — Ant Design */
+.prd-color-chip,
+.prd-status-tag,
+.prd-hex-tag {
+    display: inline-block;
+    padding: 0 7px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+.prd-hex-tag {
+    font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+    font-size: 12px;
+}
+
+.prd-status-tag,
+.prd-hex-tag {
+    border: 1px solid transparent;
+}
+
+.prd-status-未处理,
+.prd-hex-ff4d4f {
+    color: var(--error-color);
+    background: #fff2f0;
+    border-color: #ffccc7;
+}
+
+.prd-status-挂起,
+.prd-hex-fa8c16 {
+    color: #d46b08;
+    background: #fff7e6;
+    border-color: #ffd591;
+}
+
+.prd-status-已确认,
+.prd-hex-1677ff {
+    color: var(--primary-color);
+    background: var(--primary-light);
+    border-color: var(--primary-border);
+}
+
+.prd-notice-加载 {
+    color: var(--primary-color);
+    background: var(--primary-light);
+    border: 1px solid var(--primary-border);
+}
+
+.prd-notice-成功 {
+    color: #389e0d;
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+}
+
+.prd-notice-失败 {
+    color: #cf1322;
+    background: #fff2f0;
+    border: 1px solid #ffccc7;
+}
+
+.prd-notice-警告 {
+    color: #d48806;
+    background: #fffbe6;
+    border: 1px solid #ffe58f;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: var(--border-secondary);
+    margin: 24px 0;
+}
+
+strong, b {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+em, i {
+    font-style: italic;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 999;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+@media print {
+    .sidebar,
+    .menu-toggle,
+    .back-to-top,
+    .sidebar-overlay,
+    .lightbox-overlay {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .content-wrapper {
+        max-width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+        border: none;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+
+    table, pre, blockquote, img {
+        page-break-inside: avoid;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    @page {
+        margin: 2cm;
+        size: A4;
+
+        @top-center {
+            content: "PRD - [项目名称]";
+            font-size: 10pt;
+            color: #666;
+        }
+
+        @bottom-center {
+            content: "第 " counter(page) " 页";
+            font-size: 10pt;
+            color: #666;
+        }
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .content-wrapper {
+        margin: 16px;
+        padding: 28px 32px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .content-wrapper {
+        margin: 0;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        padding: 24px 20px;
+        padding-top: 72px;
+    }
+
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+    h3 { font-size: 18px; }
+
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .content-wrapper {
+        padding: 20px 16px;
+        padding-top: 64px;
+    }
+
+    h1 { font-size: 20px; }
+    h2 { font-size: 18px; }
+
+    th, td {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    pre {
+        padding: 12px;
+        font-size: 12px;
+    }
+}

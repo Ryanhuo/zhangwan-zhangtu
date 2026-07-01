@@ -24,7 +24,13 @@ import { getProtoHubPublishStatus, publishIterationViaProtoHub, saveProtoHubPubl
 export async function startPreviewServer({ rootDir, discovery, scope, requestedPort = 6320, requestedVitePort = 51720 }) {
   const port = await findFreePort(requestedPort);
   const vitePort = await findFreePort(requestedVitePort);
-  const viteProcess = spawn("npm", ["run", "dev", "--", "--host", "127.0.0.1", "--port", String(vitePort), "--strictPort", "true"], {
+  // Spawn the Vite binary directly (not `npm run dev`) so that the dev script is
+  // free to launch this same shell without recursing back into the preview server.
+  const viteBin = join(rootDir, "node_modules", "vite", "bin", "vite.js");
+  if (!existsSync(viteBin)) {
+    throw new Error(`找不到 Vite(${viteBin}),请先在项目目录执行 npm install。`);
+  }
+  const viteProcess = spawn(process.execPath, [viteBin, "--host", "127.0.0.1", "--port", String(vitePort), "--strictPort", "true"], {
     cwd: rootDir,
     stdio: ["ignore", "pipe", "pipe"],
   });

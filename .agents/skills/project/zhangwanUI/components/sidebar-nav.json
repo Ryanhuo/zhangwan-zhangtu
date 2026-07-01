@@ -1,0 +1,107 @@
+{
+  "slug": "sidebar-nav",
+  "schemaVersion": 2,
+  "name": "Sidebar Navigation",
+  "category": "navigation",
+  "sourceKind": "from-scratch",
+  "confidence": "medium",
+  "variantCount": 3,
+  "semanticTypeCandidates": [
+    {
+      "type": "fixed-sidebar",
+      "evidence": "固定左侧导航是整个系统布局基础"
+    },
+    {
+      "type": "operations-nav",
+      "evidence": "需要清晰的当前态、分组与收藏能力"
+    }
+  ],
+  "variantDimensions": [
+    {
+      "name": "state",
+      "values": [
+        "default",
+        "active",
+        "collapsed-preview"
+      ]
+    },
+    {
+      "name": "itemType",
+      "values": [
+        "group-title",
+        "nav-item",
+        "favorite-item"
+      ]
+    }
+  ],
+  "representativeVariants": [
+    {
+      "id": "default-expanded",
+      "whySelected": "后台主导航标准形态。",
+      "traits": {
+        "width": "var(--sidebar-width)",
+        "background": "var(--color-sidebar)",
+        "borderColor": "var(--color-border)",
+        "itemRadius": "var(--radius-md)"
+      },
+      "childrenDigest": [
+        "brand-zone",
+        "group-title",
+        "nav-item-list",
+        "footer-tools"
+      ]
+    },
+    {
+      "id": "active-item",
+      "whySelected": "当前导航需要淡绿色选中而不刺眼。",
+      "traits": {
+        "activeBg": "var(--color-primary-container)",
+        "activeColor": "var(--color-primary)",
+        "activeWeight": "var(--font-weight-h4)"
+      },
+      "childrenDigest": [
+        "icon",
+        "label",
+        "badge(optional)"
+      ]
+    },
+    {
+      "id": "favorite-item",
+      "whySelected": "适配收藏星标与快捷入口。",
+      "traits": {
+        "iconSize": "var(--size-icon-md)",
+        "textColor": "var(--color-on-surface-variant)"
+      },
+      "childrenDigest": [
+        "star",
+        "label"
+      ]
+    }
+  ],
+  "anatomy": [
+    "shell",
+    "brand-zone",
+    "group-title",
+    "nav-item",
+    "footer-tools"
+  ],
+  "structurePatterns": [
+    "主分组与收藏入口分层清晰，避免全部抢同一级视觉权重",
+    "当前态使用浅绿色背景和绿色文字，不依赖粗重描边"
+  ],
+  "usageHints": {
+    "priorityHint": "critical",
+    "placement": [
+      "layout-left"
+    ],
+    "density": "compact"
+  },
+  "doNotInvent": [
+    "玻璃态侧栏",
+    "超宽品牌区"
+  ],
+  "unknowns": [
+    "折叠态全量交互未覆盖"
+  ],
+  "keyInsightSeed": "侧栏是后台骨架，优先保证分组清晰和当前态识别。"
+}

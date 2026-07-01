@@ -1,0 +1,113 @@
+{
+  "slug": "data-table",
+  "schemaVersion": 2,
+  "name": "Data Table",
+  "category": "data-display",
+  "sourceKind": "from-scratch",
+  "confidence": "medium",
+  "variantCount": 4,
+  "semanticTypeCandidates": [
+    {
+      "type": "operations-table",
+      "evidence": "核心业务承载 ROI、成本、点击率等投放指标"
+    },
+    {
+      "type": "dense-grid",
+      "evidence": "支持横向滚动、自定义列、工具栏操作"
+    }
+  ],
+  "variantDimensions": [
+    {
+      "name": "density",
+      "values": [
+        "compact",
+        "default"
+      ]
+    },
+    {
+      "name": "toolbar",
+      "values": [
+        "with-summary",
+        "with-column-settings"
+      ]
+    },
+    {
+      "name": "rowState",
+      "values": [
+        "default",
+        "selected",
+        "warning"
+      ]
+    }
+  ],
+  "representativeVariants": [
+    {
+      "id": "compact-ops-table",
+      "whySelected": "最符合投放管理主表格。",
+      "traits": {
+        "headerBg": "var(--color-surface-container-low)",
+        "rowHeight": "44px",
+        "radius": "var(--radius-lg)",
+        "borderColor": "var(--color-border)",
+        "shadow": "var(--shadow-1)"
+      },
+      "childrenDigest": [
+        "toolbar",
+        "thead",
+        "tbody",
+        "pagination"
+      ]
+    },
+    {
+      "id": "selected-row",
+      "whySelected": "体现淡绿色选中态。",
+      "traits": {
+        "selectedBg": "var(--color-primary-container)",
+        "selectedBorder": "var(--color-primary)"
+      },
+      "childrenDigest": [
+        "checkbox",
+        "cells",
+        "actions"
+      ]
+    },
+    {
+      "id": "warning-cell",
+      "whySelected": "表现异常成本或时区风险。",
+      "traits": {
+        "warningColor": "var(--color-warning)",
+        "dangerColor": "var(--color-error)"
+      },
+      "childrenDigest": [
+        "metric-text",
+        "status-inline"
+      ]
+    }
+  ],
+  "anatomy": [
+    "table-shell",
+    "toolbar",
+    "header-row",
+    "data-row",
+    "pagination"
+  ],
+  "structurePatterns": [
+    "金额、百分比、整数列采用右对齐，名称与状态列左对齐",
+    "列多时优先横向滚动，不压缩字号换取列数"
+  ],
+  "usageHints": {
+    "priorityHint": "critical",
+    "placement": [
+      "core-content"
+    ],
+    "density": "compact"
+  },
+  "doNotInvent": [
+    "彩色渐变表头",
+    "卡片替代表格的营销化排版"
+  ],
+  "unknowns": [
+    "排序、冻结列的完整交互未展开"
+  ],
+  "keyInsightSeed": "表格是系统主角，所有视觉都应服务对齐与扫读。"
+}

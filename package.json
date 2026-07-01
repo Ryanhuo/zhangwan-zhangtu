@@ -5,15 +5,17 @@
   "description": "掌图 — 产品经理本地原型系统（页面发现、预览、迭代管理）",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GITHUB_OWNER/zhangwan-zhangtu.git"
+    "url": "https://github.com/Ryanhuo/zhangwan-zhangtu.git"
   },
   "bin": {
     "zhangtu": "./scripts/zhangtu/cli.mjs",
     "zhangtu-check": "./scripts/check-pages.mjs"
   },
   "files": [
+    ".agents/skills/project/",
     "scripts/",
     "src/common/",
+    "src/pages/skills/",
     "src/styles/",
     "src/assets/",
     "src/vite-env.d.ts",
@@ -24,7 +26,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/zhangtu/cli.mjs preview --open",
+    "dev:page": "vite",
     "start": "node scripts/zhangtu/cli.mjs preview --open",
     "build": "vite build",
     "preview": "vite preview",

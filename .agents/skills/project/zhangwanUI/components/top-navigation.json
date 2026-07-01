@@ -1,0 +1,104 @@
+{
+  "slug": "top-navigation",
+  "schemaVersion": 2,
+  "name": "Top Navigation",
+  "category": "navigation",
+  "sourceKind": "from-scratch",
+  "confidence": "medium",
+  "variantCount": 3,
+  "semanticTypeCandidates": [
+    {
+      "type": "dashboard-topbar",
+      "evidence": "承载平台切换、面包屑、业务页签与动作区"
+    },
+    {
+      "type": "workspace-header",
+      "evidence": "与左侧导航共同形成固定骨架"
+    }
+  ],
+  "variantDimensions": [
+    {
+      "name": "zone",
+      "values": [
+        "platform-switch",
+        "breadcrumb-tabs"
+      ]
+    },
+    {
+      "name": "state",
+      "values": [
+        "default",
+        "scrolled"
+      ]
+    }
+  ],
+  "representativeVariants": [
+    {
+      "id": "platform-header",
+      "whySelected": "顶部平台选择与账户上下文切换。",
+      "traits": {
+        "height": "var(--nav-height)",
+        "background": "var(--color-card)",
+        "borderColor": "var(--color-border)",
+        "shadow": "var(--shadow-1)"
+      },
+      "childrenDigest": [
+        "platform-switcher",
+        "account-switcher",
+        "toolbar-actions"
+      ]
+    },
+    {
+      "id": "breadcrumb-tabs",
+      "whySelected": "业务页签与路径说明共存。",
+      "traits": {
+        "tabActiveColor": "var(--color-primary)",
+        "tabActiveBg": "var(--color-primary-container)",
+        "divider": "var(--color-border)"
+      },
+      "childrenDigest": [
+        "breadcrumb",
+        "tab-list",
+        "secondary-actions"
+      ]
+    },
+    {
+      "id": "scrolled",
+      "whySelected": "页面滚动后保持轻量吸顶感。",
+      "traits": {
+        "shadow": "var(--shadow-2)",
+        "backdrop": "var(--color-card)"
+      },
+      "childrenDigest": [
+        "compact-breadcrumb",
+        "tab-list"
+      ]
+    }
+  ],
+  "anatomy": [
+    "topbar",
+    "context-zone",
+    "breadcrumb",
+    "tabs",
+    "actions"
+  ],
+  "structurePatterns": [
+    "平台上下文在最上层，业务导航在其下一级",
+    "吸顶时只加强边界与阴影，不改变整体密度"
+  ],
+  "usageHints": {
+    "priorityHint": "high",
+    "placement": [
+      "page-top"
+    ],
+    "density": "compact"
+  },
+  "doNotInvent": [
+    "超高导航栏",
+    "大图 banner 式头部"
+  ],
+  "unknowns": [
+    "多平台 logo 细节未定义"
+  ],
+  "keyInsightSeed": "顶部导航负责上下文切换，不能稀释主内容区的扫描效率。"
+}
