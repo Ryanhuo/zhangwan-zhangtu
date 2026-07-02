@@ -42,8 +42,10 @@ git --version
 在**当前工作目录**下运行（不要 cd 进任何子目录）：
 
 ```bash
-npx github:Ryanhuo/zhangwan-zhangtu init <项目名称>
+npx -y -p github:Ryanhuo/zhangwan-zhangtu zhangtu init <项目名称>
 ```
+
+**不要用 `npx github:Ryanhuo/zhangwan-zhangtu init <项目名称>`(不带 `-p`)。** 这个包同时导出了 `zhangtu` 和 `zhangtu-check` 两个可执行命令，npx 在包名和命令名不一致时无法自动判断该运行哪一个，会直接报错 `could not determine executable to run`，安装 100% 失败。必须用 `-p <包名> <命令名>` 的显式写法，明确告诉 npx 装哪个包、跑哪个命令。
 
 这条命令会：
 - 从 GitHub 下载掌图系统最新版本（约 10–30 秒）
@@ -92,6 +94,7 @@ http://127.0.0.1:6320
 
 | 问题 | 解决方法 |
 |------|----------|
+| `npm error could not determine executable to run` | 命令少了 `-p` 参数，重新按第三步的写法执行：`npx -y -p github:Ryanhuo/zhangwan-zhangtu zhangtu init <项目名称>` |
 | `npx` 不认识 `github:` 协议 | 确认 Git 已安装：`git --version` |
 | 端口 6320 被占用 | `npm start -- --port 6321` |
 | `npm install` 卡住 | 检查网络，或切换 npm 镜像：`npm config set registry https://registry.npmmirror.com` |
