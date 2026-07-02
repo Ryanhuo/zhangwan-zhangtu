@@ -9,7 +9,7 @@
     "start": "zhangtu preview --open",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "check:pages": "zhangtu-check",
+    "check:pages": "zhangtu check-pages",
     "zhangtu": "zhangtu"
   },
   "dependencies": {

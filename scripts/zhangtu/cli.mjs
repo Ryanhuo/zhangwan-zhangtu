@@ -4,6 +4,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync 
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { discoverPages } from "./discovery.mjs";
+import { checkPages } from "../check-pages.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = resolve(SCRIPT_DIR, "../../");
@@ -53,6 +54,14 @@ async function main() {
     case "list-pages":
       print(discoverPages(rootDir), options);
       return;
+    case "check-pages": {
+      const result = await checkPages(rootDir);
+      console.log(JSON.stringify(result, null, 2));
+      if (!result.ok) {
+        process.exit(1);
+      }
+      return;
+    }
     case "list-iterations":
       print({ version: 1, iterations: listIterations(rootDir) }, options);
       return;
@@ -553,6 +562,7 @@ Commands:
   init <project-name>
   inspect-pages [--json]
   list-pages [--json]
+  check-pages
   preview [--port 6320] [--vite-port 51720] [--json]
   list-iterations [--json]
   create-iteration <name> [description] [pageIdsOrNamesCommaSeparated] [--json]

@@ -8,8 +8,7 @@
     "url": "https://github.com/Ryanhuo/zhangwan-zhangtu.git"
   },
   "bin": {
-    "zhangtu": "./scripts/zhangtu/cli.mjs",
-    "zhangtu-check": "./scripts/check-pages.mjs"
+    "zhangtu": "./scripts/zhangtu/cli.mjs"
   },
   "files": [
     ".agents/skills/project/",

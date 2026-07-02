@@ -3,62 +3,57 @@ import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 
-const rootDir = process.cwd();
-const pagesDir = join(rootDir, "src", "pages");
-const failures = [];
+export async function checkPages(rootDir) {
+  const pagesDir = join(rootDir, "src", "pages");
+  const failures = [];
 
-if (!existsSync(pagesDir)) {
-  console.log(JSON.stringify({ ok: true, checked: 0, failures: [] }, null, 2));
-  process.exit(0);
-}
-
-const entries = await collectPageEntries(pagesDir);
-
-for (const entry of entries) {
-  const htmlPath = join(entry.dir, "index.html");
-  const source = await readFile(entry.tsxPath, "utf8");
-  const relativeTsxPath = normalizePath(relative(rootDir, entry.tsxPath));
-  const relativeHtmlPath = normalizePath(relative(rootDir, htmlPath));
-
-  if (!/createRoot\s*\(/.test(source) || !/\.render\s*\(/.test(source)) {
-    failures.push({
-      file: relativeTsxPath,
-      reason: "missing-react-root-render",
-      message: "页面入口必须调用 createRoot(...).render(...)，不能只写组件片段。",
-    });
+  if (!existsSync(pagesDir)) {
+    return { ok: true, checked: 0, failures: [] };
   }
 
-  if (!existsSync(htmlPath)) {
-    failures.push({
-      file: relativeHtmlPath,
-      reason: "missing-index-html",
-      message: "页面目录必须包含 index.html。",
-    });
-    continue;
+  const entries = await collectPageEntries(pagesDir);
+
+  for (const entry of entries) {
+    const htmlPath = join(entry.dir, "index.html");
+    const source = await readFile(entry.tsxPath, "utf8");
+    const relativeTsxPath = normalizePath(relative(rootDir, entry.tsxPath));
+    const relativeHtmlPath = normalizePath(relative(rootDir, htmlPath));
+
+    if (!/createRoot\s*\(/.test(source) || !/\.render\s*\(/.test(source)) {
+      failures.push({
+        file: relativeTsxPath,
+        reason: "missing-react-root-render",
+        message: "页面入口必须调用 createRoot(...).render(...)，不能只写组件片段。",
+      });
+    }
+
+    if (!existsSync(htmlPath)) {
+      failures.push({
+        file: relativeHtmlPath,
+        reason: "missing-index-html",
+        message: "页面目录必须包含 index.html。",
+      });
+      continue;
+    }
+
+    const html = await readFile(htmlPath, "utf8");
+    if (!/<div\b(?=[^>]*\bid=["']root["'])[^>]*>/i.test(html)) {
+      failures.push({
+        file: relativeHtmlPath,
+        reason: "missing-root-container",
+        message: "index.html 必须包含 <div id=\"root\"></div>。",
+      });
+    }
+    if (!/<script\b(?=[^>]*\btype=["']module["'])(?=[^>]*\bsrc=["']\.\/index\.tsx["'])[^>]*>/i.test(html)) {
+      failures.push({
+        file: relativeHtmlPath,
+        reason: "missing-index-tsx-module-script",
+        message: "index.html 必须通过 <script type=\"module\" src=\"./index.tsx\"> 加载页面入口。",
+      });
+    }
   }
 
-  const html = await readFile(htmlPath, "utf8");
-  if (!/<div\b(?=[^>]*\bid=["']root["'])[^>]*>/i.test(html)) {
-    failures.push({
-      file: relativeHtmlPath,
-      reason: "missing-root-container",
-      message: "index.html 必须包含 <div id=\"root\"></div>。",
-    });
-  }
-  if (!/<script\b(?=[^>]*\btype=["']module["'])(?=[^>]*\bsrc=["']\.\/index\.tsx["'])[^>]*>/i.test(html)) {
-    failures.push({
-      file: relativeHtmlPath,
-      reason: "missing-index-tsx-module-script",
-      message: "index.html 必须通过 <script type=\"module\" src=\"./index.tsx\"> 加载页面入口。",
-    });
-  }
-}
-
-const result = { ok: failures.length === 0, checked: entries.length, failures };
-console.log(JSON.stringify(result, null, 2));
-
-if (!result.ok) {
-  process.exit(1);
+  return { ok: failures.length === 0, checked: entries.length, failures };
 }
 
 async function collectPageEntries(dir) {
@@ -88,4 +83,12 @@ async function collectPageEntries(dir) {
 
 function normalizePath(value) {
   return value.split("\\").join("/");
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const result = await checkPages(process.cwd());
+  console.log(JSON.stringify(result, null, 2));
+  if (!result.ok) {
+    process.exit(1);
+  }
 }
