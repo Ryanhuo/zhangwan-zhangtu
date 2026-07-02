@@ -14,15 +14,13 @@ user-invocable: true
 
 ### 第一步：检查环境
 
-同时运行以下两条命令：
+运行：
 
 ```bash
 node -v
-git --version
 ```
 
-- 如果 `node` 未安装或版本低于 18，告知用户前往 https://nodejs.org 下载 LTS 版本并安装后重试。
-- 如果 `git` 未安装，告知：Mac 运行 `xcode-select --install`，Windows 前往 https://git-scm.com 下载安装，完成后重试。
+如果 `node` 未安装或版本低于 18，告知用户前往 https://nodejs.org 下载 LTS 版本并安装后重试。（Git 不是安装本身的必需项，只有用户之后想给自己的原型项目做版本控制时才需要。）
 
 ---
 
@@ -42,15 +40,13 @@ git --version
 在**当前工作目录**下运行（不要 cd 进任何子目录）：
 
 ```bash
-npx -y github:Ryanhuo/zhangwan-zhangtu init <项目名称>
+npx -y @leihuohuo/zhangwan-zhangtu@latest init <项目名称>
 ```
 
 这条命令会：
-- 从 GitHub 下载掌图系统最新版本（约 10–30 秒）
+- 从 npm 注册表下载掌图系统最新版本（几秒钟，比早期的 GitHub 直装方式快很多）
 - 在当前目录下创建 `<项目名称>/` 子文件夹
 - 将工作区模板（配置文件、类型定义、示例页面）复制进去
-
-**Windows 注意：** 如果出现类似 `Cannot find package 'github:...'` 的错误，检查 Git 是否已安装并在命令行中可用（运行 `git --version`）。
 
 ---
 
@@ -93,7 +89,6 @@ http://127.0.0.1:6320
 | 问题 | 解决方法 |
 |------|----------|
 | `npm error could not determine executable to run` | 本地 npx 缓存了旧版本，运行 `npx clear-npx-cache`（或删除 `~/.npm/_npx`）后重试第三步命令 |
-| `npx` 不认识 `github:` 协议 | 确认 Git 已安装：`git --version` |
 | 端口 6320 被占用 | `npm start -- --port 6321` |
 | `npm install` 卡住 | 检查网络，或切换 npm 镜像：`npm config set registry https://registry.npmmirror.com` |
 | Windows PowerShell 执行策略报错 | 用管理员权限打开 PowerShell，运行 `Set-ExecutionPolicy RemoteSigned` |

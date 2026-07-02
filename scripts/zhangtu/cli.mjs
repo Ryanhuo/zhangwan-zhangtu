@@ -138,19 +138,20 @@ function handleInit(positionals, options) {
     renameSync(gitignoreSrc, join(targetDir, ".gitignore"));
   }
 
-  // Update package.json: substitute project name and package source URL
+  // Update package.json: substitute project name, and align the framework
+  // devDependency with whatever this running copy of the package identifies
+  // itself as (name + version) — self-describing, regardless of whether
+  // `zhangtu init` was invoked via the npm registry or `npm link`.
   const pkgPath = join(targetDir, "package.json");
   const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
   pkg.name = projectName;
 
-  // Try to infer the GitHub URL from the installed package's own package.json
   const selfPkgPath = resolve(PACKAGE_ROOT, "package.json");
   if (existsSync(selfPkgPath)) {
     const selfPkg = JSON.parse(readFileSync(selfPkgPath, "utf8"));
-    const repoUrl = (typeof selfPkg.repository === "string" ? selfPkg.repository : selfPkg.repository?.url) || "";
-    const githubMatch = repoUrl.match(/github\.com[:/]([^/]+\/[^/.]+)/);
-    if (githubMatch) {
-      pkg.devDependencies["zhangwan-zhangtu"] = `github:${githubMatch[1]}`;
+    delete pkg.devDependencies["zhangwan-zhangtu"];
+    if (selfPkg.name && selfPkg.version) {
+      pkg.devDependencies[selfPkg.name] = `^${selfPkg.version}`;
     }
   }
 
@@ -165,9 +166,6 @@ function handleInit(positionals, options) {
     console.log(`  npm run dev    # 同上（掌图 Shell）`);
     console.log(`  npm run dev:page    # 仅裸 Vite 单页调试`);
     console.log(`\n在 src/pages/ 下添加新目录即可创建更多原型页面。`);
-    if (pkg.devDependencies["zhangwan-zhangtu"]?.includes("GITHUB_OWNER")) {
-      console.log(`\n注意：请将 package.json 中 zhangwan-zhangtu 的版本源替换为你的 GitHub 仓库地址。`);
-    }
   }
 }
 
