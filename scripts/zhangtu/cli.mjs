@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { discoverPages } from "./discovery.mjs";
 import { checkPages } from "../check-pages.mjs";
@@ -22,6 +22,7 @@ import {
 import { startPreviewServer } from "./preview-server.mjs";
 
 const rootDir = process.cwd();
+const INIT_ALLOWED_EXISTING_ENTRIES = new Set([".git", ".gitignore", ".DS_Store", "README.md", "LICENSE", "LICENSE.md"]);
 
 const SYSTEM_VERSION = (() => {
   try {
@@ -96,14 +97,22 @@ async function main() {
 }
 
 function handleInit(positionals, options) {
-  const [projectName] = positionals;
-  if (!projectName) {
-    throw new Error("Usage: init <project-name>");
-  }
+  const [projectNameArg] = positionals;
+  const inPlace = !projectNameArg || projectNameArg === ".";
+  const targetDir = inPlace ? rootDir : resolve(rootDir, projectNameArg);
+  const projectName = inPlace ? basename(targetDir) : projectNameArg;
 
-  const targetDir = resolve(rootDir, projectName);
-  if (existsSync(targetDir)) {
-    throw new Error(`目录已存在: ${projectName}`);
+  if (inPlace) {
+    if (existsSync(targetDir)) {
+      const leftoverEntries = readdirSync(targetDir).filter((name) => !INIT_ALLOWED_EXISTING_ENTRIES.has(name));
+      if (leftoverEntries.length > 0) {
+        throw new Error(
+          `当前目录不是空的（发现 ${leftoverEntries[0]}），zhangtu init 只能在空目录里就地初始化。\n如果想新建子文件夹，运行：zhangtu init <项目名称>`
+        );
+      }
+    }
+  } else if (existsSync(targetDir)) {
+    throw new Error(`目录已存在: ${projectNameArg}`);
   }
 
   const templateDir = resolve(PACKAGE_ROOT, "templates/workspace");
@@ -144,7 +153,7 @@ function handleInit(positionals, options) {
   // `zhangtu init` was invoked via the npm registry or `npm link`.
   const pkgPath = join(targetDir, "package.json");
   const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
-  pkg.name = projectName;
+  pkg.name = sanitizePackageName(projectName);
 
   const selfPkgPath = resolve(PACKAGE_ROOT, "package.json");
   if (existsSync(selfPkgPath)) {
@@ -158,15 +167,37 @@ function handleInit(positionals, options) {
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 
   if (!options.json) {
-    console.log(`项目已创建：${projectName}/`);
-    console.log(`\n下一步：`);
-    console.log(`  cd ${projectName}`);
-    console.log(`  npm install`);
+    if (inPlace) {
+      console.log(`已在当前目录初始化项目：${projectName}`);
+      console.log(`\n下一步：`);
+      console.log(`  npm install`);
+    } else {
+      console.log(`项目已创建：${projectName}/`);
+      console.log(`\n下一步：`);
+      console.log(`  cd ${projectName}`);
+      console.log(`  npm install`);
+    }
     console.log(`  npm start    # 启动掌图预览 Shell 并自动打开浏览器`);
     console.log(`  npm run dev    # 同上（掌图 Shell）`);
     console.log(`  npm run dev:page    # 仅裸 Vite 单页调试`);
     console.log(`\n在 src/pages/ 下添加新目录即可创建更多原型页面。`);
   }
+}
+
+function sanitizePackageName(name) {
+  const sanitized = name
+    .toLowerCase()
+    .replace(/[^a-z0-9-_.]+/g, "-")
+    .replace(/^[-_.]+/, "")
+    .replace(/-+/g, "-")
+    .slice(0, 214);
+  if (sanitized) {
+    return sanitized;
+  }
+  // Fully non-ASCII folder names (e.g. Chinese) collapse to nothing above —
+  // suffix with a short random id so multiple such projects don't all
+  // collide on the same generic package name.
+  return `zhangtu-workspace-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 function handleCreateIteration(positionals, options) {
@@ -557,7 +588,8 @@ function printHelp() {
 
 Commands:
   version
-  init <project-name>
+  init <project-name>            # 新建子文件夹并初始化
+  init [.]                       # 在当前空目录里就地初始化，项目名取当前目录名
   inspect-pages [--json]
   list-pages [--json]
   check-pages
