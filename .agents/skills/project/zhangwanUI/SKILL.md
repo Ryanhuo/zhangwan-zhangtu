@@ -50,16 +50,21 @@ npm install -D typescript@^5.6.3
 
 ## Essentials at a glance
 
-- 主色是 `#16a56f`，绿色只承担主操作与成功反馈，不做大面积装饰渐变。
-- 背景 `#f4f6f8` 配白色工作面 `#ffffff`，形成浅灰画布 + 白卡片的低干扰后台结构。
-- 中性色以 `#6b7683` 为正文辅助基准，边框 `#d8e0e6` 保持轻描边，优先服务扫读。
-- 默认输入高 `32px`、按钮高 `36px`、导航高 `56px`，间距基线从 `4px` 起按 `4/8/12/16/20/24/32` 递增。
-- 圆角以 `4px / 6px / 8px` 为主，卡片到导航可放宽到 `10px`，只有状态胶囊使用 `9999px`。
-- 字体使用 `Noto Sans SC` 承担中文标题与正文，`Inter` 承担拉丁字形、数字与等宽数据展示。
-- 阴影是“弱存在”策略：常态卡片 `--shadow-1`，悬停 `--shadow-2`，浮层再逐级上升，不靠重阴影制造层次。
-- 品牌语气为中文优先、专业克制、数据导向；界面文案短促直接，如“智能创建”“ROI”“点击率”，不使用表情和营销腔。
+> 以下标记 **[VERIFIED]** 的条目已用真实业务系统（罗盘 compass，Vue2 + element-ui 内部主题 `bi-eleme`）源码核对替换过占位值；未标记的仍是早期 AI 生成占位值，改动前请自行核实。详细来源见 `colors_and_type.css`/`css.json` 内每条变量的注释。
+
+- **[VERIFIED]** 主色是 `#00bf8a`（不是旧占位值 `#16a56f`），绿色只承担主操作与成功反馈；hover 态比默认色更浅（`#33cca1`，element-ui 用主色+白混合出 hover，不是变深），active/pressed 为 `#00ac7c`。
+- **[VERIFIED]** 语义色：success `#00b42a`、warning `#ff7d00`、danger `#f53f3f`；info 尚无真实业务色可对照，沿用旧占位值，标记为未验证。
+- 背景 `#f4f6f8` 配白色工作面 `#ffffff` 的整体结构未变；**[VERIFIED]** 页面级灰底实测为 `#f0f2f5`，表格表头/hover 底色为 `#f2f3f5`（不是旧值 `#f6f8f9`）。
+- **[VERIFIED]** 中性文字：正文 `#323335`、常规辅助 `#4e5969`、次级辅助 `#86909c`；边框：浅 `#e5e6eb`、常规 `#c9cdd4`。
+- **[VERIFIED]** 默认输入/按钮高 `32px`（不是 `36px`）、顶部导航高 `50px`（不是 `56px`）；侧栏展开 `220px`/折叠 `60px`（不是 `240/72px`）；表格单元格内边距 `10px`、字号 `14px`；侧栏条目高 `50px`。
+- 圆角占位仍是 `4/6/8/10/12/9999` 一套 ramp；**[VERIFIED] 真实业务系统里圆角统一只用 `4px`**（按钮/输入/卡片/下拉都是 4px），未强行改动现有 ramp，仅作为参考记录在 `colors_and_type.css` 注释中。
+- 字体使用 `Noto Sans SC` 承担中文标题与正文，`Inter` 承担拉丁字形、数字与等宽数据展示（未核对，沿用原设定）。
+- **[VERIFIED] 真实业务系统里卡片默认没有阴影**（`box-shadow: none`）；占位的 `--shadow-1` 仍保留供其他场景使用。已新增 `--zhangwan-shadow-dropdown`（下拉/气泡 `0 4px 10px 0 rgba(0,0,0,.1)`）、`--zhangwan-shadow-navbar`（导航 `0 1px 4px 0 rgba(0,21,41,.08)`）、`--zhangwan-shadow-drawer`（抽屉/模态三层阴影）。
+- 品牌语气为中文优先、专业克制、数据导向；界面文案短促直接，如“智能创建”“ROI”“点击率”，不使用表情和营销腔（未核对，沿用原设定）。
 
 ## Components
+
+原有 6 个组件为早期占位设计（`from-scratch`，无 `preview/*.html` 以外的真实来源）；新增 13 个组件（`vue-source-verified`）来自对真实业务系统 Vue 源码的核对，暂缺 `preview/component-{slug}.html` 静态预览页（每个组件 JSON 内 `previewStatus: "no-preview-html-yet"` 标记了这一点，可运行的 React 参考实现在另一个 skill：`~/.claude/skills/compass-ui/assets/eui-kit/`）。
 
 | 组件 | 预览 | 合同 | 关键提示 |
 |---|---|---|---|
@@ -69,3 +74,16 @@ npm install -D typescript@^5.6.3
 | Data Table | `preview/component-data-table.html` | `components/data-table.json` | 表格是核心工作面，边框、对齐和选中态都服务扫读效率。 |
 | Top Navigation | `preview/component-top-navigation.html` | `components/top-navigation.json` | 顶部导航负责上下文切换，保持轻边框和低视觉噪声。 |
 | Sidebar Navigation | `preview/component-sidebar-nav.html` | `components/sidebar-nav.json` | 侧栏是后台骨架，当前态依赖浅绿容器与清晰分组。 |
+| Drawer *(verified)* | 暂无 | `components/drawer.json` | 默认宽度 80%，具体页面按内容覆盖为固定像素值，无单一标准宽度。 |
+| Tooltip *(verified)* | 暂无 | `components/tooltip.json` | 深色纯文字气泡，仅 hover，与 Popover 是两个独立组件。 |
+| Tag *(verified)* | 暂无 | `components/tag.json` | 默认标签走主色浅底，不是灰色；light/dark/plain 三种 effect。 |
+| Popover *(verified)* | 暂无 | `components/popover.json` | 白底+边框+阴影，可容纳富内容，点击或悬浮触发。 |
+| Message / MessageBox *(verified)* | 暂无 | `components/message.json` | Message 顶部居中轻提示，MessageBox 居中确认弹窗，语义不同。 |
+| DateRangePicker *(verified)* | 暂无 | `components/date-range-picker.json` | 真实交互是 646px 双月历网格，日期格式化必须手动拼本地年月日，禁止 `toISOString()`。 |
+| SortCaret *(verified)* | 暂无 | `components/sort-caret.json` | 上下箭头独立高亮，不是单箭头旋转。 |
+| ViewList *(verified)* | 暂无 | `components/view-list.json` | “收起/展示”只控制已保存视图标签列表本身，不收起整个筛选表单。 |
+| CascaderSelect *(verified)* | 暂无 | `components/cascader-select.json` | 只有级联选择器和分销方 CustomSelect 用“请选择”，其余用“请输入”。 |
+| TagSelect *(verified)* | 暂无 | `components/tag-select.json` | 远程搜索模式需 300ms 防抖 + “搜索中...”态。 |
+| Radio / Checkbox *(verified)* | 暂无 | `components/radio-checkbox.json` | 基础表单控件，无特殊还原点。 |
+| Pagination *(verified)* | 暂无 | `components/pagination.json` | 页码格 32×32px/14px/默认底色 #fff，不是常见的 28×28px/12px/#f4f4f5。 |
+| DataOverview *(verified)* | 暂无 | `components/data-overview.json` | KPI 小卡是 2×2 灰底网格，迷你图在卡片右侧，环比数值带符号。 |

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "slug": "view-list",
+  "name": "ViewList 自定义视图标签列表",
+  "category": "form",
+  "sourceKind": "vue-source-verified",
+  "confidence": "verified",
+  "provenance": [
+    {
+      "file": "src/components/ViewSet/List.vue",
+      "lines": "1-97",
+      "note": "真实结构和收起/展示行为"
+    },
+    {
+      "file": "src/views/game/pitcherAnalysis/stain/index.vue",
+      "lines": "322-353",
+      "note": "真实用法：viewSetButton(查询/重置同一个BiFormItem里的第三个按钮，在筛选表单内) + viewSetList(在footer slot里，是独立组件)"
+    }
+  ],
+  "tokensConsumed": [
+    "--eui-primary",
+    "--eui-border-light",
+    "--eui-underperform"
+  ],
+  "domAnatomy": {
+    "toggle": "'收起/展示'（el-icon-up/down图标+文字）只控制这个列表本身——展示态显示全部保存的视图标签，收起态只显示当前选中的那一个，不影响筛选表单本身的显示",
+    "item": "每个视图是一个按钮，背景色取自定义色或默认#f2f3f5，选中态高亮，非系统默认视图的可以删除(叉号)"
+  },
+  "usageHints": [
+    "'+保存为视图'按钮在筛选表单里（跟查询/重置同一个BiFormItem），不在footer；footer只放ViewList本身。"
+  ],
+  "doNotInvent": [
+    "'收起/展示'不是用来隐藏整个筛选表单的——第一版做过这个错误假设（凭截图猜的，没读ViewSet/List.vue源码），读完源码确认这个开关只属于ViewList自己，切换的是'显示全部视图 vs 只显示当前选中的一个'。已经把FilterGrid里那个错误的整体收起功能删掉。",
+    "真实还支持拖拽排序(vuedraggable)，当前实现没有做拖拽，只有静态展示+选中+删除。"
+  ],
+  "previewStatus": "no-preview-html-yet",
+  "previewNote": "本包尚未提供 preview/component-view-list.html 静态预览页；可运行的 React 参考实现见另一个 skill：~/.claude/skills/compass-ui/assets/eui-kit/components/。后续如需要静态 HTML 预览，应据此实现补一份。"
+}

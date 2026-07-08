@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "slug": "message",
+  "name": "Message 顶部悬浮提示 / MessageBox 确认弹窗",
+  "category": "feedback",
+  "sourceKind": "vue-source-verified",
+  "confidence": "verified",
+  "provenance": [
+    {
+      "file": "node_modules/bi-eleme/lib/theme-chalk/message.css",
+      "note": "min-width:380px，居中悬浮top:20px，圆角4px，padding:15px 15px 15px 20px；success/warning/error 底色边框跟Tag同一套值"
+    },
+    {
+      "file": "node_modules/bi-eleme/lib/theme-chalk/message-box.css",
+      "note": "宽度420px居中，圆角4px，阴影0 4px 10px 0 rgba(0,0,0,.1)（跟--eui-shadow-dropdown同值），header padding:15px 15px 10px加粗，content padding:12px 20px 字号14px色#4e5969，btns padding:0 20px line-height:60px右对齐"
+    }
+  ],
+  "tokensConsumed": [
+    "--eui-success-tint",
+    "--eui-warning-tint",
+    "--eui-danger-tint",
+    "--eui-border-light",
+    "--eui-shadow-dropdown",
+    "--eui-radius"
+  ],
+  "domAnatomy": {
+    "message": "命令式API：Message.success(text) / Message.warning(text) / Message.error(text)，createRoot挂载到body，3秒后自动卸载",
+    "messageBox": "命令式API：confirm(message, title) 返回 Promise<boolean>，overlay+居中弹窗，取消/确定两个按钮"
+  },
+  "usageHints": [
+    "Message的success/warning/error底色边框值跟Tag组件的light effect是同一套色值，两者可以互相印证。"
+  ],
+  "doNotInvent": [],
+  "previewStatus": "no-preview-html-yet",
+  "previewNote": "本包尚未提供 preview/component-message.html 静态预览页；可运行的 React 参考实现见另一个 skill：~/.claude/skills/compass-ui/assets/eui-kit/components/。后续如需要静态 HTML 预览，应据此实现补一份。"
+}

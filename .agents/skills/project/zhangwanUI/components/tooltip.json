@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "slug": "tooltip",
+  "name": "Tooltip 深色悬浮提示",
+  "category": "feedback",
+  "sourceKind": "vue-source-verified",
+  "confidence": "verified",
+  "provenance": [
+    {
+      "file": "node_modules/bi-eleme/lib/theme-chalk/tooltip.css",
+      "note": ".el-tooltip__popper.is-dark{background:#404040;color:#fff} padding:8px;border-radius:4px;font-size:13px;line-height:20px，带6px边框三角形箭头"
+    },
+    {
+      "file": "src/views/game/pitcherAnalysis/stain/index.vue",
+      "lines": "877-885",
+      "note": "账户维度行的余额tooltip真实用法：账户余额+共享余额两行"
+    }
+  ],
+  "tokensConsumed": [],
+  "domAnatomy": {
+    "note": "深色气泡，非token化的固定色值#404040（这是element-ui写死的tooltip专属深色，不跟随主题色）"
+  },
+  "usageHints": [
+    "账户维度行的余额数字=账户余额+共享余额之和，hover展开明细。"
+  ],
+  "doNotInvent": [],
+  "previewStatus": "no-preview-html-yet",
+  "previewNote": "本包尚未提供 preview/component-tooltip.html 静态预览页；可运行的 React 参考实现见另一个 skill：~/.claude/skills/compass-ui/assets/eui-kit/components/。后续如需要静态 HTML 预览，应据此实现补一份。"
+}

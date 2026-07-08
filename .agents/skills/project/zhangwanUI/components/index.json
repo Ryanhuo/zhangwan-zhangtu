@@ -63,6 +63,149 @@
       "variantCount": 3,
       "priorityHint": "critical",
       "keyInsightSeed": "侧栏是后台骨架，优先保证分组清晰和当前态识别。"
+    },
+    {
+      "slug": "drawer",
+      "name": "Drawer 抽屉",
+      "category": "overlay",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "high",
+      "keyInsightSeed": "默认宽度是 80%，具体页面按内容复杂度覆盖为固定像素值（如 900/1000/1300px），不存在单一“标准宽度”。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "tooltip",
+      "name": "Tooltip 深色悬浮提示",
+      "category": "feedback",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "medium",
+      "keyInsightSeed": "纯文字深色气泡，仅 hover 触发，和 Popover（白底+富内容+点击/hover）是两个独立组件，不要合并实现。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "tag",
+      "name": "Tag 标签/徽标",
+      "category": "display",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 3,
+      "priorityHint": "medium",
+      "keyInsightSeed": "默认（无类型）标签走主色浅底，不是灰色；light/dark/plain 三种 effect 各自有一套底色+边框映射。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "popover",
+      "name": "Popover 点击/悬浮弹出面板",
+      "category": "overlay",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "medium",
+      "keyInsightSeed": "白底+边框+阴影，可容纳标题与富内容；表格列头说明气泡只是 Popover 的一种业务用法，不单独做组件。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "message",
+      "name": "Message / MessageBox 提示条/确认弹窗",
+      "category": "feedback",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 2,
+      "priorityHint": "medium",
+      "keyInsightSeed": "Message 是顶部居中的轻提示（最小宽 380px），MessageBox 是居中确认弹窗（420px），两者语义和触发方式都不同。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "date-range-picker",
+      "name": "DateRangePicker 日期范围选择",
+      "category": "form",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "critical",
+      "keyInsightSeed": "真实交互是 646px 宽的双月历网格可点选，不是两个原生 date input；日期格式化必须手动拼接本地年月日，禁止用 toISOString()，否则在 UTC+8 会出现选中日期显示错一天的 bug。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "sort-caret",
+      "name": "SortCaret 表格排序箭头",
+      "category": "table",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "low",
+      "keyInsightSeed": "上下箭头独立高亮，不是单一箭头旋转。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "view-list",
+      "name": "ViewList 自定义视图标签列表",
+      "category": "form",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "medium",
+      "keyInsightSeed": "“收起/展示”只控制已保存视图标签列表本身的展示范围，不是收起整个筛选表单——这是最容易凭直觉猜错的一处。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "cascader-select",
+      "name": "CascaderSelect 级联选择",
+      "category": "form",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "medium",
+      "keyInsightSeed": "级联选择器和 CustomSelect（分销方）用“请选择”占位符，其余普通/远程搜索下拉一律用“请输入”。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "tag-select",
+      "name": "TagSelect 多选/远程搜索下拉",
+      "category": "form",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "high",
+      "keyInsightSeed": "远程搜索模式需要 300ms 防抖并显示“搜索中...”态。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "radio-checkbox",
+      "name": "Radio / Checkbox",
+      "category": "form",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "low",
+      "keyInsightSeed": "基础表单控件，视觉与常规实现一致，无特殊还原点。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "pagination",
+      "name": "Pagination 分页",
+      "category": "navigation",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "medium",
+      "keyInsightSeed": "页码格是 32×32px、字号 14px、默认底色 #fff，不是常见的 28×28px/12px/#f4f4f5。",
+      "previewStatus": "no-preview-html-yet"
+    },
+    {
+      "slug": "data-overview",
+      "name": "DataOverview 数据概览模式（KPI 小卡×4 + 联动大图）",
+      "category": "pattern",
+      "sourceKind": "vue-source-verified",
+      "confidence": "high",
+      "variantCount": 1,
+      "priorityHint": "high",
+      "keyInsightSeed": "小卡是 2×2 灰底网格且迷你图在卡片右侧，不是竖排白卡+数值下方走势图；环比数值带符号，涨跌语义只在文字/箭头上表达，迷你图始终用统一主色。",
+      "previewStatus": "no-preview-html-yet"
     }
   ]
 }

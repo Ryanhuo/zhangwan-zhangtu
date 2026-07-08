@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "slug": "pagination",
+  "name": "Pagination 分页",
+  "category": "navigation",
+  "sourceKind": "vue-source-verified",
+  "confidence": "verified",
+  "provenance": [
+    {
+      "file": "node_modules/bi-eleme/lib/theme-chalk/pagination.css",
+      "note": ".el-pager li 真实32x32px、字号14px、背景#fff、圆角4px；.active 是 color:#00bf8a background:#eaf7f3ff"
+    },
+    {
+      "file": "node_modules/bi-element-ui/packages/Pagination/src/index.vue",
+      "note": "BiPagination 默认 layout='total, prev, pager, next'（默认带总数），pageSizes默认[10,20,30,50]"
+    },
+    {
+      "file": "src/views/game/pitcherAnalysis/stain/index.vue",
+      "note": "投放分析页实际用的是 layout='prev, pager, next'（不带total/sizes），只在一级维度=账户时才显示分页"
+    }
+  ],
+  "tokensConsumed": [
+    "--eui-primary",
+    "--eui-radius"
+  ],
+  "domAnatomy": {
+    "item": ".eui-page-btn 32x32px，圆角4px，背景白色；active态浅绿底#eaf7f3ff+主色文字"
+  },
+  "usageHints": [
+    "组件默认layout带总数(total, prev, pager, next)，但具体页面经常精简成只有prev/pager/next——不要假设所有页面都显示总数。"
+  ],
+  "doNotInvent": [
+    "分页按钮不是28x28px/12px字号/#f4f4f5背景——第一版是猜的，读pagination.css后是32x32px/14px/#fff。"
+  ],
+  "previewStatus": "no-preview-html-yet",
+  "previewNote": "本包尚未提供 preview/component-pagination.html 静态预览页；可运行的 React 参考实现见另一个 skill：~/.claude/skills/compass-ui/assets/eui-kit/components/。后续如需要静态 HTML 预览，应据此实现补一份。"
+}

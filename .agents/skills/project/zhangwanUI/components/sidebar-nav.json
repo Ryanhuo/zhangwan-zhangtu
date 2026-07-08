@@ -98,10 +98,17 @@
   },
   "doNotInvent": [
     "玻璃态侧栏",
-    "超宽品牌区"
+    "超宽品牌区",
+    "折叠按钮不在顶部导航栏——罗盘真实结构里它在侧边栏底部，是撑满宽度的块级区域(图标居中而非贴左/贴右)，上方有一条贯穿侧边栏全宽的分隔线(border-top #e8e8e8)。核实自 src/layout/components/Sidebar/index.vue。"
   ],
   "unknowns": [
     "折叠态全量交互未覆盖"
   ],
-  "keyInsightSeed": "侧栏是后台骨架，优先保证分组清晰和当前态识别。"
+  "keyInsightSeed": "侧栏是后台骨架，优先保证分组清晰和当前态识别。",
+  "zhangwanVerification": {
+    "source": "罗盘 src/layout/components/Sidebar/index.vue + src/components/Hamburger/index.vue + 线上实测",
+    "notes": [
+      "罗盘(compass.zwnet.cn)线上实测：展开/收起宽度 220px / 60px（不是240px/72px）；一级分组与叶子项高度均为50px；叶子项左缩进42px；选中态用浅色容器(--color-primary-container)+主色文字，不用深色填充。"
+    ]
+  }
 }

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "slug": "cascader-select",
+  "name": "CascaderSelect 级联选择",
+  "category": "form",
+  "sourceKind": "vue-source-verified",
+  "confidence": "verified",
+  "provenance": [
+    {
+      "file": "src/views/game/pitcherAnalysis/stain/index.vue",
+      "note": "\"马甲包\"字段的 el-cascader 用法：multiple + expandTrigger:hover + emitPath:false"
+    }
+  ],
+  "tokensConsumed": [
+    "--eui-input-height",
+    "--eui-primary-tint",
+    "--eui-bg-hover"
+  ],
+  "domAnatomy": {
+    "panel": "两栏面板，hover展开子级（不是click展开）"
+  },
+  "usageHints": [],
+  "doNotInvent": [
+    "展开子级是hover触发，不是click——对照el-cascader的expandTrigger:hover配置。"
+  ],
+  "previewStatus": "no-preview-html-yet",
+  "previewNote": "本包尚未提供 preview/component-cascader-select.html 静态预览页；可运行的 React 参考实现见另一个 skill：~/.claude/skills/compass-ui/assets/eui-kit/components/。后续如需要静态 HTML 预览，应据此实现补一份。"
+}

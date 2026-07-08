@@ -114,10 +114,17 @@
   "doNotInvent": [
     "超大圆角营销风格",
     "渐变填充整面按钮",
-    "夸张投影"
+    "夸张投影",
+    "不要默认给按钮加阴影——罗盘真实按钮(含primary)都不带box-shadow，层级靠颜色对比表达，不是投影。"
   ],
   "unknowns": [
     "图标库具体样式未定义，预览使用简洁几何图标占位逻辑"
   ],
-  "keyInsightSeed": "主操作用绿色建立清晰优先级，次操作退回白底细边框。"
+  "keyInsightSeed": "主操作用绿色建立清晰优先级，次操作退回白底细边框。",
+  "zhangwanVerification": {
+    "source": "罗盘 bi-eleme/theme-chalk/button.css + 线上实测",
+    "notes": [
+      "罗盘真实主按钮高度32px(筛选区上下文，跟输入框对齐)，圆角4px；hover态是主色变浅而不是变深，例如 #00bf8a→#33cca1；按钮本身没有阴影。核实自 bi-eleme/theme-chalk/button.css + 线上实测。"
+    ]
+  }
 }

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "slug": "tag-select",
+  "name": "TagSelect 多选/远程搜索下拉",
+  "category": "form",
+  "sourceKind": "vue-source-verified",
+  "confidence": "verified",
+  "provenance": [
+    {
+      "file": "src/views/game/pitcherAnalysis/stain/index.vue",
+      "note": "el-select multiple/filterable/remote/collapse-tags 的真实用法（项目/主游戏/投手/操作人/组别/媒体等字段）"
+    },
+    {
+      "file": "node_modules/bi-eleme/lib/theme-chalk/*.css",
+      "note": "颜色/圆角/输入框高度等通用token，非select专属结构"
+    }
+  ],
+  "tokensConsumed": [
+    "--eui-input-height",
+    "--eui-primary-tint",
+    "--eui-bg-hover",
+    "--eui-shadow-dropdown"
+  ],
+  "domAnatomy": {
+    "box": ".eui-ms-box（32px高，选中项显示第一个tag+N折叠）",
+    "panel": ".eui-ms-panel（远程模式带.eui-ms-search输入框，300ms防抖后过滤，防抖期间显示'搜索中...'）"
+  },
+  "usageHints": [
+    "remote=true 时会有300ms防抖，这是element-ui remote-method的组件库默认防抖时长，不是逐毫秒实测得出（线上'投手'字段的搜索请求走的是/api/game/searchcondition/index，实测确认请求存在且有防抖效果，但没测出精确毫秒数）。"
+  ],
+  "doNotInvent": [
+    "远程搜索不能是输入就立刻过滤——线上是防抖之后才触发查询，第一版没做防抖。"
+  ],
+  "previewStatus": "no-preview-html-yet",
+  "previewNote": "本包尚未提供 preview/component-tag-select.html 静态预览页；可运行的 React 参考实现见另一个 skill：~/.claude/skills/compass-ui/assets/eui-kit/components/。后续如需要静态 HTML 预览，应据此实现补一份。"
+}

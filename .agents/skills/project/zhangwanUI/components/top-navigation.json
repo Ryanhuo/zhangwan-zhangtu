@@ -95,10 +95,17 @@
   },
   "doNotInvent": [
     "超高导航栏",
-    "大图 banner 式头部"
+    "大图 banner 式头部",
+    "面包屑不属于顶部导航栏——罗盘真实结构里面包屑是内容区自己的第一个子元素，跟随内容滚动，且透明无底色，不与导航栏一起sticky。"
   ],
   "unknowns": [
     "多平台 logo 细节未定义"
   ],
-  "keyInsightSeed": "顶部导航负责上下文切换，不能稀释主内容区的扫描效率。"
+  "keyInsightSeed": "顶部导航负责上下文切换，不能稀释主内容区的扫描效率。",
+  "zhangwanVerification": {
+    "source": "罗盘 src/layout/components/Navbar.vue + node_modules/bi-element-ui/packages/NavbarTool + 线上实测",
+    "notes": [
+      "罗盘线上实测：真实导航栏高度50px（不是56px），阴影 0 1px 4px rgba(0,21,41,.08)；右侧内容固定顺序：下载中心→分隔线→通知→分隔线→头像(34px图+右箭头，无用户名文字)→分隔线→更多入口(三个点，不是九宫格)。核实自 node_modules/bi-element-ui/packages/NavbarTool。"
+    ]
+  }
 }

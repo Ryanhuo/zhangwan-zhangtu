@@ -104,10 +104,17 @@
   },
   "doNotInvent": [
     "彩色渐变表头",
-    "卡片替代表格的营销化排版"
+    "卡片替代表格的营销化排版",
+    "选中行/表头不带阴影或深色填充——罗盘真实卡片和表格都不用阴影表达层级，全靠边框线和浅色底色(选中态#e6f9f3系或#eaf7f3系)。"
   ],
   "unknowns": [
     "排序、冻结列的完整交互未展开"
   ],
-  "keyInsightSeed": "表格是系统主角，所有视觉都应服务对齐与扫读。"
+  "keyInsightSeed": "表格是系统主角，所有视觉都应服务对齐与扫读。",
+  "zhangwanVerification": {
+    "source": "罗盘 bi-eleme/theme-chalk/{table,pagination}.css + 线上实测",
+    "notes": [
+      "罗盘真实单元格是 padding:10px 撑出的高度模型(不是固定44px)，字号14px；表头背景色#f2f3f5；排序箭头是纯CSS三角形(22x24px容器内两个10x10三角形)，未激活#86909c/当前排序方向主色，不是图标字体；树形展开的二级行背景#eef5ff。核实自 bi-eleme/theme-chalk/{table,pagination}.css + 线上实测。"
+    ]
+  }
 }

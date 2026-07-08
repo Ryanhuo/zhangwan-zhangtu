@@ -2,33 +2,47 @@
   "color": {
     "primary": {
       "zhangwan-primary-900": {
-        "hex": "#0b4b35",
-        "opacity": "1"
+        "hex": "#00543c",
+        "opacity": "1",
+        "verified": true,
+        "source": "ramp-derived from verified anchors, 未逐一验证"
       },
       "zhangwan-primary-800": {
-        "hex": "#0d5c40",
-        "opacity": "1"
+        "hex": "#007553",
+        "opacity": "1",
+        "verified": true,
+        "source": "ramp-derived from verified anchors, 未逐一验证"
       },
       "zhangwan-primary-700": {
-        "hex": "#0c734d",
-        "opacity": "1"
+        "hex": "#009468",
+        "opacity": "1",
+        "verified": true,
+        "source": "ramp-derived from verified anchors, 未逐一验证"
       },
       "zhangwan-primary-600": {
-        "hex": "#0f8b5c",
-        "opacity": "1"
+        "hex": "#00ac7c",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-primary-active 线上实测"
       },
       "zhangwan-primary-500": {
-        "hex": "#16a56f",
+        "hex": "#00bf8a",
         "opacity": "1",
-        "isPrimary": true
+        "isPrimary": true,
+        "verified": true,
+        "source": "VERIFIED: 罗盘 element-variables.scss $--color-primary"
       },
       "zhangwan-primary-400": {
-        "hex": "#4fc792",
-        "opacity": "1"
+        "hex": "#33cca1",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 同 primary-300, 罗盘 --eui-primary-hover"
       },
       "zhangwan-primary-300": {
-        "hex": "#7ed9b1",
-        "opacity": "1"
+        "hex": "#33cca1",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-primary-hover 线上实测(真实hover更浅非更深)"
       },
       "zhangwan-primary-200": {
         "hex": "#ade8cd",
@@ -39,8 +53,10 @@
         "opacity": "1"
       },
       "zhangwan-primary-50": {
-        "hex": "#eefbf6",
-        "opacity": "1"
+        "hex": "#e6f9f3",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-primary-tint 线上实测"
       }
     },
     "success": {
@@ -61,9 +77,11 @@
         "opacity": "1"
       },
       "zhangwan-success-500": {
-        "hex": "#16a34a",
+        "hex": "#00b42a",
         "opacity": "1",
-        "isPrimary": true
+        "isPrimary": true,
+        "verified": true,
+        "source": "VERIFIED: 罗盘 bi-eleme button.css --success"
       },
       "zhangwan-success-400": {
         "hex": "#46cb70",
@@ -82,8 +100,10 @@
         "opacity": "1"
       },
       "zhangwan-success-50": {
-        "hex": "#effcf3",
-        "opacity": "1"
+        "hex": "#e6f8ea",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-success-tint"
       }
     },
     "info": {
@@ -147,9 +167,11 @@
         "opacity": "1"
       },
       "zhangwan-warning-500": {
-        "hex": "#e49a12",
+        "hex": "#ff7d00",
         "opacity": "1",
-        "isPrimary": true
+        "isPrimary": true,
+        "verified": true,
+        "source": "VERIFIED: 罗盘 bi-eleme button.css --warning"
       },
       "zhangwan-warning-400": {
         "hex": "#f7b631",
@@ -168,8 +190,10 @@
         "opacity": "1"
       },
       "zhangwan-warning-50": {
-        "hex": "#fff8eb",
-        "opacity": "1"
+        "hex": "#fff2e6",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-warning-tint"
       }
     },
     "dark": {
@@ -217,41 +241,55 @@
     },
     "neutral": {
       "zhangwan-neutral-900": {
-        "hex": "#111827",
-        "opacity": "1"
+        "hex": "#202124",
+        "opacity": "1",
+        "verified": true,
+        "source": "ramp-derived from #323335, 未逐一验证"
       },
       "zhangwan-neutral-800": {
-        "hex": "#252d38",
-        "opacity": "1"
+        "hex": "#323335",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-text 线上实测"
       },
       "zhangwan-neutral-700": {
         "hex": "#39424d",
         "opacity": "1"
       },
       "zhangwan-neutral-600": {
-        "hex": "#505a66",
-        "opacity": "1"
+        "hex": "#4e5969",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-text-regular 线上实测"
       },
       "zhangwan-neutral-500": {
-        "hex": "#6b7683",
+        "hex": "#86909c",
         "opacity": "1",
-        "isPrimary": true
+        "isPrimary": true,
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-text-secondary 线上实测"
       },
       "zhangwan-neutral-400": {
         "hex": "#97a4b2",
         "opacity": "1"
       },
       "zhangwan-neutral-300": {
-        "hex": "#c7d0d9",
-        "opacity": "1"
+        "hex": "#c9cdd4",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-border 线上实测"
       },
       "zhangwan-neutral-200": {
-        "hex": "#dfe5eb",
-        "opacity": "1"
+        "hex": "#e5e6eb",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-border-light 线上实测"
       },
       "zhangwan-neutral-100": {
-        "hex": "#eff2f5",
-        "opacity": "1"
+        "hex": "#f2f3f5",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-bg-hover 线上实测"
       },
       "zhangwan-neutral-50": {
         "hex": "#f7f8fa",
@@ -276,9 +314,11 @@
         "opacity": "1"
       },
       "zhangwan-error-500": {
-        "hex": "#e5484d",
+        "hex": "#f53f3f",
         "opacity": "1",
-        "isPrimary": true
+        "isPrimary": true,
+        "verified": true,
+        "source": "VERIFIED: 罗盘 bi-eleme button.css --danger"
       },
       "zhangwan-error-400": {
         "hex": "#ff7878",
@@ -297,8 +337,10 @@
         "opacity": "1"
       },
       "zhangwan-error-50": {
-        "hex": "#fff2f2",
-        "opacity": "1"
+        "hex": "#feecec",
+        "opacity": "1",
+        "verified": true,
+        "source": "VERIFIED: 罗盘 --eui-danger-tint / .cqbz 规则同值"
       }
     },
     "error": {
@@ -499,7 +541,11 @@
           }
         }
       ]
-    }
+    },
+    "zhangwan-shadow-dropdown": "0 4px 10px 0 rgba(0,0,0,0.1)",
+    "zhangwan-shadow-navbar": "0 1px 4px 0 rgba(0,21,41,0.08)",
+    "zhangwan-shadow-drawer": "0 8px 10px -5px rgba(0,0,0,0.2), 0 16px 24px 2px rgba(0,0,0,0.14), 0 6px 30px 5px rgba(0,0,0,0.12)",
+    "_verified_note": "zhangwan-shadow-* 三项来自罗盘线上实测/源码确认。罗盘真实卡片(.block-box)本身没有阴影，不同于本文件里默认给卡片套用 shadow-1 的假设，详见 components/data-table.json 等文件的更正说明。"
   },
   "radius": {
     "zhangwan-radius-xs": "4px",
@@ -542,11 +588,23 @@
     "size-control-md": "40px",
     "size-control-lg": "44px",
     "size-metric-height": "48px",
-    "nav-height": "56px",
-    "sidebar-width": "240px",
+    "nav-height": "50px",
+    "sidebar-width": "220px",
     "gutter-page": "24px",
     "gutter-card": "16px",
     "max-content-width": "1440px",
-    "max-form-width": "720px"
+    "max-form-width": "720px",
+    "sidebar-collapsed-width": "60px",
+    "zhangwan-table-cell-padding": "10px",
+    "zhangwan-table-font-size": "14px",
+    "zhangwan-sidebar-item-height": "50px",
+    "zhangwan-sidebar-leaf-indent": "42px",
+    "zhangwan-filter-label-width": "96px",
+    "zhangwan-filter-item-min-width": "350px",
+    "zhangwan-card-padding": "20px",
+    "zhangwan-card-gap": "15px",
+    "zhangwan-breadcrumb-height": "36px",
+    "zhangwan-drawer-width": "80%",
+    "_verified_note": "以 zhangwan- 前缀新增的字段和本组内被修正的 nav-height/sidebar-width/sidebar-collapsed-width，均来自罗盘(compass.zwnet.cn)线上实测，2026-07-05/07-08。其余未标注字段沿用原值，未逐一核实。"
   }
 }

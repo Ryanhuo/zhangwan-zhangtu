@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "slug": "radio-checkbox",
+  "name": "Radio / Checkbox",
+  "category": "form",
+  "sourceKind": "vue-source-verified",
+  "confidence": "verified",
+  "provenance": [
+    {
+      "file": "node_modules/bi-eleme/lib/theme-chalk/radio.css",
+      "note": "圆点16x16px(mini 14x14)，未选中底色#f6f8f9边框#d6d9e0，选中态用主色填充"
+    },
+    {
+      "file": "node_modules/bi-eleme/lib/theme-chalk/checkbox.css",
+      "note": "方框16x16px(mini 12x12)，文字14px"
+    }
+  ],
+  "tokensConsumed": [
+    "--eui-primary",
+    "--eui-border"
+  ],
+  "domAnatomy": {},
+  "usageHints": [],
+  "doNotInvent": [],
+  "previewStatus": "no-preview-html-yet",
+  "previewNote": "本包尚未提供 preview/component-radio-checkbox.html 静态预览页；可运行的 React 参考实现见另一个 skill：~/.claude/skills/compass-ui/assets/eui-kit/components/。后续如需要静态 HTML 预览，应据此实现补一份。"
+}

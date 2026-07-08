@@ -100,10 +100,17 @@
   },
   "doNotInvent": [
     "大面积插画",
-    "营销文案式标题"
+    "营销文案式标题",
+    "迷你趋势图不按数据涨跌变红绿——罗盘真实实现统一用主色画图，涨跌语义只在环比文字/箭头上表达，不在图表配色上。"
   ],
   "unknowns": [
     "具体图标系统未定义，趋势图形采用最简箭头语言"
   ],
-  "keyInsightSeed": "指标卡是扫数入口，强调数值对比而非装饰。"
+  "keyInsightSeed": "指标卡是扫数入口，强调数值对比而非装饰。",
+  "zhangwanVerification": {
+    "source": "罗盘 src/views/game/pitcherAnalysis/components/tabs/DataOverviewChart.vue",
+    "notes": [
+      "罗盘真实KPI卡片(DataOverviewChart.vue)是灰底(#f7f8fa)而不是白底，49%宽/110px高/20px内边距；数值24px、环比行12px带符号(+12.4%/-4.1%)且为0时灰色；卡片右侧放迷你趋势图(40%宽/65px高)；选中态是主色边框 + 0 0 5px #e8e8e8 阴影，背景保持不变。"
+    ]
+  }
 }
