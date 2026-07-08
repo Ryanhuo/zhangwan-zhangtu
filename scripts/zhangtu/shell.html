@@ -2374,12 +2374,21 @@
       }
 
       function handleRequirementBridgeMessage(event) {
-        const page = getActivePage();
-        if (!page || event.source !== (document.getElementById("page-frame") && document.getElementById("page-frame").contentWindow)) {
+        const frame = document.getElementById("page-frame");
+        if (event.source !== (frame && frame.contentWindow)) {
           return;
         }
 
         const data = event.data || {};
+        if (data.type === "zhangtu:sidebar-toggle") {
+          toggleSidebar();
+          return;
+        }
+
+        const page = getActivePage();
+        if (!page) {
+          return;
+        }
         if (data.type === "zhangtu:requirements-ready") {
           postRequirementsToFrame(page, state.activeRequirementAnchor, "popup");
           postRequirementPanelState(false);
@@ -4668,7 +4677,7 @@
         }
 
         if (publishStatus?.runtime?.available === false) {
-          alert("当前环境未检测到 proto-hub 发布组件，请先按指引安装或预热后重试。");
+          alert("proto-hub 发布组件自动安装失败，请检查网络连接后重试。");
           return;
         }
 

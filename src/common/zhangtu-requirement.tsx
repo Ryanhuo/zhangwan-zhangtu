@@ -2,6 +2,14 @@ import React from "react";
 import { createPortal } from "react-dom";
 import { ImagePlus, Paintbrush2, Trash2, X } from "lucide-react";
 import "./zhangtu-requirement.css";
+import {
+  applyTextReplacements as applyTextReplacementsApi,
+  clearHackCss as clearHackCssApi,
+  countTextReplacements as countTextReplacementsApi,
+  fetchHackCss,
+  getPageDirectoryFromLocation,
+  saveHackCss as saveHackCssApi,
+} from "./zhangtu-quick-edit-api";
 const BRIDGE_READY = "zhangtu:requirements-ready";
 const BRIDGE_HYDRATE = "zhangtu:requirements-hydrate";
 const BRIDGE_FOCUS = "zhangtu:requirements-focus";
@@ -43,6 +51,24 @@ const ELEMENT_STYLE_FIELDS = [
   "borderColor",
   "borderRadius",
 ] as const;
+const STYLE_FIELD_TO_CSS_PROPERTY: Record<(typeof ELEMENT_STYLE_FIELDS)[number], string> = {
+  width: "width",
+  height: "height",
+  padding: "padding",
+  margin: "margin",
+  backgroundColor: "background-color",
+  color: "color",
+  opacity: "opacity",
+  fontFamily: "font-family",
+  fontSize: "font-size",
+  fontWeight: "font-weight",
+  lineHeight: "line-height",
+  textAlign: "text-align",
+  borderWidth: "border-width",
+  borderStyle: "border-style",
+  borderColor: "border-color",
+  borderRadius: "border-radius",
+};
 
 type RequirementBadgeProps = {
   id: string;
@@ -598,12 +624,24 @@ function disableInlineTextEditing(target: HTMLElement) {
   target.classList.remove("zt-element-inline-editable");
 }
 
+function applyStylesLive(target: HTMLElement, originalStyles: ElementStyleValues, nextStyles: ElementStyleValues) {
+  for (const field of ELEMENT_STYLE_FIELDS) {
+    const cssProperty = STYLE_FIELD_TO_CSS_PROPERTY[field];
+    const nextValue = normalizeCssValue(nextStyles[field]);
+    const originalValue = normalizeCssValue(originalStyles[field]);
+    if (!nextValue || nextValue === originalValue) {
+      target.style.removeProperty(cssProperty);
+    } else {
+      target.style.setProperty(cssProperty, nextValue);
+    }
+  }
+}
+
 function applySavedEdit(target: HTMLElement, record: ElementEditRecord) {
-  // Style changes are captured for the AI prompt only — never mutate page styling.
-  // Only text edits are allowed to reflect directly on the page.
   if (record.currentText !== record.originalText) {
     target.textContent = record.currentText;
   }
+  applyStylesLive(target, record.originalStyles, record.styles);
 }
 
 function createElementDraft(snapshot: ElementSelectionSnapshot): ElementEditDraft {
@@ -655,6 +693,39 @@ function diffStyleFields(originalStyles: ElementStyleValues, nextStyles: Element
     if (!next) return false;
     return normalizeCssValue(originalStyles[field] ?? "") !== next;
   });
+}
+
+function groupTextReplacements(records: ElementEditRecord[]) {
+  const afterByBefore = new Map<string, Set<string>>();
+  for (const record of records) {
+    if (!afterByBefore.has(record.originalText)) {
+      afterByBefore.set(record.originalText, new Set());
+    }
+    afterByBefore.get(record.originalText)!.add(record.currentText);
+  }
+
+  const groups: { before: string; after: string }[] = [];
+  const conflicts: { before: string; afterValues: string[] }[] = [];
+  for (const [before, afterSet] of afterByBefore) {
+    if (afterSet.size > 1) {
+      conflicts.push({ before, afterValues: Array.from(afterSet) });
+    } else {
+      groups.push({ before, after: Array.from(afterSet)[0] });
+    }
+  }
+  return { groups, conflicts };
+}
+
+function buildHackCssRule(record: ElementEditRecord) {
+  const selector = record.rootSelectorPath || record.selectorPath;
+  const fields = diffStyleFields(record.originalStyles, record.styles);
+  if (!selector || !fields.length) {
+    return "";
+  }
+  const declarations = fields
+    .map((field) => `  ${STYLE_FIELD_TO_CSS_PROPERTY[field]}: ${record.styles[field]};`)
+    .join("\n");
+  return `${selector} {\n${declarations}\n}`;
 }
 
 function hasMeaningfulEdit(snapshot: ElementSelectionSnapshot, draft: ElementEditDraft) {
@@ -818,6 +889,8 @@ export function RequirementBadge({ id, title, anchorId }: RequirementBadgeProps)
 
 export function AnnotationLayerPortal({ annotations, pageKey }: AnnotationLayerProps) {
   const isEmbedded = React.useMemo(() => window.parent !== window, []);
+  const pageDirectory = React.useMemo(() => getPageDirectoryFromLocation(), []);
+  const [hackCssContent, setHackCssContent] = React.useState("");
   const [items, setItems] = React.useState<RequirementAnnotation[]>(() => {
     const storage = window.localStorage.getItem(getDraftStorageKey(pageKey));
     if (!storage) {
@@ -962,7 +1035,10 @@ export function AnnotationLayerPortal({ annotations, pageKey }: AnnotationLayerP
     setElementDraft((current) => {
       const next = updater(current);
       const target = selectionTargetRef.current;
-      // Only inline text edits touch the page; styles are recorded for the prompt only.
+      const snapshot = selectionSnapshotRef.current;
+      if (target && snapshot) {
+        applyStylesLive(target, snapshot.originalStyles, next.styles);
+      }
       if (target && inlineTextEditing) {
         const liveText = getElementText(target);
         requestAnimationFrame(() => {
@@ -1008,6 +1084,35 @@ export function AnnotationLayerPortal({ annotations, pageKey }: AnnotationLayerP
     const timer = window.setTimeout(() => setNotice(""), 2600);
     return () => window.clearTimeout(timer);
   }, [notice]);
+
+  React.useEffect(() => {
+    if (!pageDirectory) {
+      return undefined;
+    }
+    let cancelled = false;
+    fetchHackCss(pageDirectory).then(({ ok, data }) => {
+      if (!cancelled && ok && data.success) {
+        setHackCssContent(data.content || "");
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pageDirectory]);
+
+  React.useEffect(() => {
+    const existing = document.getElementById("zt-hack-css") as HTMLStyleElement | null;
+    if (!hackCssContent) {
+      existing?.remove();
+      return;
+    }
+    const styleEl = existing || document.createElement("style");
+    styleEl.id = "zt-hack-css";
+    styleEl.textContent = hackCssContent;
+    if (!styleEl.parentNode) {
+      document.head.appendChild(styleEl);
+    }
+  }, [hackCssContent]);
 
   React.useEffect(() => {
     window.localStorage.setItem(getThemeStorageKey(pageKey), themeColor);
@@ -1517,6 +1622,129 @@ export function AnnotationLayerPortal({ annotations, pageKey }: AnnotationLayerP
     }
   }, [elementEdits.length, elementPrompt, handleClearAllElementEdits]);
 
+  const pendingTextEdits = React.useMemo(
+    () => elementEdits.filter((record) => record.currentText !== record.originalText),
+    [elementEdits],
+  );
+  const pendingStyleEdits = React.useMemo(
+    () => elementEdits.filter((record) => diffStyleFields(record.originalStyles, record.styles).length > 0),
+    [elementEdits],
+  );
+
+  const saveTextChangesToSource = React.useCallback(async () => {
+    if (!pageDirectory) {
+      setNotice("当前页面路径无法识别，暂时不能保存文本。请刷新页面后再试。");
+      return;
+    }
+    if (!pendingTextEdits.length) {
+      setNotice("当前没有可保存的文本修改。");
+      return;
+    }
+
+    const { groups, conflicts } = groupTextReplacements(pendingTextEdits);
+    if (conflicts.length) {
+      const preview = conflicts
+        .slice(0, 3)
+        .map((item) => `"${item.before}" 被改成了 ${item.afterValues.length} 个不同结果`)
+        .join("\n");
+      const rest = conflicts.length > 3 ? `\n另有 ${conflicts.length - 3} 组冲突。` : "";
+      setNotice(`检测到相同原文被修改成不同内容，暂时无法批量保存：\n${preview}${rest}`);
+      return;
+    }
+    if (!groups.length) {
+      setNotice("当前没有可保存的文本修改。");
+      return;
+    }
+
+    const replacements = groups.map(({ before, after }) => ({ searchText: before, replaceText: after }));
+    let totalCount = 0;
+    try {
+      const { ok, data } = await countTextReplacementsApi(pageDirectory, replacements);
+      totalCount = ok && data.success ? data.totalCount ?? 0 : 0;
+    } catch {
+      totalCount = 0;
+    }
+
+    const confirmMessage = totalCount > 0
+      ? `检测到 ${groups.length} 组文本修改，预计会替换 ${totalCount} 处文本。\n\n确定继续保存吗？`
+      : `检测到 ${groups.length} 组文本修改。\n\n当前无法预估替换数量，确定继续保存吗？`;
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const { ok, data } = await applyTextReplacementsApi(pageDirectory, replacements);
+      if (!ok || data.success !== true) {
+        throw new Error(data.error || "保存文本失败");
+      }
+      const savedIds = new Set(pendingTextEdits.map((record) => record.id));
+      setElementEdits((current) => current.map((record) => (
+        savedIds.has(record.id)
+          ? { ...record, originalText: record.currentText, originalHtml: escapeHtml(record.currentText) }
+          : record
+      )));
+      setNotice(`文本已保存，共更新 ${data.changedFiles ?? 0} 个文件。`);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "保存文本失败");
+    }
+  }, [pageDirectory, pendingTextEdits]);
+
+  const saveStyleChangesToSource = React.useCallback(async () => {
+    if (!pageDirectory) {
+      setNotice("当前页面路径无法识别，暂时不能保存样式。请刷新页面后再试。");
+      return;
+    }
+    if (!pendingStyleEdits.length) {
+      setNotice("当前没有可保存的样式调整。");
+      return;
+    }
+
+    const cssText = pendingStyleEdits.map(buildHackCssRule).filter(Boolean).join("\n\n");
+    if (!cssText) {
+      setNotice("当前没有可保存的样式调整。");
+      return;
+    }
+    if (!window.confirm("确定保存当前的样式调整吗？保存后会写入 hack.css 并立即生效。")) {
+      return;
+    }
+
+    try {
+      const { ok, data } = await saveHackCssApi(pageDirectory, cssText);
+      if (!ok || data.success !== true) {
+        throw new Error(data.error || "保存强制样式失败");
+      }
+      setHackCssContent(data.merged || "");
+      const savedIds = new Set(pendingStyleEdits.map((record) => record.id));
+      setElementEdits((current) => current.map((record) => (
+        savedIds.has(record.id) ? { ...record, originalStyles: createStyleValues(record.styles) } : record
+      )));
+      setNotice("样式已保存到 hack.css。");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "保存强制样式失败");
+    }
+  }, [pageDirectory, pendingStyleEdits]);
+
+  const clearStyleChangesFromSource = React.useCallback(async () => {
+    if (!pageDirectory) {
+      setNotice("当前页面路径无法识别，暂时不能清空强制样式。请刷新页面后再试。");
+      return;
+    }
+    if (!window.confirm("确定清空自定义样式吗？清空后页面会自动恢复原样。")) {
+      return;
+    }
+
+    try {
+      const { ok, data } = await clearHackCssApi(pageDirectory);
+      if (!ok || data.success !== true) {
+        throw new Error(data.error || "清空强制样式失败");
+      }
+      setHackCssContent("");
+      setNotice("已清空自定义样式。");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "清空强制样式失败");
+    }
+  }, [pageDirectory]);
+
   const handleEditorKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLElement>) => {
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
       event.preventDefault();
@@ -1878,6 +2106,27 @@ export function AnnotationLayerPortal({ annotations, pageKey }: AnnotationLayerP
             >
               {elementEdits.length || "--"}
             </button>
+            {pendingTextEdits.length ? (
+              <button type="button" className="zt-element-dock__copy-btn" onClick={saveTextChangesToSource} title="把文本改动写回源码">
+                保存文本
+              </button>
+            ) : null}
+            {pendingStyleEdits.length ? (
+              <button type="button" className="zt-element-dock__copy-btn" onClick={saveStyleChangesToSource} title="把样式改动写入 hack.css">
+                保存样式
+              </button>
+            ) : null}
+            {hackCssContent.trim() ? (
+              <button
+                type="button"
+                className="zt-element-dock__action"
+                onClick={clearStyleChangesFromSource}
+                title="清空已保存的自定义样式"
+                aria-label="清空自定义样式"
+              >
+                <Trash2 size={15} />
+              </button>
+            ) : null}
             {elementEdits.length ? (
               <button type="button" className="zt-element-dock__copy-btn" onClick={handleCopyPrompt} title="复制提示词">
                 复制提示词

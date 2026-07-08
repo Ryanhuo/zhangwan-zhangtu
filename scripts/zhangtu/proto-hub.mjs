@@ -8,6 +8,7 @@ const DEFAULT_BASE_URL = "https://chanyan.wozhangwan.com";
 const PUBLISH_CONFIG_PATH = [".zhangtu", "publish-config.json"];
 const PUBLISH_BUNDLE_DIR = [".zhangtu", "publish"];
 const LOCAL_PROTO_HUB_PACKAGE = ["node_modules", "@zhangwan", "proto-hub-mcp", "lib.js"];
+const PROTO_HUB_TARBALL_URL = "https://chanyan.wozhangwan.com/mcp/proto-hub-mcp.tgz";
 
 export async function getProtoHubPublishStatus(rootDir, defaults = {}) {
   const resolved = resolveProtoHubSettings(rootDir, defaults);
@@ -79,7 +80,7 @@ export async function publishIterationViaProtoHub({
 
   const runtime = await getProtoHubRuntimeStatus();
   if (!runtime.available) {
-    throw new Error("当前环境未检测到 proto-hub 发布组件，请先按指引安装或预热后重试。");
+    throw new Error("proto-hub 发布组件自动安装失败，请检查网络连接后重试。");
   }
 
   await runCommand("npm", ["run", "build"], { cwd: rootDir, timeoutMs: 180000 });
@@ -819,12 +820,28 @@ function escapeHtml(value) {
 }
 
 async function getProtoHubRuntimeStatus() {
-  const libraryPath = resolveProtoHubLibraryPath();
+  let libraryPath = resolveProtoHubLibraryPath();
+  let source = libraryPath ? "local-cache" : "";
+  if (!libraryPath) {
+    libraryPath = await bootstrapProtoHubLibrary();
+    source = libraryPath ? "auto-installed" : "";
+  }
   return {
     available: Boolean(libraryPath),
-    source: libraryPath ? "local-cache" : "",
+    source,
     libraryPath,
   };
+}
+
+async function bootstrapProtoHubLibrary() {
+  try {
+    await runCommand("npx", ["-y", PROTO_HUB_TARBALL_URL, "--version"], { timeoutMs: 30000 });
+  } catch {
+    // npx caches the downloaded package before running it, so the lookup below
+    // can still succeed even if the process itself errored, timed out, or was
+    // killed while sitting idle as an MCP stdio server.
+  }
+  return resolveProtoHubLibraryPath();
 }
 
 function resolveProtoHubLibraryPath() {
@@ -853,9 +870,12 @@ function resolveProtoHubLibraryPath() {
 }
 
 async function loadProtoHubLibrary(settings) {
-  const libraryPath = resolveProtoHubLibraryPath();
+  let libraryPath = resolveProtoHubLibraryPath();
   if (!libraryPath) {
-    throw new Error("未检测到 proto-hub 发布组件，请先按指引安装或预热。");
+    libraryPath = await bootstrapProtoHubLibrary();
+  }
+  if (!libraryPath) {
+    throw new Error("未检测到 proto-hub 发布组件，自动安装失败，请检查网络连接后重试。");
   }
 
   const previousToken = process.env.PROTO_HUB_TOKEN;
