@@ -78,7 +78,7 @@ npm run zhangtu -- publish-iteration "内部评审 V1" --prd-url https://bytedan
 
 ## 发布能力
 
-- `publish-status`：检查当前工作区、环境变量或 `~/.codex/config.toml` 里是否已配置 `PROTO_HUB_TOKEN`，并检测本地是否已有 `proto-hub-mcp` 运行时缓存。
+- `publish-status`：检查当前工作区、环境变量或 `~/.codex/config.toml` 里是否已配置 `PROTO_HUB_TOKEN`，并检测本地是否已有 `proto-hub-mcp` 运行时缓存；缺失时会自动从 `https://chanyan.wozhangwan.com/mcp/proto-hub-mcp.tgz` 下载并缓存（首次执行需要联网，之后复用缓存）。
 - `configure-publish`：把默认系统名、token、base URL 写入 `.zhangtu/publish-config.json`，后续发布命令默认复用。
 - `list-remote-systems` / `list-remote-versions` / `get-share-link`：查询你有权限操作的系统、版本和分享链接。
 - `upload-prototype`：把本地原型目录直接上传到远端系统；若版本名不存在则创建新版本，已存在则追加新快照。

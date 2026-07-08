@@ -30,6 +30,15 @@ import {
 import { deleteSkill, discoverSkills, exportSkillArchive, getSkillDetail, importSkill, resolveSkillDirectory } from "./skills.mjs";
 import { getZhangwanUiBundle } from "./zhangwanui.mjs";
 import { getProtoHubPublishStatus, publishIterationViaProtoHub, saveProtoHubPublishConfig } from "./proto-hub.mjs";
+import {
+  applyTextReplacements,
+  clearHackCss,
+  countTextReplacements,
+  QuickEditError,
+  readHackCss,
+  resolvePageDirectory,
+  saveHackCss,
+} from "./quick-edit.mjs";
 
 export async function startPreviewServer({ rootDir, discovery, scope, requestedPort = 6320, requestedVitePort = 51720 }) {
   const port = await findFreePort(requestedPort);
@@ -395,6 +404,78 @@ async function handleRequest({ req, res, state, viteBaseUrl, rootDir }) {
       sendJson(res, { version: 1, saved: true });
       return;
     }
+  }
+
+  if (pathname === "/api/quick-edit/hack-css" && req.method === "GET") {
+    try {
+      const page = resolvePageDirectory(discovery.pages, requestUrl.searchParams.get("path"));
+      sendJson(res, { success: true, content: readHackCss(rootDir, page) });
+    } catch (error) {
+      sendJson(res, { error: error.message }, error.status || 500);
+    }
+    return;
+  }
+
+  if (pathname === "/api/quick-edit/hack-css/save" && req.method === "POST") {
+    try {
+      const body = await readJsonBody(req);
+      const page = resolvePageDirectory(discovery.pages, body.path);
+      const merged = saveHackCss(rootDir, page, String(body.content || ""));
+      sendJson(res, { success: true, merged });
+    } catch (error) {
+      sendJson(res, { error: error.message }, error.status || 500);
+    }
+    return;
+  }
+
+  if (pathname === "/api/quick-edit/hack-css/clear" && req.method === "POST") {
+    try {
+      const body = await readJsonBody(req);
+      const page = resolvePageDirectory(discovery.pages, body.path);
+      clearHackCss(rootDir, page);
+      sendJson(res, { success: true });
+    } catch (error) {
+      sendJson(res, { error: error.message }, error.status || 500);
+    }
+    return;
+  }
+
+  if (pathname === "/api/quick-edit/text-replace/count" && req.method === "POST") {
+    try {
+      const body = await readJsonBody(req);
+      const page = resolvePageDirectory(discovery.pages, body.path);
+      const replacements = Array.isArray(body.replacements)
+        ? body.replacements.filter((item) => item && typeof item.searchText === "string")
+        : [];
+      if (!replacements.length) {
+        throw new QuickEditError("replacements is empty", 400);
+      }
+      const totalCount = countTextReplacements(rootDir, page, replacements);
+      sendJson(res, { success: true, totalCount });
+    } catch (error) {
+      sendJson(res, { error: error.message }, error.status || 500);
+    }
+    return;
+  }
+
+  if (pathname === "/api/quick-edit/text-replace/replace" && req.method === "POST") {
+    try {
+      const body = await readJsonBody(req);
+      const page = resolvePageDirectory(discovery.pages, body.path);
+      const replacements = Array.isArray(body.replacements)
+        ? body.replacements
+            .filter((item) => item && typeof item.searchText === "string" && item.replaceText !== undefined)
+            .map((item) => ({ searchText: item.searchText, replaceText: String(item.replaceText ?? "") }))
+        : [];
+      if (!replacements.length) {
+        throw new QuickEditError("replacements is empty", 400);
+      }
+      const changedFiles = applyTextReplacements(rootDir, page, replacements);
+      sendJson(res, { success: true, changedFiles });
+    } catch (error) {
+      sendJson(res, { error: error.message }, error.status || 500);
+    }
+    return;
   }
 
   if (pathname === "/api/skills" && req.method === "GET") {
