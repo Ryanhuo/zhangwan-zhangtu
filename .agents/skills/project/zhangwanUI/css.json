@@ -1,610 +1,121 @@
 {
+  "_note": "由 references/design-tokens.md（掌玩 zhangwan-ui 实测令牌）派生，供预览 shell 的 zhangwanUI 主题面板渲染。修改令牌时以 references/design-tokens.md 为准并同步此文件。",
   "color": {
-    "primary": {
-      "zhangwan-primary-900": {
-        "hex": "#00543c",
-        "opacity": "1",
-        "verified": true,
-        "source": "ramp-derived from verified anchors, 未逐一验证"
-      },
-      "zhangwan-primary-800": {
-        "hex": "#007553",
-        "opacity": "1",
-        "verified": true,
-        "source": "ramp-derived from verified anchors, 未逐一验证"
-      },
-      "zhangwan-primary-700": {
-        "hex": "#009468",
-        "opacity": "1",
-        "verified": true,
-        "source": "ramp-derived from verified anchors, 未逐一验证"
-      },
-      "zhangwan-primary-600": {
-        "hex": "#00ac7c",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-primary-active 线上实测"
-      },
-      "zhangwan-primary-500": {
-        "hex": "#00bf8a",
-        "opacity": "1",
-        "isPrimary": true,
-        "verified": true,
-        "source": "VERIFIED: 罗盘 element-variables.scss $--color-primary"
-      },
-      "zhangwan-primary-400": {
-        "hex": "#33cca1",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 同 primary-300, 罗盘 --eui-primary-hover"
-      },
-      "zhangwan-primary-300": {
-        "hex": "#33cca1",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-primary-hover 线上实测(真实hover更浅非更深)"
-      },
-      "zhangwan-primary-200": {
-        "hex": "#ade8cd",
-        "opacity": "1"
-      },
-      "zhangwan-primary-100": {
-        "hex": "#d7f4e6",
-        "opacity": "1"
-      },
-      "zhangwan-primary-50": {
-        "hex": "#e6f9f3",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-primary-tint 线上实测"
-      }
+    "brand": {
+      "brand-primary": { "hex": "#00BF8A", "opacity": "1", "isPrimary": true },
+      "brand-primary-hover": { "hex": "#00A87A", "opacity": "1" },
+      "brand-primary-active": { "hex": "#009468", "opacity": "1" },
+      "brand-light": { "hex": "#00BF8A", "opacity": "0.1" }
     },
-    "success": {
-      "zhangwan-success-900": {
-        "hex": "#0f3d22",
-        "opacity": "1"
-      },
-      "zhangwan-success-800": {
-        "hex": "#14532d",
-        "opacity": "1"
-      },
-      "zhangwan-success-700": {
-        "hex": "#166534",
-        "opacity": "1"
-      },
-      "zhangwan-success-600": {
-        "hex": "#14803c",
-        "opacity": "1"
-      },
-      "zhangwan-success-500": {
-        "hex": "#00b42a",
-        "opacity": "1",
-        "isPrimary": true,
-        "verified": true,
-        "source": "VERIFIED: 罗盘 bi-eleme button.css --success"
-      },
-      "zhangwan-success-400": {
-        "hex": "#46cb70",
-        "opacity": "1"
-      },
-      "zhangwan-success-300": {
-        "hex": "#84e1a0",
-        "opacity": "1"
-      },
-      "zhangwan-success-200": {
-        "hex": "#b5efc4",
-        "opacity": "1"
-      },
-      "zhangwan-success-100": {
-        "hex": "#d9f8e1",
-        "opacity": "1"
-      },
-      "zhangwan-success-50": {
-        "hex": "#e6f8ea",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-success-tint"
-      }
+    "background": {
+      "bg-layout": { "hex": "#F2F3F5", "opacity": "1" },
+      "bg-container": { "hex": "#FFFFFF", "opacity": "1" },
+      "bg-table-header": { "hex": "#F5F7FA", "opacity": "1" },
+      "bg-hover": { "hex": "#F7F8FA", "opacity": "1" },
+      "bg-disabled": { "hex": "#F3F4F5", "opacity": "1" },
+      "bg-panel-dark": { "hex": "#1A1C20", "opacity": "1" },
+      "bg-mask": { "hex": "#86909C", "opacity": "0.3" }
     },
-    "info": {
-      "zhangwan-info-900": {
-        "hex": "#143d61",
-        "opacity": "1"
-      },
-      "zhangwan-info-800": {
-        "hex": "#164a79",
-        "opacity": "1"
-      },
-      "zhangwan-info-700": {
-        "hex": "#115896",
-        "opacity": "1"
-      },
-      "zhangwan-info-600": {
-        "hex": "#0f6db8",
-        "opacity": "1"
-      },
-      "zhangwan-info-500": {
-        "hex": "#1683d8",
-        "opacity": "1",
-        "isPrimary": true
-      },
-      "zhangwan-info-400": {
-        "hex": "#43acf5",
-        "opacity": "1"
-      },
-      "zhangwan-info-300": {
-        "hex": "#83c9ff",
-        "opacity": "1"
-      },
-      "zhangwan-info-200": {
-        "hex": "#b8e0ff",
-        "opacity": "1"
-      },
-      "zhangwan-info-100": {
-        "hex": "#d9efff",
-        "opacity": "1"
-      },
-      "zhangwan-info-50": {
-        "hex": "#eef8ff",
-        "opacity": "1"
-      }
+    "text": {
+      "text-primary": { "hex": "#323335", "opacity": "1", "isPrimary": true },
+      "text-secondary": { "hex": "#4A4C4F", "opacity": "1" },
+      "text-tertiary": { "hex": "#4E5969", "opacity": "1" },
+      "text-placeholder": { "hex": "#86909C", "opacity": "1" },
+      "text-disabled": { "hex": "#C9CDD4", "opacity": "1" },
+      "text-brand": { "hex": "#00BF8A", "opacity": "1" },
+      "text-icon": { "hex": "#8893AA", "opacity": "1" }
     },
-    "warning": {
-      "zhangwan-warning-900": {
-        "hex": "#653f12",
-        "opacity": "1"
-      },
-      "zhangwan-warning-800": {
-        "hex": "#7d4d12",
-        "opacity": "1"
-      },
-      "zhangwan-warning-700": {
-        "hex": "#9c5f0f",
-        "opacity": "1"
-      },
-      "zhangwan-warning-600": {
-        "hex": "#c37a0c",
-        "opacity": "1"
-      },
-      "zhangwan-warning-500": {
-        "hex": "#ff7d00",
-        "opacity": "1",
-        "isPrimary": true,
-        "verified": true,
-        "source": "VERIFIED: 罗盘 bi-eleme button.css --warning"
-      },
-      "zhangwan-warning-400": {
-        "hex": "#f7b631",
-        "opacity": "1"
-      },
-      "zhangwan-warning-300": {
-        "hex": "#ffcd62",
-        "opacity": "1"
-      },
-      "zhangwan-warning-200": {
-        "hex": "#ffe198",
-        "opacity": "1"
-      },
-      "zhangwan-warning-100": {
-        "hex": "#ffefc7",
-        "opacity": "1"
-      },
-      "zhangwan-warning-50": {
-        "hex": "#fff2e6",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-warning-tint"
-      }
+    "border": {
+      "border-base": { "hex": "#E5E6EB", "opacity": "1" },
+      "border-brand": { "hex": "#00BF8A", "opacity": "1" }
     },
-    "dark": {
-      "surface-dim": {
-        "hex": "#0c131b",
-        "opacity": "1"
-      },
-      "inverse-on-surface": {
-        "hex": "#111827",
-        "opacity": "1"
-      },
-      "primary-foreground": {
-        "hex": "#04291c",
-        "opacity": "1",
-        "isPrimary": true
-      },
-      "surface-container-high": {
-        "hex": "#1e2a36",
-        "opacity": "1"
-      },
-      "surface-container-highest": {
-        "hex": "#253240",
-        "opacity": "1"
-      },
-      "muted-foreground": {
-        "hex": "#97a4b2",
-        "opacity": "1"
-      },
-      "accent": {
-        "hex": "#4fc792",
-        "opacity": "1"
-      },
-      "accent-hover": {
-        "hex": "#7ed9b1",
-        "opacity": "1"
-      },
-      "inverse-surface": {
-        "hex": "#f7fafc",
-        "opacity": "1"
-      },
-      "interactive-drag": {
-        "hex": "#ffffff",
-        "opacity": "0.16"
-      }
-    },
-    "neutral": {
-      "zhangwan-neutral-900": {
-        "hex": "#202124",
-        "opacity": "1",
-        "verified": true,
-        "source": "ramp-derived from #323335, 未逐一验证"
-      },
-      "zhangwan-neutral-800": {
-        "hex": "#323335",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-text 线上实测"
-      },
-      "zhangwan-neutral-700": {
-        "hex": "#39424d",
-        "opacity": "1"
-      },
-      "zhangwan-neutral-600": {
-        "hex": "#4e5969",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-text-regular 线上实测"
-      },
-      "zhangwan-neutral-500": {
-        "hex": "#86909c",
-        "opacity": "1",
-        "isPrimary": true,
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-text-secondary 线上实测"
-      },
-      "zhangwan-neutral-400": {
-        "hex": "#97a4b2",
-        "opacity": "1"
-      },
-      "zhangwan-neutral-300": {
-        "hex": "#c9cdd4",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-border 线上实测"
-      },
-      "zhangwan-neutral-200": {
-        "hex": "#e5e6eb",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-border-light 线上实测"
-      },
-      "zhangwan-neutral-100": {
-        "hex": "#f2f3f5",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-bg-hover 线上实测"
-      },
-      "zhangwan-neutral-50": {
-        "hex": "#f7f8fa",
-        "opacity": "1"
-      }
-    },
-    "zhangwan-error": {
-      "zhangwan-error-900": {
-        "hex": "#661f22",
-        "opacity": "1"
-      },
-      "zhangwan-error-800": {
-        "hex": "#82262a",
-        "opacity": "1"
-      },
-      "zhangwan-error-700": {
-        "hex": "#a12b30",
-        "opacity": "1"
-      },
-      "zhangwan-error-600": {
-        "hex": "#c7363b",
-        "opacity": "1"
-      },
-      "zhangwan-error-500": {
-        "hex": "#f53f3f",
-        "opacity": "1",
-        "isPrimary": true,
-        "verified": true,
-        "source": "VERIFIED: 罗盘 bi-eleme button.css --danger"
-      },
-      "zhangwan-error-400": {
-        "hex": "#ff7878",
-        "opacity": "1"
-      },
-      "zhangwan-error-300": {
-        "hex": "#ffa3a3",
-        "opacity": "1"
-      },
-      "zhangwan-error-200": {
-        "hex": "#ffc9c9",
-        "opacity": "1"
-      },
-      "zhangwan-error-100": {
-        "hex": "#ffe2e2",
-        "opacity": "1"
-      },
-      "zhangwan-error-50": {
-        "hex": "#feecec",
-        "opacity": "1",
-        "verified": true,
-        "source": "VERIFIED: 罗盘 --eui-danger-tint / .cqbz 规则同值"
-      }
-    },
-    "error": {
-      "on-error-container": {
-        "hex": "#661f22",
-        "opacity": "1"
-      },
-      "error": {
-        "hex": "#e5484d",
-        "opacity": "1"
-      },
-      "color-error": {
-        "hex": "#e5484d",
-        "opacity": "1"
-      },
-      "error-container": {
-        "hex": "#fff2f2",
-        "opacity": "1",
-        "isPrimary": true
-      },
-      "on-error": {
-        "hex": "#ffffff",
-        "opacity": "1"
-      }
+    "semantic": {
+      "semantic-success": { "hex": "#00BF8A", "opacity": "1" },
+      "semantic-warning": { "hex": "#FF7D00", "opacity": "1" },
+      "semantic-error": { "hex": "#F53F3F", "opacity": "1" },
+      "semantic-info": { "hex": "#165DFF", "opacity": "1" }
     }
   },
   "font": {
     "family": {
-      "font-display": "'Inter', 'Noto Sans SC', sans-serif",
-      "font-heading": "'Noto Sans SC', 'Inter', sans-serif",
-      "font-body": "'Noto Sans SC', 'Inter', sans-serif",
-      "font-mono": "'Inter', 'Noto Sans SC', monospace"
+      "font-sans": "\"Helvetica Neue\", Helvetica, \"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", Arial, sans-serif",
+      "font-number": "\"dinFont\", \"Helvetica Neue\", sans-serif"
     },
     "size": {
-      "font-size-display": "40px",
-      "font-size-h1": "32px",
-      "font-size-h2": "28px",
-      "font-size-h3": "24px",
-      "font-size-h4": "20px",
-      "font-size-body": "14px",
-      "font-size-lead": "16px",
-      "font-size-caption": "12px",
-      "font-size-eyebrow": "11px",
-      "font-size-mono": "13px",
-      "type-display-lg": "700 40px/1.2 var(--font-heading)",
-      "type-heading-xl": "700 32px/1.25 var(--font-heading)",
-      "type-heading-lg": "600 28px/1.3 var(--font-heading)",
-      "type-heading-md": "600 24px/1.35 var(--font-heading)",
-      "type-heading-sm": "600 20px/1.4 var(--font-heading)",
-      "type-body-lg": "500 16px/1.6 var(--font-body)",
-      "type-body-md": "400 14px/1.6 var(--font-body)",
-      "type-body-sm": "400 12px/1.5 var(--font-body)",
-      "type-caption": "400 12px/1.4 var(--font-body)",
-      "type-mono": "500 13px/1.5 var(--font-mono)"
-    },
-    "weight": {
-      "font-weight-display": "700",
-      "font-weight-h1": "700",
-      "font-weight-h2": "600",
-      "font-weight-h3": "600",
-      "font-weight-h4": "600",
-      "font-weight-body": "400",
-      "font-weight-lead": "500",
-      "font-weight-caption": "400",
-      "font-weight-eyebrow": "600",
-      "font-weight-mono": "500"
+      "font-size-xs": "12px",
+      "font-size-sm": "13px",
+      "font-size-base": "14px",
+      "font-size-md": "16px",
+      "font-size-lg": "18px",
+      "font-size-xl": "20px",
+      "font-size-2xl": "24px",
+      "font-size-3xl": "32px"
     },
     "lineHeight": {
-      "line-height-display": "1.2",
-      "line-height-h1": "1.25",
-      "line-height-h2": "1.3",
-      "line-height-h3": "1.35",
-      "line-height-h4": "1.4",
-      "line-height-body": "1.6",
-      "line-height-lead": "1.6",
-      "line-height-caption": "1.5",
-      "line-height-eyebrow": "1.4",
-      "line-height-mono": "1.5"
+      "font-size-xs": "1.5",
+      "font-size-sm": "1.5",
+      "font-size-base": "20px",
+      "font-size-md": "18.4px",
+      "font-size-lg": "1.5",
+      "font-size-xl": "1.4",
+      "font-size-2xl": "1.4",
+      "font-size-3xl": "1.3"
+    },
+    "weight": {
+      "font-size-base": "400",
+      "font-size-md": "500",
+      "font-size-xl": "500",
+      "font-size-2xl": "600",
+      "font-size-3xl": "600"
     }
   },
   "shadow": {
-    "shadow-1·Card": {
+    "sm·顶部栏/细微浮起": {
       "layers": [
-        {
-          "xOffset": "0px",
-          "yOffset": "1px",
-          "blur": "2px",
-          "spread": "0px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.05"
-          }
-        },
-        {
-          "xOffset": "0px",
-          "yOffset": "1px",
-          "blur": "1px",
-          "spread": "0px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.03"
-          }
-        }
+        { "xOffset": "0px", "yOffset": "1px", "blur": "4px", "spread": "0px", "color": { "hex": "#001529", "opacity": "0.08" } }
       ]
     },
-    "shadow-2·Card Hover": {
+    "md·主阴影/下拉浮层": {
       "layers": [
-        {
-          "xOffset": "0px",
-          "yOffset": "4px",
-          "blur": "10px",
-          "spread": "-4px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.08"
-          }
-        },
-        {
-          "xOffset": "0px",
-          "yOffset": "2px",
-          "blur": "4px",
-          "spread": "0px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.04"
-          }
-        }
+        { "xOffset": "0px", "yOffset": "4px", "blur": "10px", "spread": "0px", "color": { "hex": "#000000", "opacity": "0.1" } }
       ]
     },
-    "shadow-3·Floating Panel": {
+    "strong·强调": {
       "layers": [
-        {
-          "xOffset": "0px",
-          "yOffset": "8px",
-          "blur": "24px",
-          "spread": "-10px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.10"
-          }
-        },
-        {
-          "xOffset": "0px",
-          "yOffset": "4px",
-          "blur": "8px",
-          "spread": "0px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.05"
-          }
-        }
+        { "xOffset": "0px", "yOffset": "1px", "blur": "3px", "spread": "0px", "color": { "hex": "#000000", "opacity": "0.3" } }
       ]
     },
-    "shadow-4·Modal": {
+    "modal·模态/抽屉": {
       "layers": [
-        {
-          "xOffset": "0px",
-          "yOffset": "16px",
-          "blur": "36px",
-          "spread": "-14px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.14"
-          }
-        },
-        {
-          "xOffset": "0px",
-          "yOffset": "8px",
-          "blur": "12px",
-          "spread": "0px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.06"
-          }
-        }
+        { "xOffset": "0px", "yOffset": "8px", "blur": "10px", "spread": "-5px", "color": { "hex": "#000000", "opacity": "0.2" } },
+        { "xOffset": "0px", "yOffset": "16px", "blur": "24px", "spread": "2px", "color": { "hex": "#000000", "opacity": "0.14" } },
+        { "xOffset": "0px", "yOffset": "6px", "blur": "30px", "spread": "5px", "color": { "hex": "#000000", "opacity": "0.12" } }
       ]
-    },
-    "shadow-5·Overlay": {
-      "layers": [
-        {
-          "xOffset": "0px",
-          "yOffset": "24px",
-          "blur": "56px",
-          "spread": "-20px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.18"
-          }
-        },
-        {
-          "xOffset": "0px",
-          "yOffset": "12px",
-          "blur": "20px",
-          "spread": "0px",
-          "color": {
-            "hex": "#111827",
-            "opacity": "0.08"
-          }
-        }
-      ]
-    },
-    "zhangwan-shadow-dropdown": "0 4px 10px 0 rgba(0,0,0,0.1)",
-    "zhangwan-shadow-navbar": "0 1px 4px 0 rgba(0,21,41,0.08)",
-    "zhangwan-shadow-drawer": "0 8px 10px -5px rgba(0,0,0,0.2), 0 16px 24px 2px rgba(0,0,0,0.14), 0 6px 30px 5px rgba(0,0,0,0.12)",
-    "_verified_note": "zhangwan-shadow-* 三项来自罗盘线上实测/源码确认。罗盘真实卡片(.block-box)本身没有阴影，不同于本文件里默认给卡片套用 shadow-1 的假设，详见 components/data-table.json 等文件的更正说明。"
+    }
   },
   "radius": {
-    "zhangwan-radius-xs": "4px",
-    "zhangwan-radius-sm": "6px",
-    "zhangwan-radius-md": "8px",
-    "zhangwan-radius-lg": "10px",
-    "zhangwan-radius-xl": "12px",
-    "zhangwan-radius-full": "9999px",
-    "radius-xs": "4px",
-    "radius-sm": "6px",
-    "radius-md": "8px",
-    "radius-lg": "10px",
-    "radius-xl": "12px",
+    "radius-xs": "2px",
+    "radius-sm": "3px",
+    "radius-md": "4px",
+    "radius-lg": "6px",
+    "radius-xl": "8px",
     "radius-full": "9999px"
   },
   "spacing": {
     "space-1": "4px",
     "space-2": "8px",
+    "space-2-5": "10px",
     "space-3": "12px",
     "space-4": "16px",
     "space-5": "20px",
-    "space-6": "24px",
-    "space-7": "28px",
-    "space-8": "32px",
-    "space-9": "40px",
-    "space-10": "48px",
-    "space-11": "56px",
-    "space-12": "64px"
+    "space-item": "44px"
   },
   "size": {
-    "size-icon-xs": "12px",
+    "size-input-height": "32px",
+    "size-button-height": "32px",
+    "size-row-height": "44px",
     "size-icon-sm": "14px",
     "size-icon-md": "16px",
-    "size-icon-lg": "20px",
-    "size-tag-height": "22px",
-    "size-control-xs": "24px",
-    "size-control-sm": "28px",
-    "size-input-height": "32px",
-    "size-button-height": "36px",
-    "size-control-md": "40px",
-    "size-control-lg": "44px",
-    "size-metric-height": "48px",
-    "nav-height": "50px",
-    "sidebar-width": "220px",
-    "gutter-page": "24px",
-    "gutter-card": "16px",
-    "max-content-width": "1440px",
-    "max-form-width": "720px",
-    "sidebar-collapsed-width": "60px",
-    "zhangwan-table-cell-padding": "10px",
-    "zhangwan-table-font-size": "14px",
-    "zhangwan-sidebar-item-height": "50px",
-    "zhangwan-sidebar-leaf-indent": "42px",
-    "zhangwan-filter-label-width": "96px",
-    "zhangwan-filter-item-min-width": "350px",
-    "zhangwan-card-padding": "20px",
-    "zhangwan-card-gap": "15px",
-    "zhangwan-breadcrumb-height": "36px",
-    "zhangwan-drawer-width": "80%",
-    "_verified_note": "以 zhangwan- 前缀新增的字段和本组内被修正的 nav-height/sidebar-width/sidebar-collapsed-width，均来自罗盘(compass.zwnet.cn)线上实测，2026-07-05/07-08。其余未标注字段沿用原值，未逐一核实。"
+    "size-nav-height": "50px"
   }
 }

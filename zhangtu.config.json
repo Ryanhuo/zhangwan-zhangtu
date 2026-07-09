@@ -12,11 +12,7 @@
     ".zhangtu",
     "coverage"
   ],
-  "pageNameMap": {
-    "src/pages/demo-workbench/index.tsx": "原型工作台示例",
-    "src/pages/hr-management/index.tsx": "HR 管理",
-    "src/pages/hr-attendance-statistics/index.tsx": "HR 考勤管理统计"
-  },
+  "pageNameMap": {},
   "theme": {
     "primaryColor": "#2563eb",
     "accentColor": "#0f766e",

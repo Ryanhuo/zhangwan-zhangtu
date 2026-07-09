@@ -1,84 +1,13 @@
 {
-  "libraryName": "zhangwanUI",
-  "productType": "dashboard",
-  "language": "zh-CN",
+  "libraryName": "掌玩 zhangwan-ui",
+  "productType": "通用中文运营后台 UI",
   "entrypoints": {
-    "skill": "SKILL.md",
-    "brandReadme": "README.md",
     "tokenUnderstanding": "css.json",
-    "runtimeCss": "colors_and_type.css",
-    "componentCss": "components.css",
     "componentIndex": "components/index.json"
   },
   "readOrder": [
     "SKILL.md",
-    "README.md",
-    "css.json",
-    "colors_and_type.css",
-    "components.css",
-    "components/index.json"
-  ],
-  "componentSourcePriority": [
-    "preview/component-{slug}.html",
-    "components/{slug}.json"
-  ],
-  "components": [
-    {
-      "slug": "smart-button",
-      "name": "Smart Button",
-      "preview": "preview/component-smart-button.html",
-      "contract": "components/smart-button.json"
-    },
-    {
-      "slug": "metric-card",
-      "name": "Metric Card",
-      "preview": "preview/component-metric-card.html",
-      "contract": "components/metric-card.json"
-    },
-    {
-      "slug": "filter-form",
-      "name": "Filter Form",
-      "preview": "preview/component-filter-form.html",
-      "contract": "components/filter-form.json"
-    },
-    {
-      "slug": "data-table",
-      "name": "Data Table",
-      "preview": "preview/component-data-table.html",
-      "contract": "components/data-table.json"
-    },
-    {
-      "slug": "top-navigation",
-      "name": "Top Navigation",
-      "preview": "preview/component-top-navigation.html",
-      "contract": "components/top-navigation.json"
-    },
-    {
-      "slug": "sidebar-nav",
-      "name": "Sidebar Navigation",
-      "preview": "preview/component-sidebar-nav.html",
-      "contract": "components/sidebar-nav.json"
-    }
-  ],
-  "availableArtifacts": [
-    "README.md",
-    "SKILL.md",
-    "library-consumption.json",
-    "colors_and_type.css",
-    "css.json",
-    "components.css",
-    "components/index.json",
-    "components/smart-button.json",
-    "components/metric-card.json",
-    "components/filter-form.json",
-    "components/data-table.json",
-    "components/top-navigation.json",
-    "components/sidebar-nav.json",
-    "preview/component-smart-button.html",
-    "preview/component-metric-card.html",
-    "preview/component-filter-form.html",
-    "preview/component-data-table.html",
-    "preview/component-top-navigation.html",
-    "preview/component-sidebar-nav.html"
+    "references/design-tokens.md",
+    "references/components.md"
   ]
 }
