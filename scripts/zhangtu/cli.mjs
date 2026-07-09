@@ -23,6 +23,14 @@ import { startPreviewServer } from "./preview-server.mjs";
 
 const rootDir = process.cwd();
 const INIT_ALLOWED_EXISTING_ENTRIES = new Set([".git", ".gitignore", ".DS_Store", "README.md", "LICENSE", "LICENSE.md"]);
+// Paths that `zhangtu init` physically copies into every scaffolded project
+// (see handleInit below). They are framework-owned — CLAUDE.md/AGENTS.md tell
+// both users and AI agents not to hand-edit them — but because they're a
+// one-time copy, `npm update` on the framework devDependency never refreshes
+// them. handleSyncSystemFiles() re-copies just these paths from the
+// currently-installed package into the current project, overwriting local
+// copies.
+const SYSTEM_FILE_SYNC_TARGETS = ["src/common", "src/pages/skills"];
 
 const SYSTEM_VERSION = (() => {
   try {
@@ -63,6 +71,8 @@ async function main() {
       }
       return;
     }
+    case "sync-system-files":
+      return handleSyncSystemFiles(options);
     case "list-iterations":
       print({ version: 1, iterations: listIterations(rootDir) }, options);
       return;
@@ -181,6 +191,38 @@ function handleInit(positionals, options) {
     console.log(`  npm run dev    # 同上（掌图 Shell）`);
     console.log(`  npm run dev:page    # 仅裸 Vite 单页调试`);
     console.log(`\n在 src/pages/ 下添加新目录即可创建更多原型页面。`);
+  }
+}
+
+function handleSyncSystemFiles(options) {
+  const synced = [];
+  const skipped = [];
+
+  for (const relativePath of SYSTEM_FILE_SYNC_TARGETS) {
+    const source = resolve(PACKAGE_ROOT, relativePath);
+    if (!existsSync(source)) {
+      skipped.push(relativePath);
+      continue;
+    }
+    cpSync(source, join(rootDir, relativePath), { recursive: true });
+    synced.push(relativePath);
+  }
+
+  const result = { version: 1, synced, skipped, packageVersion: SYSTEM_VERSION };
+  if (options.json) {
+    console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+
+  console.log(`已从 zhangwan-zhangtu v${SYSTEM_VERSION} 同步以下系统文件（本地改动会被覆盖）：`);
+  for (const path of synced) {
+    console.log(`  - ${path}/`);
+  }
+  if (skipped.length > 0) {
+    console.log(`\n跳过（当前安装的包里没有这些路径）：`);
+    for (const path of skipped) {
+      console.log(`  - ${path}/`);
+    }
   }
 }
 
@@ -593,6 +635,7 @@ Commands:
   inspect-pages [--json]
   list-pages [--json]
   check-pages
+  sync-system-files [--json]     # 把 src/common/、src/pages/skills/ 更新到当前安装的框架版本（会覆盖本地改动）
   preview [--port 6320] [--vite-port 51720] [--json]
   list-iterations [--json]
   create-iteration <name> [description] [pageIdsOrNamesCommaSeparated] [--json]

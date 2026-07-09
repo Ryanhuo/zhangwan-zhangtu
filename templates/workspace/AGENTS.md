@@ -16,7 +16,10 @@ npm run zhangtu -- inspect-pages --json
 npm run zhangtu -- list-iterations --json
 npm run zhangtu -- create-iteration "<名称>" "<描述>" "<页面引用?>"
 npm run zhangtu -- preview-iteration <id|slug|name>
+npm update @leihuohuo/zhangwan-zhangtu && npm install && npm run zhangtu -- sync-system-files
 ```
+
+最后一行是更新框架版本的完整流程：`npm update` 只更新 `node_modules` 里运行时读取的代码；`src/pages/skills/`（技能面板）和 `src/common/`（内置组件）是 `zhangtu init` 时一次性复制进项目的，不会随 `npm update` 自动刷新，必须额外跑 `sync-system-files` 才能真正同步到最新版——这两个目录本来就不建议手改，放心覆盖。
 
 ## 页面契约
 
