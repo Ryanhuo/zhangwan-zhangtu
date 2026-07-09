@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { discoverPages } from "./discovery.mjs";
@@ -30,7 +30,11 @@ const INIT_ALLOWED_EXISTING_ENTRIES = new Set([".git", ".gitignore", ".DS_Store"
 // them. handleSyncSystemFiles() re-copies just these paths from the
 // currently-installed package into the current project, overwriting local
 // copies.
-const SYSTEM_FILE_SYNC_TARGETS = ["src/common", "src/pages/skills"];
+//
+// Note `.agents/skills/project` (baseline framework skills like zhangwanUI) is
+// included, but `.agents/skills/imported` (user-uploaded skills) is NOT —
+// syncing must never clobber a project's own imported skills.
+const SYSTEM_FILE_SYNC_TARGETS = ["src/common", "src/pages/skills", ".agents/skills/project"];
 
 const SYSTEM_VERSION = (() => {
   try {
@@ -204,7 +208,13 @@ function handleSyncSystemFiles(options) {
       skipped.push(relativePath);
       continue;
     }
-    cpSync(source, join(rootDir, relativePath), { recursive: true });
+    // Mirror, don't just overlay: remove the destination first so files the
+    // framework has since deleted/renamed (e.g. a restructured skill) don't
+    // linger as stale copies. Safe because every target is framework-owned;
+    // `.agents/skills/imported` (the user's own skills) is never in the list.
+    const destination = join(rootDir, relativePath);
+    rmSync(destination, { recursive: true, force: true });
+    cpSync(source, destination, { recursive: true });
     synced.push(relativePath);
   }
 
@@ -635,7 +645,7 @@ Commands:
   inspect-pages [--json]
   list-pages [--json]
   check-pages
-  sync-system-files [--json]     # 把 src/common/、src/pages/skills/ 更新到当前安装的框架版本（会覆盖本地改动）
+  sync-system-files [--json]     # 把 src/common/、src/pages/skills/、.agents/skills/project/ 更新到当前框架版本（覆盖本地，保留 imported 技能）
   preview [--port 6320] [--vite-port 51720] [--json]
   list-iterations [--json]
   create-iteration <name> [description] [pageIdsOrNamesCommaSeparated] [--json]
