@@ -2,6 +2,7 @@
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
+import { SYSTEM_PAGE_DIRS } from "./zhangtu/discovery.mjs";
 
 export async function checkPages(rootDir) {
   const pagesDir = join(rootDir, "src", "pages");
@@ -11,7 +12,7 @@ export async function checkPages(rootDir) {
     return { ok: true, checked: 0, failures: [] };
   }
 
-  const entries = await collectPageEntries(pagesDir);
+  const entries = await collectPageEntries(pagesDir, rootDir);
 
   for (const entry of entries) {
     const htmlPath = join(entry.dir, "index.html");
@@ -65,8 +66,11 @@ export async function checkPages(rootDir) {
   return { ok: failures.length === 0, checked: entries.length, failures };
 }
 
-async function collectPageEntries(dir) {
+async function collectPageEntries(dir, rootDir) {
   const result = [];
+  const relDir = relative(rootDir, dir).split("\\").join("/");
+  if (SYSTEM_PAGE_DIRS.has(relDir)) return result;
+
   const children = await readdir(dir, { withFileTypes: true });
   const hasIndexTsx = children.some((entry) => entry.isFile() && entry.name === "index.tsx");
   const hasIndexHtml = children.some((entry) => entry.isFile() && entry.name === "index.html");
@@ -87,7 +91,7 @@ async function collectPageEntries(dir) {
     if (["assets", "data", "styles", "node_modules", "dist"].includes(child.name)) {
       continue;
     }
-    result.push(...await collectPageEntries(join(dir, child.name)));
+    result.push(...await collectPageEntries(join(dir, child.name), rootDir));
   }
 
   return result;

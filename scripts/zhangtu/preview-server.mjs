@@ -189,8 +189,12 @@ function buildManifest(rootDir, discovery, scope, runtime) {
     ...page,
     directPagePath: `/${page.htmlPath}`,
   }));
-  const { skillsPage, designSystemPage, regularPages } = splitPreviewPages(runtimePages);
-  const pages = applyPageLibrary(rootDir, regularPages);
+  const systemRuntimePages = (discovery.systemPages || []).map((page) => ({
+    ...page,
+    directPagePath: `/${page.htmlPath}`,
+  }));
+  const { skillsPage, designSystemPage } = splitPreviewPages(systemRuntimePages);
+  const pages = applyPageLibrary(rootDir, runtimePages);
 
   return {
     version: 1,

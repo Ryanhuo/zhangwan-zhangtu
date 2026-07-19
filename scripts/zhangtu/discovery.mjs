@@ -21,6 +21,9 @@ const DEFAULT_CONFIG = {
 
 const PAGE_LOCAL_DIRS = new Set(["assets", "data", "styles", "node_modules", "dist"]);
 
+// 框架内置系统页（技能、设计系统），不作为用户原型页暴露给 inspect-pages / check:pages / doctor
+export const SYSTEM_PAGE_DIRS = new Set(["src/pages/skills", "src/pages/design-system"]);
+
 // 开箱能力清单的内置兜底：即使工作区没有 zhangtu.capabilities.json（旧工作区、
 // 手动删除）也保证 discovery 输出一份能力清单。权威内容以 zhangtu.capabilities.json
 // 为准（工作区文件覆盖此默认），对应 docs/pm-capability-map.md 第三节六条能力。
@@ -65,6 +68,9 @@ export function discoverPages(rootDir) {
 
   pages.sort((a, b) => a.sourcePath.localeCompare(b.sourcePath));
 
+  const systemPages = pages.filter((p) => SYSTEM_PAGE_DIRS.has(p.pageDirectory));
+  const userPages = pages.filter((p) => !SYSTEM_PAGE_DIRS.has(p.pageDirectory));
+
   return {
     version: 1,
     ok: diagnostics.every((item) => item.severity !== "error"),
@@ -77,14 +83,15 @@ export function discoverPages(rootDir) {
     capabilities,
     requirements: requirementList,
     summary: {
-      discoveredPageCount: pages.length,
+      discoveredPageCount: userPages.length,
       candidateCount: candidates.length,
       warningCount: diagnostics.filter((item) => item.severity === "warning").length,
     },
-    discoveredPageCount: pages.length,
-    pages,
+    discoveredPageCount: userPages.length,
+    pages: userPages,
+    systemPages,
     // Alias: tools that consume the discovered/accepted pages expect `discoveredPages`.
-    discoveredPages: pages,
+    discoveredPages: userPages,
     candidates,
     diagnostics,
   };
