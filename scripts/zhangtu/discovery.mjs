@@ -299,8 +299,10 @@ function walkPageRoots({ rootDir, dir, config, pages, candidates, diagnostics, r
 function buildPage({ rootDir, dir, sourcePath, htmlPath, config, diagnostics, requirements }) {
   const specPath = normalizePath(relative(rootDir, join(dir, "spec.md")));
   const requirementsPath = normalizePath(relative(rootDir, join(dir, "zhangtu.requirements.ts")));
+  const prdPath = normalizePath(relative(rootDir, join(dir, "prd.md")));
   const hasSpec = existsSync(join(rootDir, specPath));
   const hasRequirements = existsSync(join(rootDir, requirementsPath));
+  const hasPrd = existsSync(join(rootDir, prdPath));
   const pageDirectory = normalizePath(relative(rootDir, dir));
   const id = pageIdFromPath(sourcePath);
   const name = config.pageNameMap[sourcePath] || readSpecTitle(join(rootDir, specPath)) || readHtmlTitle(join(rootDir, htmlPath)) || titleFromPath(pageDirectory);
@@ -317,6 +319,8 @@ function buildPage({ rootDir, dir, sourcePath, htmlPath, config, diagnostics, re
     pageDirectory,
     specPath: hasSpec ? specPath : null,
     requirementsPath: hasRequirements ? requirementsPath : null,
+    prdPath: hasPrd ? prdPath : null,
+    hasPrd,
     requirementModules,
     directPagePath: `/workspace/${htmlPath}`,
   };

@@ -115,3 +115,11 @@ node scripts/check-app-ready.mjs /prototypes/[原型目录]
 - 当前仓库仍以 `src/pages/` 作为主要可运行页面目录，本指南用于后续引入 `src/prototypes/` 时的实现和验收约定。
 - 在 `src/prototypes/` 尚未启用前，现有页面继续遵循 `src/pages/*/index.tsx + index.html + spec.md` 约定，不强制迁移。
 - 若未来新增 `src/prototypes/`，优先按本指南组织原型内部组件、文档和素材，并将页面私有资源留在各自原型目录中。
+
+## `src/pages` 新建页：内容优先（与掌图 Shell 分工）
+
+掌图预览 Shell 已提供左侧页面树与全局工具。**全新业务页默认只做 iframe 内容区**，不要再嵌一套 Sidebar/Navbar 整站壳。
+
+推荐结构：`page-header`（标题+主操作）→ 可选 `page-toolbar`（筛选/Tabs/本页面包屑）→ `page-body`（表格/卡片/表单）。
+
+权威细则与禁令表见根目录 [AGENTS.md](../AGENTS.md)「新建页面流程：内容优先，壳层归掌图」。设计令牌仍以 zhangwan-design 为准，但生成时**先读 tokens 与内容组件**，不要先抄 navigation 示例页。

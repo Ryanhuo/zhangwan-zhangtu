@@ -28,7 +28,12 @@ import {
   renamePage,
 } from "./page-library.mjs";
 import { deleteSkill, discoverSkills, exportSkillArchive, getSkillDetail, importSkill } from "./skills.mjs";
-import { getProtoHubPublishStatus, publishIterationViaProtoHub, saveProtoHubPublishConfig } from "./proto-hub.mjs";
+import {
+  buildIterationPrdMarkdown,
+  getProtoHubPublishStatus,
+  publishIterationViaProtoHub,
+  saveProtoHubPublishConfig,
+} from "./proto-hub.mjs";
 import {
   applyTextReplacements,
   clearHackCss,
@@ -611,7 +616,7 @@ async function handleRequest({ req, res, state, viteBaseUrl, rootDir }) {
         issues: body.issues,
       });
       writeIterationPreviewManifest(rootDir, discovery, iteration);
-      sendJson(res, { version: 1, iteration: serializeIteration(iteration, manifest) }, 201);
+      sendJson(res, { version: 1, iteration: serializeIteration(iteration, manifest, rootDir) }, 201);
       return;
     }
   }
@@ -627,6 +632,7 @@ async function handleRequest({ req, res, state, viteBaseUrl, rootDir }) {
         return;
       }
       try {
+        // 发布时始终尝试附带 PRD（页面 prd.md 优先，否则 Spec/需求汇总），与原型包一起上传
         const publishResult = await publishIterationViaProtoHub({
           rootDir,
           iteration: currentIteration,
@@ -642,11 +648,26 @@ async function handleRequest({ req, res, state, viteBaseUrl, rootDir }) {
           publishedMeta: publishResult.publishedMeta,
         });
         writeIterationPreviewManifest(rootDir, discovery, iteration);
-        sendJson(res, { version: 1, iteration: serializeIteration(iteration, manifest), publish: publishResult.publishedMeta });
+        sendJson(res, { version: 1, iteration: serializeIteration(iteration, manifest, rootDir), publish: publishResult.publishedMeta });
       } catch (error) {
         const detail = [error.details, error.stderr, error.stdout].filter((s) => typeof s === "string" && s.trim()).join("\n\n");
         sendJson(res, { error: detail ? `${error.message || "发布失败"}\n\n${detail}` : (error.message || "发布版本失败") }, 400);
       }
+      return;
+    }
+    if (action === "prd" && req.method === "GET") {
+      const currentIteration = listIterations(rootDir).find((it) => it.id === target || it.slug === target || it.name === target);
+      if (!currentIteration) {
+        sendJson(res, { error: "版本不存在。" }, 404);
+        return;
+      }
+      const prd = resolveIterationPrd(rootDir, currentIteration, discovery, manifest);
+      sendJson(res, {
+        version: 1,
+        iterationId: currentIteration.id,
+        name: currentIteration.name,
+        ...prd,
+      });
       return;
     }
     if (action === "requirements" && rawPageId && req.method === "PUT") {
@@ -670,7 +691,7 @@ async function handleRequest({ req, res, state, viteBaseUrl, rootDir }) {
         requirementSnapshots,
       });
       writeIterationPreviewManifest(rootDir, discovery, updated);
-      sendJson(res, { version: 1, iteration: serializeIteration(updated, manifest) });
+      sendJson(res, { version: 1, iteration: serializeIteration(updated, manifest, rootDir) });
       return;
     }
     if (!action && req.method === "PUT") {
@@ -697,13 +718,13 @@ async function handleRequest({ req, res, state, viteBaseUrl, rootDir }) {
         publishedAt: body.publishedAt,
       });
       writeIterationPreviewManifest(rootDir, discovery, iteration);
-      sendJson(res, { version: 1, iteration: serializeIteration(iteration, manifest) });
+      sendJson(res, { version: 1, iteration: serializeIteration(iteration, manifest, rootDir) });
       return;
     }
     if (!action && req.method === "DELETE") {
       const iteration = deleteIteration(rootDir, target);
       rmSync(join(rootDir, ".zhangtu", "preview", iteration.slug), { recursive: true, force: true });
-      sendJson(res, { version: 1, deleted: serializeIteration(iteration, manifest) });
+      sendJson(res, { version: 1, deleted: serializeIteration(iteration, manifest, rootDir) });
       return;
     }
   }
@@ -794,10 +815,26 @@ function normalizePageIds(pageIds, manifest, options = {}) {
 }
 
 function getIterationPages(iteration, fallbackPages) {
+  const liveById = new Map((Array.isArray(fallbackPages) ? fallbackPages : []).map((page) => [page.id, page]));
+  const mergeLivePrd = (page) => {
+    const live = liveById.get(page.id);
+    if (!live) {
+      return { ...page };
+    }
+    // 快照可能早于 prd.md 生成：展示/发布以磁盘现状为准
+    return {
+      ...page,
+      prdPath: live.prdPath || page.prdPath || null,
+      hasPrd: Boolean(live.hasPrd || live.prdPath || page.hasPrd || page.prdPath),
+      pageDirectory: live.pageDirectory || page.pageDirectory || null,
+      specPath: live.specPath || page.specPath || null,
+    };
+  };
+
   if (Array.isArray(iteration.pageSnapshots) && iteration.pageSnapshots.length) {
     return iteration.pageSnapshots
       .filter((page) => !isSkillsManagementPage(page))
-      .map((page) => ({ ...page }));
+      .map(mergeLivePrd);
   }
   const pageIdSet = new Set(iteration.pageIds || []);
   return fallbackPages
@@ -863,11 +900,14 @@ function mergeRequirementSnapshots({ selectedPages, previous }) {
 }
 
 function serializeIterations(rootDir, manifest) {
-  return listIterations(rootDir).map((iteration) => serializeIteration(iteration, manifest));
+  return listIterations(rootDir).map((iteration) => serializeIteration(iteration, manifest, rootDir));
 }
 
-function serializeIteration(iteration, manifest) {
+function serializeIteration(iteration, manifest, rootDir) {
   const pages = getIterationPages(iteration, manifest.pages);
+  const prd = rootDir
+    ? resolveIterationPrd(rootDir, iteration, null, manifest)
+    : summarizePagePrd(pages);
   return {
     ...iteration,
     pageCount: (iteration.pageIds || []).length,
@@ -875,10 +915,58 @@ function serializeIteration(iteration, manifest) {
       id: page.id,
       name: page.name,
       sourcePath: page.sourcePath,
+      hasPrd: Boolean(page.hasPrd || page.prdPath),
+      prdPath: page.prdPath || null,
     })),
     previewPath: `/iterations/${iteration.slug}`,
     isPublished: Boolean(iteration.publishedAt),
     publishedMeta: iteration.publishedMeta || null,
+    hasPrd: prd.hasPrd,
+    prdPageCount: prd.prdPageCount,
+    prdPaths: prd.prdPaths,
+  };
+}
+
+/** 正式 PRD = 版本内页面存在 prd.md；展示/置灰按钮以它为准。发布仍可附带 Spec 汇总。 */
+function summarizePagePrd(pages) {
+  const withPrd = (Array.isArray(pages) ? pages : []).filter((page) => page?.hasPrd || page?.prdPath);
+  return {
+    hasPrd: withPrd.length > 0,
+    prdPageCount: withPrd.length,
+    prdPaths: withPrd.map((page) => page.prdPath).filter(Boolean),
+    available: withPrd.length > 0,
+    markdown: null,
+  };
+}
+
+function resolveIterationPrd(rootDir, iteration, discovery, manifest) {
+  const livePages = discovery?.pages || manifest?.pages || [];
+  const pages = getIterationPages(iteration, livePages);
+  const summary = summarizePagePrd(pages);
+  if (!summary.hasPrd) {
+    return {
+      ...summary,
+      available: false,
+      markdown: null,
+      message: "当前版本内页面尚未生成 PRD（缺少 prd.md）。请先用 prd-generator 生成后再查看。",
+    };
+  }
+
+  const built = buildIterationPrdMarkdown({
+    rootDir,
+    iteration,
+    pages,
+    projectTitle: String(manifest?.brandName || manifest?.title || "掌图"),
+  });
+
+  return {
+    ...summary,
+    available: true,
+    markdown: built?.markdown || null,
+    formalPrdCount: built?.formalPrdCount || summary.prdPageCount,
+    message: built
+      ? `已汇总 ${built.formalPrdCount || summary.prdPageCount} 个页面的 PRD。`
+      : "未能读取 PRD 内容。",
   };
 }
 

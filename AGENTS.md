@@ -86,6 +86,58 @@ zhangwan-zhangtu/
 
 ---
 
+## 新建页面流程：内容优先，壳层归掌图
+
+掌图预览时，**页面切换、文件夹树、设备框、需求抽屉**由 `scripts/zhangtu/shell.html` 负责。每个 `src/pages/<slug>/` 只是 iframe 里的**内容页**，不是独立完整后台应用。
+
+### 默认要做（全新页面）
+
+1. 目录契约：`index.html` + `index.tsx`（`createRoot`）+ `spec.md` + 可选 `styles/page.css`、`data/mock.ts`。
+2. 视觉：读 zhangwan-design 的 **tokens + 内容区组件**（见下节），落在本页 CSS。
+3. 页面结构默认只有**业务内容区**，推荐骨架：
+
+```text
+.page
+  ├─ .page-header     # 标题、说明、主操作按钮（导出/新建等）
+  ├─ .page-toolbar    # 可选：筛选条 FilterBar、Tabs、面包屑（仅本页信息架构）
+  └─ .page-body       # 表格 / 卡片 / 表单 / 图表等主体
+```
+
+4. 文案与数据用中文 mock；路由用多入口目录表达，不在页内自建「整站菜单」。
+
+### 默认不要做（除非用户明确要求）
+
+| 禁止/慎用 | 原因 |
+|-----------|------|
+| 再画一层**左侧全局菜单 / SidebarNav 整壳** | 与掌图 Shell 侧栏重复，预览里双导航 |
+| 再画**顶栏全局 Navbar**（Logo、系统切换、消息铃铛整站壳） | 同上；原型页不是生产 layout |
+| 照搬 design-system UI Kit 的**整页后台框架** | UI 文件是组件参考，不是每个业务页的外壳模板 |
+| 页内维护「全部模块」菜单数据、模拟整站路由 | 页面发现与 Shell 已管多页切换 |
+| 为炫技堆叠 Hamburger + Sidebar + Navbar 三套导航 | 噪音大、难评审真实业务 |
+
+### 页内导航（可以用）
+
+仅当**本页自身信息架构**需要时再用，且范围停在内容区：
+
+- **Breadcrumb**：本页层级路径（如 列表 > 详情）
+- **Tabs**：本页子视图切换
+- **FilterBar**：查询条件
+- 页内二级锚点/步骤条：向导、多步表单
+
+用户**明确**说「要带侧栏的独立后台壳 / 给客户演示完整 layout / 不在掌图 Shell 里看」时，才允许做完整 Sidebar/Navbar 壳，并在 `spec.md` 写明原因。
+
+### 生成顺序（给 AI 的固定流水线）
+
+```text
+1. 读需求/用户描述 → 写 spec.md（页面目标、区块、主操作）
+2. 读 zhangwan-design tokens（colors/typography/spacing），不要先抄 navigation 示例
+3. 搭内容骨架（header + body），用 Panel/SectionTitle/Button/DataTable/表单等
+4. 需要筛选/页签再加 FilterBar/Tabs；不要先加 SidebarNav
+5. check:pages + 本地预览，在 Shell 侧栏点进该页验收
+```
+
+---
+
 ## 新建页面的前端设计：必须用 zhangwan-design
 
 > 本节是自包含的，不依赖 `CLAUDE.md`。Codex 及任何遵循 AGENTS.md 的工具都以本节为准。
@@ -98,7 +150,7 @@ zhangwan-zhangtu/
 
 1. 直接读取 `.agents/skills/project/zhangwan-design/SKILL.md`、`readme.md`（事实源）、`tokens/colors.css`、`tokens/typography.css`、`tokens/spacing.css`（每次都读当前内容，不依赖记忆或缓存——该资产由用户持续维护更新），理解令牌基准。需要具体组件结构时读 `components/<category>/<Name>.prompt.md`（用法）与 `.d.ts`（props）。
 2. 用 zhangwan-design 令牌设计页面并落到该页 `styles/page.css`。当前基线值（以第 1 步实际读到的 `tokens/*.css` 为准）：主色 `#00bf8a`（`--color-brand-green`，仅主操作/激活态；悬停/激活背景 `#e1fff0`）、画布 `#e5e5e5` + 白卡片 `#ffffff`（嵌套统计卡片 `#f7f8fa`）、正文主色 `#323335`/次要 `#606266`/辅助 `#4e5969`/占位 `#8893aa`、描边 `#e0e0e0`（表格 `#ebeef5`）、数据分类色青 `#02b8de`/粉 `#f2595c`（分类标签色，非情绪化成功/错误色）、遗留强调蓝 `#409eff`（仅顶级激活菜单文字，不要新用）、按钮高度 small 28/medium 34/large 40、筛选控件默认宽度统一 `240px`、间距 4px 基准（`4/8/12/16/20/24/32/40`，卡片内边距 20px）、圆角 `2px`（主卡片）/`4px`（统计卡/输入框/按钮）/`5px`（登录字段/抽屉）/`11px`（胶囊标签，唯一例外）、字体栈 `Helvetica Neue, PingFang SC, Microsoft YaHei, Arial`（数字统一用 `DIN-Medium`）、阴影极弱（悬停卡片 `0 0 5px #e8e8e8`、固定顶栏/侧栏 `0 1px 4px rgba(0,21,41,.08)`）。
-3. 结构优先复用 `components/` 下的组件（核心：Button/Tag/Tabs/Panel/SectionTitle/LoadingBtn；数据：StatCard/DataTable/LineChart/ColumnChart/PieChart/RetentionTable/DownloadCenter/ColumnSettingsDialog/UpdateTime/PopoverTableCell；表单：Input/Select/DatePicker/Checkbox/RadioButtonGroup/InputNumberRange/InputMultTag/SelectTimezone；导航：SidebarNav/Navbar/Breadcrumb/FilterBar/Hamburger/ViewSet/SystemLink；反馈：Dialog/Drawer/Tooltip），可在 `src/pages/design-system/` 页面里直接看到每个组件的真实渲染效果。`antd` 仅用于该规范未覆盖的复杂交互控件，并对齐其令牌与密度。文案中文优先、专业克制、数据导向，绝不用表情符号或第一人称营销口吻。
+3. 结构优先复用 `components/` 下的**内容区组件**（核心：Button/Tag/Tabs/Panel/SectionTitle/LoadingBtn；数据：StatCard/DataTable/LineChart/ColumnChart/PieChart/RetentionTable/DownloadCenter/ColumnSettingsDialog/UpdateTime/PopoverTableCell；表单：Input/Select/DatePicker/Checkbox/RadioButtonGroup/InputNumberRange/InputMultTag/SelectTimezone；反馈：Dialog/Drawer/Tooltip）。**页内**可用 Breadcrumb / FilterBar / Tabs。**默认不要**用 SidebarNav / Navbar / Hamburger / SystemLink 拼整站壳——见上文「内容优先，壳层归掌图」。可在 `src/pages/design-system/` 查看组件真实渲染。`antd` 仅用于该规范未覆盖的复杂交互控件，并对齐其令牌与密度。文案中文优先、专业克制、数据导向，绝不用表情符号或第一人称营销口吻。
 
 仅当用户明确要求别的视觉风格/品牌时才偏离 zhangwan-design。
 
@@ -208,6 +260,8 @@ Shell 提供：页面列表/文件夹树、**工作流**只读引导（四大块
 | POST | `/api/publish/config` | 保存发布配置（token、systemName） |
 | GET | `/api/skills` | 技能列表（含 `tier`） |
 | GET/DELETE | `/api/skills/:id` | 技能详情/删除 |
+| GET | `/api/versions/:id/prd` | 版本 PRD 汇总（有页面 `prd.md` 才 available） |
+| POST | `/api/versions/:id/publish` | 发布版本：原型包 + PRD 一并上传 |
 
 ---
 
@@ -257,6 +311,7 @@ npm run zhangtu -- doctor
 3. **Shell 是单文件**：`shell.html` 包含全部 CSS/JS，修改后即时生效，无需重启 Vite。
 4. **需求 sidecar 约束**：`zhangtu.requirements.ts` 必须是无 import 的纯字面量文件，否则 vm 沙箱执行会失败。
 5. **zhangwan-design 优先，且必须读本项目文件**：新建页面必须先读取本项目 `.agents/skills/project/zhangwan-design/` 下的令牌基准与组件规范（`SKILL.md`、`readme.md`、`tokens/*.css`、`components/`）再动手实现，每次都读取当前文件内容、不依赖记忆或缓存——该资产由用户持续维护更新。**不要信任任何外部/全局同名技能或缓存定义**；本项目目录下的文件是唯一权威来源。详见「新建页面的前端设计」与「技能（Skills）」两节。
-6. **`.zhangtu/` 只读**：该目录是运行时生成的，不要手动编辑；版本状态通过 CLI 或 API 操作。
-7. **发布 body 读取**：`/api/versions/:id/publish` 的 POST handler 需先 `await readJsonBody(req).catch(() => ({}))` 再访问 body 字段。
-8. **sync-system-files 仅工作区**：禁止在 zhangwan-zhangtu 种子仓自身 cwd 执行，否则会 rm+cp 同路径删除框架文件。
+6. **内容页不复制应用壳**：全新页面默认不做全局侧栏/顶栏；导航以掌图 Shell 为准。见「新建页面流程：内容优先，壳层归掌图」。
+7. **`.zhangtu/` 只读**：该目录是运行时生成的，不要手动编辑；版本状态通过 CLI 或 API 操作。
+8. **发布 body 读取**：`/api/versions/:id/publish` 的 POST handler 需先 `await readJsonBody(req).catch(() => ({}))` 再访问 body 字段。
+9. **sync-system-files 仅工作区**：禁止在 zhangwan-zhangtu 种子仓自身 cwd 执行，否则会 rm+cp 同路径删除框架文件。

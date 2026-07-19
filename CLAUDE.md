@@ -58,6 +58,31 @@ npm run zhangtu -- doctor
 
 系统内置页(勿删、从常规列表拆出):`src/pages/skills/`、`src/pages/design-system/`。
 
+## 新建页面:内容优先,壳层归掌图
+
+掌图 Shell(`shell.html`)已经提供**页面列表/文件夹树、设备框、需求抽屉**。每个 `src/pages/<slug>/` 在预览里是 iframe **内容页**,不是独立完整后台。
+
+**默认生成内容区即可**,推荐骨架:
+
+```text
+.page → .page-header(标题+主操作) → 可选 .page-toolbar(筛选/Tabs/本页面包屑) → .page-body(表格/卡片/表单)
+```
+
+**默认不要**:
+
+- 再做一层全局 `SidebarNav` / 整站菜单(与 Shell 侧栏重复)
+- 再做整站 `Navbar`(Logo、系统切换、消息中心壳)
+- 把 design-system UI Kit 的整页后台框架当每个业务页的模板
+- 在页内维护「全部模块」菜单或仿生产 SPA 路由
+
+**页内可用**:Breadcrumb(本页层级)、Tabs、FilterBar、步骤条——仅服务本页信息架构。
+
+**仅当用户明确要求**「完整后台壳 / 脱离 Shell 演示 layout」时才做 Sidebar+Navbar,并在 `spec.md` 注明。
+
+生成顺序:写 `spec.md` → 读 tokens(不要先抄 navigation 示例) → 搭 header+body 内容组件 → 需要再加筛选/页签 → `check:pages` + Shell 预览验收。
+
+完整表格与禁令见 `AGENTS.md`「新建页面流程：内容优先，壳层归掌图」。
+
 ## 架构
 
 **页面发现是主干。** `scripts/zhangtu/discovery.mjs` 遍历 `src/pages`(由配置驱动),输出包含页面、候选项、诊断的 JSON 模型。两个独立的消费方必须对"什么算一个页面"保持一致:
@@ -107,7 +132,7 @@ Vite + React 18 + TypeScript(strict)。当前仓库已安装 `antd` 与 `@ant-de
 
 1. 直接读取 `.agents/skills/project/zhangwan-design/SKILL.md`、`readme.md`(事实源)、`tokens/colors.css`、`tokens/typography.css`、`tokens/spacing.css`(每次都读取当前文件内容,不要依赖记忆或缓存——该 skill 由用户持续维护更新,必须拿到最新版本),理解令牌基准。需要参考组件结构时读 `components/<category>/<Name>.prompt.md`(用法)与 `.d.ts`(props)。
 2. 用 zhangwan-design 令牌设计页面并落到该页 `styles/page.css`:主色 `#00bf8a`(`--color-brand-green`,仅主操作/激活态;悬停/激活背景 `#e1fff0`)、画布 `#e5e5e5` + 白卡片 `#ffffff`(嵌套统计卡片用 `#f7f8fa`)、正文主色 `#323335` / 次要 `#606266` / 辅助 `#4e5969` / 占位 `#8893aa`、描边 `#e0e0e0`(表格用 `#ebeef5`)、数据分类色青色 `#02b8de` / 粉色 `#f2595c`(不是情绪化的成功/错误色,是"男/女"分组一类的分类标签色)、遗留强调色蓝 `#409eff`(仅顶级激活菜单文字,不要新用)、按钮高度 small 28 / medium 34 / large 40、筛选控件(Input/Select/DatePicker/InputNumberRange)默认宽度统一 `240px`、间距 4px 基准(`4/8/12/16/20/24/32/40`,卡片内边距 20px)、圆角 `2px`(主卡片)/`4px`(统计卡/输入框/按钮)/`5px`(登录字段/抽屉)/`11px`(胶囊标签,唯一例外)、字体栈 `Helvetica Neue, PingFang SC, Microsoft YaHei, Arial`(数字统一用 `DIN-Medium`,不与中文混排)、阴影极弱(悬停卡片 `0 0 5px #e8e8e8`、固定顶栏/侧栏 `0 1px 4px rgba(0,21,41,.08)`)。这组值可能随 skill 更新而变化,以第 1 步实际读到的 `tokens/*.css` 为准,本条仅为当前值的备忘。
-3. 结构优先复用 `components/` 下的组件(核心:Button/Tag/Tabs/Panel/SectionTitle/LoadingBtn;数据:StatCard/DataTable/LineChart/ColumnChart/PieChart/RetentionTable/DownloadCenter/ColumnSettingsDialog/UpdateTime/PopoverTableCell;表单:Input/Select/DatePicker/Checkbox/RadioButtonGroup/InputNumberRange/InputMultTag/SelectTimezone;导航:SidebarNav/Navbar/Breadcrumb/FilterBar/Hamburger/ViewSet/SystemLink;反馈:Dialog/Drawer/Tooltip),每个组件的可视化演示可在 `src/pages/design-system/` 页面里直接看到真实渲染效果。`antd` 仅用于该规范未覆盖的复杂交互控件,并对齐其令牌与密度。文案中文优先、专业克制、数据导向,绝不使用表情符号或第一人称营销口吻(细节见 `readme.md` 的"内容基本原则")。
+3. 结构优先复用 `components/` 下的**内容区组件**(核心:Button/Tag/Tabs/Panel/SectionTitle/LoadingBtn;数据:StatCard/DataTable/...;表单:Input/Select/...;反馈:Dialog/Drawer/Tooltip)。**页内**可用 Breadcrumb/FilterBar/Tabs。**默认不要**用 SidebarNav/Navbar/Hamburger/SystemLink 拼整站壳(见上文「内容优先,壳层归掌图」)。组件演示见 `src/pages/design-system/`。`antd` 仅用于规范未覆盖的复杂控件并对齐令牌密度。文案中文优先、专业克制、数据导向,不用表情符号或第一人称营销口吻。
 
 ### 本项目不使用 compass-ui,一切走 zhangwan-design
 

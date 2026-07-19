@@ -124,7 +124,15 @@ export async function publishIterationViaProtoHub({
   const resultMessage = existingVersion
     ? `已给「${result.system} · ${result.version}」上传新原型快照，分享链接保持不变。`
     : `已在「${result.system}」创建版本「${result.name || iteration.name}」。`;
-  const prdSource = prdUrl ? "url" : prdFile ? "manual-file" : autoPrd ? "auto-generated" : "none";
+  const prdSource = prdUrl
+    ? "url"
+    : prdFile
+      ? "manual-file"
+      : autoPrd?.hasFormalPrd
+        ? "page-prd-md"
+        : autoPrd
+          ? "auto-generated"
+          : "none";
 
   return {
     publishedAt: new Date().toISOString(),
@@ -138,7 +146,12 @@ export async function publishIterationViaProtoHub({
       prd: String(result?.prd || "").trim(),
       prdSource,
       prdFile: uploadPrdFile || "",
-      resultMessage: trimText(resultMessage, 2400),
+      prdAttached: Boolean(uploadPrdFile || prdUrl),
+      formalPrdCount: autoPrd?.formalPrdCount || 0,
+      resultMessage: trimText(
+        `${resultMessage}${uploadPrdFile || prdUrl ? " 已附带 PRD。" : " 未附带 PRD（版本内无 prd.md/Spec 可汇总内容）。"}`,
+        2400,
+      ),
     },
   };
 }
@@ -325,11 +338,29 @@ function resolvePublishPages(iteration, pages) {
     .filter(Boolean);
 }
 
-function createAutoPrdFile({ rootDir, iteration, pages, projectTitle }) {
+/**
+ * 组装版本 PRD：优先使用各页 `prd.md`（prd-generator 产物），
+ * 没有则回退 spec + 需求标注。发布时与原型包一起上传。
+ */
+export function buildIterationPrdMarkdown({ rootDir, iteration, pages, projectTitle }) {
   const selectedPages = Array.isArray(pages) ? pages : [];
   const sections = [];
+  let formalPrdCount = 0;
 
   for (const page of selectedPages) {
+    const formalPrd = readPagePrdMarkdown(rootDir, page);
+    if (formalPrd) {
+      formalPrdCount += 1;
+      sections.push([
+        `## ${page.name || page.id}`,
+        page.prdPath ? `- PRD 文件：\`${page.prdPath}\`` : "",
+        page.sourcePath ? `- 页面入口：\`${page.sourcePath}\`` : "",
+        "",
+        formalPrd,
+      ].filter(Boolean).join("\n"));
+      continue;
+    }
+
     const specMarkdown = readPageSpecMarkdown(rootDir, page);
     const requirementMarkdown = buildRequirementMarkdown(iteration, page);
     if (!specMarkdown && !requirementMarkdown) {
@@ -340,6 +371,7 @@ function createAutoPrdFile({ rootDir, iteration, pages, projectTitle }) {
       `## ${page.name || page.id}`,
       page.sourcePath ? `- 页面入口：\`${page.sourcePath}\`` : "",
       page.specPath ? `- Spec：\`${page.specPath}\`` : "",
+      "\n> 本页尚未生成 `prd.md`，以下由 Spec / 需求标注自动汇总。",
       specMarkdown ? `\n### 页面 Spec\n\n${specMarkdown}` : "",
       requirementMarkdown ? `\n### 需求标注\n\n${requirementMarkdown}` : "",
     ].filter(Boolean).join("\n"));
@@ -355,16 +387,63 @@ function createAutoPrdFile({ rootDir, iteration, pages, projectTitle }) {
     `- 版本名称：${iteration.name}`,
     iteration.description ? `- 版本说明：${iteration.description}` : "",
     `- 生成时间：${new Date().toISOString()}`,
+    formalPrdCount
+      ? `- 正式 PRD：${formalPrdCount} 个页面含 \`prd.md\``
+      : "- 正式 PRD：尚未生成页面级 `prd.md`（当前为 Spec/需求汇总）",
     "",
     sections.join("\n\n---\n\n"),
     "",
   ].filter((line) => line !== "").join("\n");
 
+  return {
+    markdown: content,
+    pageCount: sections.length,
+    formalPrdCount,
+    hasFormalPrd: formalPrdCount > 0,
+  };
+}
+
+function createAutoPrdFile({ rootDir, iteration, pages, projectTitle }) {
+  const built = buildIterationPrdMarkdown({ rootDir, iteration, pages, projectTitle });
+  if (!built) {
+    return null;
+  }
+
   const outputDir = join(rootDir, ...PUBLISH_BUNDLE_DIR);
   mkdirSync(outputDir, { recursive: true });
   const filePath = join(outputDir, `${iteration.slug}-prd.md`);
-  writeFileSync(filePath, content);
-  return { filePath, pageCount: sections.length };
+  writeFileSync(filePath, built.markdown);
+  return {
+    filePath,
+    pageCount: built.pageCount,
+    formalPrdCount: built.formalPrdCount,
+    hasFormalPrd: built.hasFormalPrd,
+  };
+}
+
+function readPagePrdMarkdown(rootDir, page) {
+  const candidates = [];
+  if (page?.prdPath) {
+    candidates.push(page.prdPath);
+  }
+  if (page?.pageDirectory) {
+    candidates.push(join(page.pageDirectory, "prd.md"));
+  }
+  for (const relativePath of candidates) {
+    const absolute = join(rootDir, relativePath);
+    if (!existsSync(absolute)) {
+      continue;
+    }
+    try {
+      const text = readFileSync(absolute, "utf8").trim();
+      if (text) {
+        return text;
+      }
+    } catch {
+      // ignore unreadable prd
+    }
+  }
+  return "";
 }
 
 function readPageSpecMarkdown(rootDir, page) {

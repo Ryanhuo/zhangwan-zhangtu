@@ -7,6 +7,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join } from "node:path";
+import { purgePageFromIterations } from "./iterations.mjs";
 
 /**
  * 注意：本文件为恢复重建版本。
@@ -362,7 +363,7 @@ export function duplicatePage(rootDir, pages, pageId) {
 }
 
 export function deletePage(rootDir, pages, pageId) {
-  // 真实删除：移除页面目录；同时清理库内元数据。
+  // 真实删除：移除页面目录；同时清理库内元数据与迭代/预览中的历史引用。
   const page = pages.find((item) => item.id === pageId);
   const library = normalizePageLibrary(readPageLibrary(rootDir));
   let removedFromDisk = false;
@@ -383,5 +384,14 @@ export function deletePage(rootDir, pages, pageId) {
     library.deleted.push(pageId);
   }
   writePageLibrary(rootDir, library);
-  return { id: pageId };
+
+  // 删除页面后不保留历史：从所有版本 JSON、版本预览 manifest 中剥离该 pageId。
+  let purgedIterations = [];
+  try {
+    purgedIterations = purgePageFromIterations(rootDir, pageId);
+  } catch {
+    purgedIterations = [];
+  }
+
+  return { id: pageId, purgedIterations };
 }

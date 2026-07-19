@@ -14,6 +14,142 @@ export function listIterations(rootDir) {
     .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
 }
 
+/**
+ * 删除页面后清理历史：从所有迭代中移除该 pageId 及其快照/导航/需求快照/页面库快照引用，
+ * 并同步改写 `.zhangtu/preview/<slug>/manifest.json`（若存在）。
+ * 避免 doctor 报失效引用，也避免版本预览里残留已删页面内容。
+ */
+export function purgePageFromIterations(rootDir, pageId) {
+  if (!pageId) {
+    return [];
+  }
+
+  const purged = [];
+  for (const iteration of listIterations(rootDir)) {
+    const next = stripPageFromIteration(iteration, pageId);
+    if (!next) {
+      continue;
+    }
+    writeIteration(rootDir, next);
+    rewriteIterationPreviewManifest(rootDir, next, pageId);
+    purged.push({ id: next.id, slug: next.slug, name: next.name });
+  }
+  return purged;
+}
+
+function stripPageFromIteration(iteration, pageId) {
+  const pageIds = Array.isArray(iteration.pageIds) ? iteration.pageIds : [];
+  const hadInPageIds = pageIds.includes(pageId);
+  const pageSnapshots = Array.isArray(iteration.pageSnapshots) ? iteration.pageSnapshots : [];
+  const hadInSnapshots = pageSnapshots.some((page) => page && page.id === pageId);
+  const requirementSnapshots = iteration.requirementSnapshots && typeof iteration.requirementSnapshots === "object"
+    ? iteration.requirementSnapshots
+    : {};
+  const hadInRequirements = Object.prototype.hasOwnProperty.call(requirementSnapshots, pageId);
+  const navigation = iteration.navigation && typeof iteration.navigation === "object" ? iteration.navigation : null;
+  const navItems = Array.isArray(navigation?.items) ? navigation.items : [];
+  const hadInNav = navItems.some((item) => item && item.type === "page" && item.pageId === pageId);
+  const libraryTouched = pageLibrarySnapshotContains(iteration.pageLibrarySnapshot, pageId);
+
+  if (!hadInPageIds && !hadInSnapshots && !hadInRequirements && !hadInNav && !libraryTouched) {
+    return null;
+  }
+
+  const nextRequirementSnapshots = { ...requirementSnapshots };
+  delete nextRequirementSnapshots[pageId];
+
+  return {
+    ...iteration,
+    pageIds: pageIds.filter((id) => id !== pageId),
+    pageSnapshots: pageSnapshots.filter((page) => !(page && page.id === pageId)),
+    requirementSnapshots: normalizeRequirementSnapshots(nextRequirementSnapshots),
+    navigation: navigation
+      ? {
+          ...navigation,
+          items: navItems.filter((item) => !(item && item.type === "page" && item.pageId === pageId)),
+        }
+      : navigation,
+    pageLibrarySnapshot: stripPageFromPageLibrarySnapshot(iteration.pageLibrarySnapshot, pageId),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function pageLibrarySnapshotContains(snapshot, pageId) {
+  if (!snapshot || typeof snapshot !== "object") {
+    return false;
+  }
+  if (Array.isArray(snapshot.rootPageIds) && snapshot.rootPageIds.includes(pageId)) {
+    return true;
+  }
+  if (snapshot.pageMeta && Object.prototype.hasOwnProperty.call(snapshot.pageMeta, pageId)) {
+    return true;
+  }
+  if (Array.isArray(snapshot.folders)) {
+    return snapshot.folders.some((folder) => Array.isArray(folder?.pageIds) && folder.pageIds.includes(pageId));
+  }
+  return false;
+}
+
+function stripPageFromPageLibrarySnapshot(snapshot, pageId) {
+  if (!snapshot || typeof snapshot !== "object") {
+    return snapshot || null;
+  }
+  const pageMeta = snapshot.pageMeta && typeof snapshot.pageMeta === "object" ? { ...snapshot.pageMeta } : {};
+  delete pageMeta[pageId];
+  return {
+    ...snapshot,
+    rootPageIds: Array.isArray(snapshot.rootPageIds)
+      ? snapshot.rootPageIds.filter((id) => id !== pageId)
+      : [],
+    folders: Array.isArray(snapshot.folders)
+      ? snapshot.folders.map((folder) => ({
+          ...folder,
+          pageIds: Array.isArray(folder?.pageIds) ? folder.pageIds.filter((id) => id !== pageId) : [],
+        }))
+      : [],
+    pageMeta,
+  };
+}
+
+function rewriteIterationPreviewManifest(rootDir, iteration, removedPageId) {
+  const previewPath = join(rootDir, ".zhangtu", "preview", iteration.slug, "manifest.json");
+  if (!existsSync(previewPath)) {
+    return;
+  }
+  try {
+    const manifest = JSON.parse(readFileSync(previewPath, "utf8"));
+    const pageIds = Array.isArray(iteration.pageIds) ? iteration.pageIds : [];
+    if (manifest.scope && typeof manifest.scope === "object") {
+      manifest.scope.pageIds = pageIds;
+    }
+    if (Array.isArray(manifest.pages)) {
+      manifest.pages = manifest.pages.filter((page) => page && page.id !== removedPageId && pageIds.includes(page.id));
+    }
+    if (Array.isArray(manifest.navigation)) {
+      manifest.navigation = manifest.navigation
+        .map((group) => ({
+          ...group,
+          pageIds: Array.isArray(group.pageIds)
+            ? group.pageIds.filter((id) => id !== removedPageId && pageIds.includes(id))
+            : [],
+        }))
+        .filter((group) => group.pageIds.length > 0);
+    }
+    if (manifest.pageLibrary) {
+      manifest.pageLibrary = stripPageFromPageLibrarySnapshot(manifest.pageLibrary, removedPageId);
+    }
+    if (manifest.iterationRequirementSnapshots && typeof manifest.iterationRequirementSnapshots === "object") {
+      const next = { ...manifest.iterationRequirementSnapshots };
+      delete next[removedPageId];
+      manifest.iterationRequirementSnapshots = next;
+    }
+    manifest.generatedAt = new Date().toISOString();
+    writeFileSync(previewPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  } catch {
+    // 预览 manifest 损坏时忽略，下次 preview-iteration 会重写
+  }
+}
+
 export function createIteration(
   rootDir,
   { name, description = "", pageIds, navigation, issues, pageSnapshots, pageLibrarySnapshot, requirementSnapshots, publishedAt = null, publishedMeta = null },
@@ -141,10 +277,20 @@ function normalizePublishedMeta(value) {
     cli: String(value.cli || "").trim(),
     bundleDir: String(value.bundleDir || "").trim(),
     prd: String(value.prd || "").trim(),
+    prdSource: String(value.prdSource || "").trim(),
+    prdFile: String(value.prdFile || "").trim(),
+    prdAttached: Boolean(value.prdAttached),
+    formalPrdCount: Number.isFinite(Number(value.formalPrdCount)) ? Number(value.formalPrdCount) : 0,
     resultMessage: String(value.resultMessage || "").trim(),
   };
 
-  return Object.values(meta).some(Boolean) ? meta : null;
+  const hasValue = Object.entries(meta).some(([key, entry]) => {
+    if (key === "prdAttached" || key === "formalPrdCount") {
+      return Boolean(entry);
+    }
+    return Boolean(entry);
+  });
+  return hasValue ? meta : null;
 }
 
 function writeIteration(rootDir, iteration) {

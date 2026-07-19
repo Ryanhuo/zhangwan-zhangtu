@@ -17,3 +17,12 @@ user-invocable: true
 产品——优先使用青绿色 (#00bf8a) 强调色、2–5px 的紧凑圆角、微弱阴影、浅灰画布
 上的扁平白色卡片，以及功能化/流程化的文案，避免任何"精致 SaaS"或"消费级 App"
 的视觉套路。
+
+## 在掌图（zhangtu）原型项目中使用
+
+若当前仓库是掌图种子/工作区（存在 `scripts/zhangtu/` 与预览 Shell）：
+
+- **页面切换导航由掌图 Shell 提供**，业务页默认只画**内容区**（页头 + 工具条 + 主体）。
+- 生成新页时优先读 `tokens/` 与 core/data/forms/feedback 组件；**不要默认套用** `components/navigation` 里的 SidebarNav/Navbar 拼整站壳。
+- Breadcrumb / FilterBar / Tabs 仅用于**本页**信息架构。完整壳层仅当用户明确要求脱离 Shell 演示时再做。
+- 细则见仓库根目录 `AGENTS.md`「新建页面流程：内容优先，壳层归掌图」。

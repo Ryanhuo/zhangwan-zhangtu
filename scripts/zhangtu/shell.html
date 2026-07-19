@@ -1157,6 +1157,43 @@
       .tool-button.publish-button { color: var(--status-success-default); border-color: rgba(64, 176, 139, 0.32); }
       .tool-button.publish-button:hover { background: var(--status-success-surface-l1); }
       .tool-button.publish-button:disabled { opacity: 0.5; cursor: not-allowed; }
+      .tool-button.prd-button { color: var(--text-secondary); }
+      .tool-button.prd-button:disabled,
+      .tool-button.prd-button.is-disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        color: var(--text-tertiary);
+      }
+      .prd-modal { width: min(880px, calc(100vw - 48px)); max-height: min(86vh, 900px); display: flex; flex-direction: column; }
+      .prd-modal .version-form { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--spacer-12); }
+      .prd-viewer {
+        flex: 1;
+        min-height: 280px;
+        max-height: min(62vh, 640px);
+        overflow: auto;
+        padding: var(--spacer-16);
+        border: 1px solid var(--border-neutral-l1);
+        border-radius: var(--radius-md);
+        background: var(--bg-surface);
+        color: var(--text-primary);
+        font-size: 13px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+      .prd-viewer-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacer-8);
+        color: var(--text-tertiary);
+        font-size: 12px;
+      }
+      .prd-viewer-empty {
+        color: var(--text-tertiary);
+        text-align: center;
+        padding: 48px 16px;
+      }
       .tool-button.version-link-button { color: var(--text-brand); border-color: var(--border-neutral-l2); }
       .tool-button.version-update-button { color: var(--text-default); border-color: var(--border-neutral-l2); }
 
@@ -1421,10 +1458,15 @@
       .toast-item.fade-out { opacity: 0; }
 
       /* ===== Page edit modal ===== */
+      #page-edit-modal {
+        position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+        display: flex; align-items: stretch;
+        background: rgba(0,0,0,0.08);
+      }
       .page-edit-panel {
-        background: var(--bg-base-default); border: 1px solid var(--border-neutral-l2);
-        border-radius: var(--radius-12); box-shadow: 0 16px 48px rgba(0,0,0,0.2);
-        width: 600px; max-width: calc(100vw - 48px); max-height: calc(100vh - 80px);
+        background: var(--bg-base-default); border-right: 1px solid var(--border-neutral-l2);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+        width: 600px; max-width: calc(100vw - 200px); height: 100%;
         display: flex; flex-direction: column; overflow: hidden;
       }
       .page-edit-head {
@@ -1567,6 +1609,27 @@
       </section>
     </div>
 
+    <div id="prd-viewer-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="查看 PRD">
+      <section class="version-modal prd-modal">
+        <header class="version-modal-head">
+          <div>
+            <h2 id="prd-viewer-title">查看 PRD</h2>
+            <span id="prd-viewer-subtitle">展示当前版本内已生成的页面 PRD（prd.md）</span>
+          </div>
+          <button class="tool-button" id="prd-viewer-close" type="button">关闭</button>
+        </header>
+        <div class="version-modal-body">
+          <div class="version-form">
+            <div class="prd-viewer-meta" id="prd-viewer-meta"></div>
+            <pre class="prd-viewer" id="prd-viewer-body" aria-live="polite"></pre>
+            <div class="version-actions">
+              <button type="button" class="tool-button" id="prd-viewer-dismiss">关闭</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
     <div id="publish-config-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="配置发布令牌">
       <section class="version-modal version-modal--publish-config">
         <header class="version-modal-head">
@@ -1602,7 +1665,7 @@
       </section>
     </div>
 
-    <div id="page-edit-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="编辑页面">
+    <div id="page-edit-modal" class="hidden" role="dialog" aria-modal="true" aria-label="编辑页面">
       <div class="page-edit-panel">
         <div class="page-edit-head">
           <h3>编辑页面</h3>
@@ -1907,6 +1970,11 @@
       const publishConfigTokenEl = document.getElementById("publish-config-token");
       const publishConfigMetaEl = document.getElementById("publish-config-meta");
       const publishConfigSubmitEl = document.getElementById("publish-config-submit");
+      const prdViewerModalEl = document.getElementById("prd-viewer-modal");
+      const prdViewerTitleEl = document.getElementById("prd-viewer-title");
+      const prdViewerSubtitleEl = document.getElementById("prd-viewer-subtitle");
+      const prdViewerMetaEl = document.getElementById("prd-viewer-meta");
+      const prdViewerBodyEl = document.getElementById("prd-viewer-body");
       let versionItems = [];
       let projectVersionPages = pages.slice();
       let projectVersionPageLibrary = manifest.pageLibrary || { folders: [], rootPageIds: pages.map((page) => page.id), pageMeta: {} };
@@ -3189,8 +3257,10 @@
             ? `${svg("upload", "var(--icon-secondary)", 14)} <span>更新原型</span>`
             : `${svg("upload", "var(--icon-secondary)", 14)} <span>发布</span>`;
           pageEditorToggle.classList.remove("hidden", "is-active");
-          pageEditorToggle.setAttribute("aria-label", shareUrl ? "更新当前线上版本原型" : "发布当前版本");
-          pageEditorToggle.title = shareUrl ? "重新上传当前本地原型，分享链接保持不变" : "发布当前版本";
+          pageEditorToggle.setAttribute("aria-label", shareUrl ? "更新当前线上版本（原型+PRD）" : "发布当前版本（原型+PRD）");
+          pageEditorToggle.title = shareUrl
+            ? "重新上传当前本地原型与 PRD，分享链接保持不变"
+            : "发布当前版本：原型与 PRD 一并上传";
           refreshPage.innerHTML = `${svg("trash", "var(--icon-secondary)", 14)} <span>删除</span>`;
           refreshPage.classList.remove("hidden", "is-active");
           refreshPage.setAttribute("aria-label", "删除当前版本");
@@ -3741,9 +3811,6 @@
         state.activeRequirementAnchor = matched.anchorId || matched.id;
         const shouldOpenPanel = options.openPanel !== false;
         state.isRequirementsDrawerOpen = shouldOpenPanel;
-        if (shouldOpenPanel) {
-          state.isPageEditorOpen = false;
-        }
         updateMainHeader();
         updateRequirementsState();
         refreshRequirementsSidebar();
@@ -3760,7 +3827,6 @@
         const matched = requirements.find((item) => item.anchorId === anchorId || item.id === anchorId) || requirements[0];
         state.activeRequirementAnchor = matched.anchorId || matched.id;
         state.isRequirementsDrawerOpen = true;
-        state.isPageEditorOpen = false;
         updateMainHeader();
         updateRequirementsState();
         refreshRequirementsSidebar();
@@ -3799,9 +3865,6 @@
             return;
           }
           state.isRequirementsDrawerOpen = !state.isRequirementsDrawerOpen;
-          if (state.isRequirementsDrawerOpen) {
-            state.isPageEditorOpen = false;
-          }
           updateMainHeader();
           updateRequirementsState();
           postPageEditorPanelState(false);
@@ -3821,9 +3884,6 @@
             return;
           }
           state.isPageEditorOpen = !state.isPageEditorOpen;
-          if (state.isPageEditorOpen) {
-            state.isRequirementsDrawerOpen = false;
-          }
           updateMainHeader();
           updateRequirementsState();
           postPageEditorPanelState(state.isPageEditorOpen);
@@ -3952,6 +4012,15 @@
       document.getElementById("version-reset").addEventListener("click", resetVersionForm);
       document.getElementById("publish-config-close").addEventListener("click", closePublishConfigModal);
       document.getElementById("publish-config-cancel").addEventListener("click", closePublishConfigModal);
+      document.getElementById("prd-viewer-close").addEventListener("click", closePrdViewerModal);
+      document.getElementById("prd-viewer-dismiss").addEventListener("click", closePrdViewerModal);
+      if (prdViewerModalEl) {
+        prdViewerModalEl.addEventListener("click", (event) => {
+          if (event.target === prdViewerModalEl) {
+            closePrdViewerModal();
+          }
+        });
+      }
       versionEditorModalEl.addEventListener("click", (event) => {
         if (event.target === versionEditorModalEl) {
           closeVersionModal();
@@ -4271,9 +4340,14 @@
           card.className = "version-card";
           const shareUrl = getPublishedShareUrl(item);
           const isPublished = Boolean(item.isPublished || shareUrl);
+          const hasPrd = Boolean(item.hasPrd);
+          const prdPageCount = Number(item.prdPageCount) || 0;
           const publishedHtml = isPublished
             ? `<span class="version-card-published">已发布 · ${item.publishedAt ? new Date(item.publishedAt).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : ""}</span>`
             : "";
+          const prdTagHtml = hasPrd
+            ? `<span class="version-card-tag">PRD ${prdPageCount} 页</span>`
+            : `<span class="version-card-tag">未生成 PRD</span>`;
           const shareLinkHtml = shareUrl
             ? `<a class="version-card-link" href="${escapeHtml(shareUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(shareUrl)}</a>`
             : "";
@@ -4284,6 +4358,7 @@
                 <span class="version-card-desc">${escapeHtml(item.description || "无说明")}</span>
                 <div class="version-card-meta">
                   <span class="version-card-tag">${item.pageCount} 个页面</span>
+                  ${prdTagHtml}
                   ${publishedHtml}
                 </div>
                 ${shareLinkHtml}
@@ -4296,6 +4371,17 @@
           preview.className = "tool-button active";
           preview.textContent = "预览";
           preview.addEventListener("click", () => window.open(item.previewPath, "_blank", "noopener,noreferrer"));
+          const viewPrd = document.createElement("button");
+          viewPrd.type = "button";
+          viewPrd.className = `tool-button prd-button${hasPrd ? "" : " is-disabled"}`;
+          viewPrd.textContent = "查看 PRD";
+          viewPrd.disabled = !hasPrd;
+          viewPrd.title = hasPrd
+            ? `查看该版本 ${prdPageCount} 个页面的 PRD（prd.md）`
+            : "尚未生成 PRD：请先用 prd-generator 在页面目录写出 prd.md";
+          if (hasPrd) {
+            viewPrd.addEventListener("click", () => openPrdViewer(item));
+          }
           const edit = document.createElement("button");
           edit.type = "button";
           edit.className = "tool-button";
@@ -4306,6 +4392,9 @@
           publish.className = "tool-button publish-button";
           publish.textContent = isPublished ? "已发布" : "发布";
           publish.disabled = isPublished;
+          publish.title = isPublished
+            ? "该版本已发布"
+            : "发布时会将当前原型与 PRD 一并上传";
           if (!isPublished) {
             publish.addEventListener("click", () => publishVersion(item, publish));
           }
@@ -4313,7 +4402,7 @@
           updatePrototype.type = "button";
           updatePrototype.className = "tool-button version-update-button";
           updatePrototype.textContent = "更新原型";
-          updatePrototype.title = "重新上传当前本地原型和自动 PRD，线上链接保持不变";
+          updatePrototype.title = "重新上传当前本地原型 + PRD，线上链接保持不变";
           updatePrototype.addEventListener("click", () => publishVersion(item, updatePrototype, { updateExisting: true }));
           const openShare = document.createElement("a");
           openShare.className = "tool-button version-link-button";
@@ -4328,13 +4417,66 @@
           remove.title = "仅删除本地版本";
           remove.addEventListener("click", () => deleteVersion(item.id));
           if (shareUrl) {
-            actions.append(preview, edit, openShare, updatePrototype, publish, remove);
+            actions.append(preview, viewPrd, edit, openShare, updatePrototype, publish, remove);
           } else {
-            actions.append(preview, edit, publish, remove);
+            actions.append(preview, viewPrd, edit, publish, remove);
           }
           card.appendChild(actions);
           versionListEl.appendChild(card);
         });
+      }
+
+      function closePrdViewerModal() {
+        if (!prdViewerModalEl) return;
+        prdViewerModalEl.classList.add("hidden");
+      }
+
+      async function openPrdViewer(item) {
+        if (!item?.id) return;
+        if (!item.hasPrd) {
+          showToast("尚未生成 PRD，按钮不可用。请先为页面生成 prd.md。", 3200);
+          return;
+        }
+        if (prdViewerTitleEl) prdViewerTitleEl.textContent = `PRD · ${item.name || "版本"}`;
+        if (prdViewerSubtitleEl) prdViewerSubtitleEl.textContent = "加载中…";
+        if (prdViewerMetaEl) prdViewerMetaEl.innerHTML = "";
+        if (prdViewerBodyEl) prdViewerBodyEl.textContent = "正在读取 PRD…";
+        prdViewerModalEl.classList.remove("hidden");
+        try {
+          const response = await fetch(`/api/versions/${encodeURIComponent(item.id)}/prd`);
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(data.error || "读取 PRD 失败");
+          }
+          if (!data.available || !data.markdown) {
+            if (prdViewerSubtitleEl) prdViewerSubtitleEl.textContent = "未找到可展示的 PRD";
+            if (prdViewerBodyEl) {
+              prdViewerBodyEl.className = "prd-viewer prd-viewer-empty";
+              prdViewerBodyEl.textContent = data.message || "当前版本内页面尚未生成 prd.md。";
+            }
+            return;
+          }
+          if (prdViewerSubtitleEl) {
+            prdViewerSubtitleEl.textContent = data.message || "版本 PRD 汇总";
+          }
+          if (prdViewerMetaEl) {
+            const paths = Array.isArray(data.prdPaths) ? data.prdPaths : [];
+            prdViewerMetaEl.innerHTML = [
+              `<span class="version-card-tag">${data.prdPageCount || paths.length || 0} 个页面含 PRD</span>`,
+              ...paths.slice(0, 6).map((path) => `<span class="version-card-tag">${escapeHtml(path)}</span>`),
+            ].join("");
+          }
+          if (prdViewerBodyEl) {
+            prdViewerBodyEl.className = "prd-viewer";
+            prdViewerBodyEl.textContent = data.markdown;
+          }
+        } catch (error) {
+          if (prdViewerSubtitleEl) prdViewerSubtitleEl.textContent = "读取失败";
+          if (prdViewerBodyEl) {
+            prdViewerBodyEl.className = "prd-viewer prd-viewer-empty";
+            prdViewerBodyEl.textContent = error.message || "读取 PRD 失败";
+          }
+        }
       }
 
       function fillVersionForm(item) {
@@ -4416,8 +4558,8 @@
         }
 
         const confirmMessage = updateExisting
-          ? "确认更新这个线上版本的原型吗？会重新上传当前本地原型和自动 PRD，分享链接保持不变。"
-          : "确认发布这个版本到掌玩？发布前请确保发布配置已填写。";
+          ? "确认更新这个线上版本吗？会重新上传「当前本地原型 + PRD」（有 prd.md 优先，否则用 Spec/需求汇总），分享链接保持不变。"
+          : "确认发布这个版本到掌玩？将同时上传「原型 + PRD」。发布前请确保发布配置已填写。";
         if (!options.confirmed && !confirm(confirmMessage)) {
           return;
         }

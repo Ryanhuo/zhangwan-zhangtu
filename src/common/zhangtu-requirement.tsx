@@ -1248,9 +1248,7 @@ export function AnnotationLayerPortal({ annotations, pageKey }: AnnotationLayerP
         const nextOpen = Boolean(event.data.open);
         setEditorPanelOpen(nextOpen);
         setElementEditMode(nextOpen);
-        if (nextOpen) {
-          setPanelOpen(false);
-        } else {
+        if (!nextOpen) {
           setElementEditorOpen(false);
           setDockExpanded(false);
           setHoverRect(null);
