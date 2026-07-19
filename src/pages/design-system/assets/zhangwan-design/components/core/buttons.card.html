@@ -1,0 +1,32 @@
+<!-- @dsCard group="Components" viewport="700x220" name="按钮" subtitle="主要/默认/文字/危险 样式，多种尺寸，加载与禁用态" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<div id="root" style="padding:20px;font-family:var(--font-ui);background:var(--surface-canvas);"></div>
+<script type="text/babel">
+const { Button } = window.CompassDesignSystem_6dfef5;
+function Demo() {
+  return (
+    <div style={{display:'flex', flexDirection:'column', gap:16}}>
+      <div style={{display:'flex', gap:10, alignItems:'center'}}>
+        <Button variant="primary">搜索</Button>
+        <Button variant="default">重置</Button>
+        <Button variant="text">导出</Button>
+        <Button variant="danger">删除</Button>
+      </div>
+      <div style={{display:'flex', gap:10, alignItems:'center'}}>
+        <Button variant="primary" size="small">Small</Button>
+        <Button variant="primary" size="medium">Medium</Button>
+        <Button variant="primary" size="large">Large</Button>
+      </div>
+      <div style={{display:'flex', gap:10, alignItems:'center'}}>
+        <Button variant="primary" loading>提交中</Button>
+        <Button variant="default" disabled>Disabled</Button>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>

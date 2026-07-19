@@ -1,0 +1,20 @@
+<!-- @dsCard group="Brand" viewport="700x150" name="侧边栏菜单状态" subtitle="来自 sidebar.scss 的默认/悬停/激活状态" -->
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;font-family:var(--font-ui);display:flex;gap:0;height:150px;}
+  .col{flex:1;display:flex;flex-direction:column;}
+  .item{height:50px;line-height:50px;padding-left:20px;font-size:15px;color:var(--text-body);position:relative;}
+  .lbl{font-size:10px;color:var(--text-faint);padding:6px 0 2px 20px;}
+</style>
+<div class="col" style="background:var(--surface-card)">
+  <div class="lbl">default</div>
+  <div class="item">数据总览</div>
+</div>
+<div class="col" style="background:var(--surface-card)">
+  <div class="lbl">hover</div>
+  <div class="item" style="background:var(--brand-hover-bg)">数据总览</div>
+</div>
+<div class="col" style="background:var(--surface-card)">
+  <div class="lbl">active</div>
+  <div class="item" style="background:var(--brand-active-bg);color:var(--brand-primary);font-weight:500;border-right:3px solid var(--brand-primary)">数据总览</div>
+</div>

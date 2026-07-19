@@ -1,0 +1,11 @@
+/* Zhangwan (掌玩) Design System — global stylesheet entry point.
+   Consumers link only this file; it @imports the full token + font closure. */
+
+/* Noto Sans SC — open-source, cross-platform stand-in for Apple's 'PingFang SC'
+   (which has no distributable file). PingFang SC stays first in --font-ui so
+   Apple devices still use the system font; Noto covers everyone else. */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';

@@ -146,6 +146,10 @@ function ColumnsIcon() {
   );
 }
 
+function isOpsSkill(skill: SkillSummary) {
+  return skill.tier === "ops";
+}
+
 function SkillFolder({
   title,
   icon,
@@ -153,6 +157,7 @@ function SkillFolder({
   selectedId,
   onSelect,
   onDelete,
+  defaultExpanded = true,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -160,44 +165,55 @@ function SkillFolder({
   selectedId: string | null;
   onSelect: (id: string) => void;
   onDelete?: (skill: SkillSummary) => void;
+  /** 能力技能默认展开；运维技能默认折叠 */
+  defaultExpanded?: boolean;
 }) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
+
   return (
-    <section className="skills-folder">
-      <div className="skills-folder-header">
+    <section className={`skills-folder ${expanded ? "is-expanded" : "is-collapsed"}`}>
+      <button
+        type="button"
+        className="skills-folder-header"
+        onClick={() => setExpanded((current) => !current)}
+        aria-expanded={expanded}
+      >
         {icon}
         <span>{title}</span>
         <span className="skills-folder-count">{items.length}</span>
-      </div>
-      <div className="skills-folder-body">
-        {items.length ? items.map((skill) => (
-          <div
-            key={skill.id}
-            className={`skills-item-row ${selectedId === skill.id ? "is-active" : ""}`}
-          >
-            <button
-              type="button"
-              className="skills-item"
-              onClick={() => onSelect(skill.id)}
+      </button>
+      {expanded ? (
+        <div className="skills-folder-body">
+          {items.length ? items.map((skill) => (
+            <div
+              key={skill.id}
+              className={`skills-item-row ${selectedId === skill.id ? "is-active" : ""}`}
             >
-              <FileText size={14} />
-              <span className="skills-item-name">{skill.name}</span>
-            </button>
-            {onDelete && (
-              <Tooltip title="删除技能" placement="right">
-                <button
-                  type="button"
-                  className="skills-item-delete"
-                  onClick={(e) => { e.stopPropagation(); onDelete(skill); }}
-                >
-                  <Trash2 size={13} />
-                </button>
-              </Tooltip>
-            )}
-          </div>
-        )) : (
-          <div className="skills-folder-empty">暂无技能</div>
-        )}
-      </div>
+              <button
+                type="button"
+                className="skills-item"
+                onClick={() => onSelect(skill.id)}
+              >
+                <FileText size={14} />
+                <span className="skills-item-name">{skill.name}</span>
+              </button>
+              {onDelete && (
+                <Tooltip title="删除技能" placement="right">
+                  <button
+                    type="button"
+                    className="skills-item-delete"
+                    onClick={(e) => { e.stopPropagation(); onDelete(skill); }}
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </Tooltip>
+              )}
+            </div>
+          )) : (
+            <div className="skills-folder-empty">暂无技能</div>
+          )}
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -217,8 +233,16 @@ function SkillsPage() {
     () => window.sessionStorage.getItem("zhangtu:skillsSidebarCollapsed") === "true",
   );
 
-  const projectSkills = useMemo(() => skills.filter((s) => s.category === "project"), [skills]);
-  const userSkills = useMemo(() => skills.filter((s) => s.category === "user"), [skills]);
+  // 先按 tier 分：能力技能保持 project/user 分组；运维技能单独「框架运维」折叠组
+  const projectSkills = useMemo(
+    () => skills.filter((s) => s.category === "project" && !isOpsSkill(s)),
+    [skills],
+  );
+  const userSkills = useMemo(
+    () => skills.filter((s) => s.category === "user" && !isOpsSkill(s)),
+    [skills],
+  );
+  const opsSkills = useMemo(() => skills.filter(isOpsSkill), [skills]);
 
   useEffect(() => {
     window.sessionStorage.setItem("zhangtu:skillsSidebarCollapsed", String(isSidebarCollapsed));
@@ -400,7 +424,7 @@ function SkillsPage() {
           </button>
           <span className="skills-nav-title">技能库</span>
           <span className="skills-nav-counts">
-            {projectSkills.length + userSkills.length} 项
+            {projectSkills.length + userSkills.length + opsSkills.length} 项
           </span>
         </div>
         <Button
@@ -421,6 +445,7 @@ function SkillsPage() {
             items={projectSkills}
             selectedId={selectedSkillId}
             onSelect={setSelectedSkillId}
+            defaultExpanded
           />
           <SkillFolder
             title="用户导入"
@@ -429,6 +454,15 @@ function SkillsPage() {
             selectedId={selectedSkillId}
             onSelect={setSelectedSkillId}
             onDelete={deletingId ? undefined : handleDelete}
+            defaultExpanded
+          />
+          <SkillFolder
+            title="框架运维"
+            icon={<FolderOpen size={15} />}
+            items={opsSkills}
+            selectedId={selectedSkillId}
+            onSelect={setSelectedSkillId}
+            defaultExpanded={false}
           />
         </aside>
 

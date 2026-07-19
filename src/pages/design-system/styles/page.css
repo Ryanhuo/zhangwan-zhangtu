@@ -1,0 +1,381 @@
+/* 设计系统展示页壳层：顶部导航与「技能」页统一（中性 chrome、48px 顶栏），
+   分区目录改为顶栏居中 tab、切换只显示当前分区，避免长滚动。
+   iframe 内仍是 zhangwan-design 自身渲染出来的产品视觉。 */
+:root {
+  --ds-bg: #f6f7f9;
+  --ds-surface: #ffffff;
+  --ds-border: #e8e2d6;
+  --ds-text: #2b2a27;
+  --ds-text-muted: #6b6558;
+  --ds-accent: var(--color-brand-green, #00bf8a);
+  --ds-chrome-border: rgba(15, 23, 42, 0.08);
+  --ds-chrome-text: #0f172a;
+  --ds-chrome-muted: #64748b;
+}
+
+body {
+  margin: 0;
+  background: var(--ds-bg);
+  color: var(--ds-text);
+  font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+}
+
+.ds-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ===== 顶栏（与技能页 .skills-nav 统一：白底、细底边、48px）===== */
+.ds-topbar {
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  background: var(--ds-surface);
+  border-bottom: 1px solid var(--ds-chrome-border);
+}
+
+.ds-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.ds-topbar-mark {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--ds-accent);
+  flex: none;
+}
+
+.ds-topbar-titles {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ds-topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ds-chrome-text);
+  letter-spacing: -0.01em;
+}
+
+.ds-topbar-sub {
+  font-size: 12px;
+  color: var(--ds-chrome-muted);
+  white-space: nowrap;
+}
+
+/* 居中 tab 条 */
+.ds-tabs {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ds-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.ds-tab {
+  flex: 0 0 auto;
+  height: 48px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--ds-chrome-muted);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+.ds-tab:hover {
+  color: var(--ds-chrome-text);
+}
+
+.ds-tab.is-active {
+  color: var(--ds-accent);
+  font-weight: 600;
+  border-bottom-color: var(--ds-accent);
+}
+
+/* 导出按钮（与技能页导入按钮同款：中性描边） */
+.ds-topbar-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.ds-export-btn {
+  height: 28px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--ds-chrome-text);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+}
+
+.ds-export-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.16);
+}
+
+.ds-export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ds-export-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ===== 内容区：一次只展示当前 tab 的分区 ===== */
+.ds-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 40px 48px 96px;
+}
+
+.ds-body > .ds-section {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.ds-section {
+  margin-bottom: 88px;
+  scroll-margin-top: 32px;
+}
+
+.ds-section h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.ds-section-sub {
+  color: var(--ds-text-muted);
+  font-size: 13.5px;
+  margin: 0 0 24px;
+}
+
+.ds-eyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ds-accent);
+  font-weight: 600;
+}
+
+.ds-overview h1 {
+  font-size: 34px;
+  line-height: 1.25;
+  margin: 0 0 20px;
+  letter-spacing: -0.015em;
+}
+
+.ds-lede {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ds-text);
+  max-width: 720px;
+  margin: 0 0 36px;
+}
+
+.ds-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.ds-overview-grid h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ds-text-muted);
+  margin: 0 0 8px;
+}
+
+.ds-overview-grid p {
+  font-size: 14.5px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.ds-overview-note {
+  font-size: 13px;
+  color: var(--ds-text-muted);
+  line-height: 1.7;
+  border-top: 1px solid var(--ds-border);
+  padding-top: 20px;
+}
+
+.ds-overview-note code,
+.ds-overview-grid code,
+.ds-lede code {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.92em;
+}
+
+.ds-card-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.ds-card {
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.ds-card-head h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.ds-card-head p {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--ds-text-muted);
+}
+
+.ds-frame-outer {
+  width: 100%;
+}
+
+.ds-frame-shell {
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid var(--ds-border);
+}
+
+.ds-frame-shell iframe {
+  border: 0;
+  transform-origin: top left;
+  display: block;
+}
+
+.ds-component-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 28px;
+  padding: 20px;
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: 10px;
+}
+
+.ds-component-group h4 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ds-text-muted);
+}
+
+.ds-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 320px;
+}
+
+.ds-chip {
+  font-size: 12.5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(0, 191, 138, 0.08);
+  color: #04795a;
+  border: 1px solid rgba(0, 191, 138, 0.2);
+}
+
+.ds-token-appendix {
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.ds-token-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.ds-token-swatch-color {
+  height: 56px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.ds-token-swatch-meta {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--ds-text-muted);
+  word-break: break-all;
+}
+
+.ds-token-swatch-meta code {
+  font-size: 11px;
+  color: var(--ds-text);
+}
+
+.ds-token-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ds-token-table th,
+.ds-token-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.ds-token-table th {
+  color: var(--ds-text-muted);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.ds-token-table td code {
+  font-size: 12.5px;
+}

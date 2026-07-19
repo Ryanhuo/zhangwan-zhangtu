@@ -153,7 +153,17 @@
   letter-spacing: 0.04em;
   cursor: pointer;
   text-align: left;
+  font-family: inherit;
   transition: background 0.12s ease, color 0.12s ease;
+}
+
+.skills-folder-header:hover {
+  background: rgba(15, 23, 42, 0.05);
+  color: #334155;
+}
+
+.skills-folder.is-collapsed .skills-folder-header {
+  margin-bottom: 0;
 }
 
 .skills-folder-count {

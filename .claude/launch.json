@@ -5,7 +5,7 @@
       "name": "zhangtu-preview",
       "runtimeExecutable": "node",
       "runtimeArgs": ["scripts/zhangtu/cli.mjs", "preview"],
-      "port": 51730,
+      "port": 6320,
       "autoPort": true
     }
   ]

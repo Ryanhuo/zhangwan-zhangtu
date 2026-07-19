@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="styles.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { width: 1280px; height: 854px; display: flex; overflow: hidden; }
+  .main {
+    flex: 1 1 auto;
+    background: var(--brand-primary, #00bf8a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .main img { width: 560px; max-width: 70%; height: auto; display: block; }
+  .strip { width: 25%; flex: 0 0 auto; display: flex; flex-direction: column; }
+  .strip div { flex: 1 1 0; }
+  a { color: var(--brand-primary, #00bf8a); }
+  a:hover { color: #02b8de; }
+</style>
+</head>
+<body>
+  <div class="main">
+    <img src="assets/logo-white.png" alt="Compass">
+  </div>
+  <div class="strip">
+    <div style="background:#ffd591;"></div>
+    <div style="background:#41b2ff;"></div>
+    <div style="background:#02b8de;"></div>
+    <div style="background:#f53f3f;"></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!-- @dsCard group="Components" viewport="900x520" name="图表" subtitle="折线图 / 柱状图 / 环形图 — 悬停查看数值" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<div id="root" style="padding:20px;font-family:var(--font-ui);background:var(--surface-card);"></div>
+<script type="text/babel">
+const { LineChart, ColumnChart, PieChart, Panel } = window.CompassDesignSystem_6dfef5;
+
+const trend = [
+  { label: '07-07', value: 1180 }, { label: '07-08', value: 1350 },
+  { label: '07-09', value: 1220 }, { label: '07-10', value: 1460 },
+  { label: '07-11', value: 1390 }, { label: '07-12', value: 1580 },
+  { label: '07-13', value: 1510 },
+];
+const channels = [
+  { label: '渠道A', value: 820 }, { label: '渠道B', value: 1240 },
+  { label: '渠道C', value: 560 }, { label: '渠道D', value: 940 },
+];
+const mix = [
+  { label: 'iOS', value: 620 }, { label: 'Android', value: 980 }, { label: '其他', value: 140 },
+];
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+    <Panel title="新增用户趋势">
+      <LineChart series={[{ name: '新增用户', data: trend }]} height={220} />
+    </Panel>
+    <Panel title="留存 / 付费对比">
+      <LineChart
+        series={[
+          { name: '次日留存', data: trend.map((d) => ({ label: d.label, value: Math.round(d.value * 0.4) })) },
+          { name: '付费用户', data: trend.map((d) => ({ label: d.label, value: Math.round(d.value * 0.15) })) },
+        ]}
+        height={220}
+      />
+    </Panel>
+    <Panel title="渠道消耗对比">
+      <ColumnChart data={channels} height={220} />
+    </Panel>
+    <Panel title="平台构成">
+      <PieChart data={mix} height={200} />
+    </Panel>
+  </div>
+);
+</script>

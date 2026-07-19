@@ -272,8 +272,7 @@
         display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         font-size: var(--body-base-font-size); line-height: var(--body-base-line-height);
       }
-      .nav-item--skills .nav-item-title,
-      .nav-item--ui .nav-item-title {
+      .nav-item--skills .nav-item-title {
         height: 28px;
         padding-top: 4px;
         padding-bottom: 4px;
@@ -883,6 +882,95 @@
         color: var(--text-tertiary); font-size: var(--body-base-font-size);
       }
 
+      /* ===== 工作流视图（第 3 期）：横向泳道 + 贯穿层 + 回环，绿色为掌玩品牌主色 ===== */
+      .wf-shell { height: 100%; background: var(--bg-base-secondary); }
+      .wf-scroll { height: 100%; overflow: auto; padding: 28px 32px 40px; box-sizing: border-box; }
+      .wf-view { max-width: 1240px; margin: 0 auto; }
+      .wf-head h1 { margin: 0 0 6px; font-size: 20px; font-weight: 600; color: var(--text-default); letter-spacing: -0.01em; }
+      .wf-head p { margin: 0 0 20px; font-size: 13px; line-height: 1.6; color: var(--text-tertiary); max-width: 720px; }
+
+      /* 贯穿层横幅 */
+      .wf-layer {
+        display: flex; align-items: center; gap: 14px;
+        padding: 12px 16px; margin-bottom: 18px;
+        background: rgba(0, 191, 138, 0.07);
+        border: 1px solid rgba(0, 191, 138, 0.24);
+        border-radius: 8px;
+      }
+      .wf-layer-tag {
+        flex: 0 0 auto; font-size: 11px; font-weight: 600; color: #04795a;
+        padding: 3px 8px; border-radius: 11px; background: #e1fff0; border: 1px solid rgba(0, 191, 138, 0.28);
+      }
+      .wf-layer-body { font-size: 12.5px; line-height: 1.55; color: var(--text-secondary); }
+      .wf-layer-body strong { color: #04795a; margin-right: 6px; }
+      .wf-layer-body code, .wf-cap code {
+        font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px;
+        background: rgba(0, 0, 0, 0.05); border-radius: 4px; padding: 1px 5px;
+      }
+
+      /* 泳道 */
+      .wf-lane { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding-bottom: 6px; }
+      .wf-arrow {
+        flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+        padding: 0 6px; color: #00bf8a; font-size: 22px; font-weight: 700; align-self: center;
+      }
+      .wf-block {
+        flex: 1 1 0; min-width: 236px;
+        display: flex; flex-direction: column;
+        background: var(--bg-base-default);
+        border: 1px solid var(--border-neutral-l2); border-radius: 10px;
+        overflow: hidden;
+      }
+      .wf-block-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--border-neutral-l1); }
+      .wf-block-key {
+        flex: 0 0 auto; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: 700; color: #fff; background: #00bf8a; border-radius: 6px;
+      }
+      .wf-block-title { font-size: 14px; font-weight: 600; color: var(--text-default); }
+      .wf-block-caps { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; }
+
+      .wf-cap { border: 1px solid var(--border-neutral-l1); border-radius: 8px; padding: 10px 12px; background: var(--bg-base-secondary); }
+      .wf-cap-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+      .wf-cap-block { flex: 0 0 auto; font-size: 11px; color: var(--text-tertiary); font-weight: 600; }
+      .wf-cap-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--text-default); }
+      .wf-support { flex: 0 0 auto; font-size: 10.5px; padding: 1px 7px; border-radius: 11px; font-weight: 500; }
+      .wf-support--full { color: #04795a; background: #e1fff0; border: 1px solid rgba(0, 191, 138, 0.28); }
+      .wf-support--partial { color: #9a6a00; background: #fff6e0; border: 1px solid rgba(214, 158, 46, 0.32); }
+      .wf-io { display: flex; align-items: stretch; gap: 6px; margin-bottom: 8px; }
+      .wf-io-cell { flex: 1; font-size: 11.5px; line-height: 1.45; color: var(--text-secondary); }
+      .wf-io-cell em { display: block; font-style: normal; font-size: 10px; color: var(--text-tertiary); margin-bottom: 2px; }
+      .wf-io-sep { flex: 0 0 auto; align-self: center; color: #00bf8a; font-weight: 700; }
+      .wf-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+      .wf-chip { font-size: 11px; padding: 2px 8px; border-radius: 11px; white-space: nowrap; }
+      .wf-chip--skill { color: #04795a; background: #e1fff0; border: 1px solid rgba(0, 191, 138, 0.22); }
+      .wf-chip--cmd { color: var(--text-secondary); background: var(--bg-base-tertiary); border: 1px solid var(--border-neutral-l2); font-family: ui-monospace, Menlo, Consolas, monospace; }
+      .wf-default { margin-top: 8px; font-size: 11px; color: #04795a; }
+
+      .wf-block-jumps { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 14px 14px; }
+      .wf-jump {
+        display: inline-flex; align-items: center; height: 28px; padding: 0 12px;
+        font-size: 12px; font-family: inherit; cursor: pointer;
+        color: #04795a; background: #fff; border: 1px solid rgba(0, 191, 138, 0.4); border-radius: 8px;
+        transition: background 0.12s ease, border-color 0.12s ease;
+      }
+      .wf-jump:hover { background: #e1fff0; border-color: #00bf8a; }
+
+      /* 回环 */
+      .wf-loop {
+        display: flex; align-items: flex-start; gap: 12px; margin-top: 18px;
+        padding: 12px 16px; border-radius: 8px;
+        background: var(--bg-base-default); border: 1px dashed rgba(0, 191, 138, 0.5);
+        font-size: 12.5px; line-height: 1.55; color: var(--text-secondary);
+      }
+      .wf-loop strong { color: #04795a; }
+      .wf-loop-icon { flex: 0 0 auto; font-size: 18px; color: #00bf8a; line-height: 1.3; }
+
+      @media (max-width: 900px) {
+        .wf-lane { flex-direction: column; }
+        .wf-arrow { transform: rotate(90deg); padding: 4px 0; }
+        .wf-block { flex: 0 0 auto; min-width: 0; }
+      }
+
       /* ===== Version modal (ds-dialog style) ===== */
       .modal-backdrop {
         position: fixed; inset: 0; z-index: 100;
@@ -1318,123 +1406,6 @@
         * { transition: none !important; }
       }
 
-      /* ===== zhangwanUI real data views ===== */
-
-      /* theme scroll body */
-      .ds-data-body { display: flex; flex-direction: column; gap: 0; overflow-y: auto; flex: 1; background: var(--bg-base-secondary); }
-      .ds-token-section { border-bottom: 1px solid var(--border-neutral-l1); background: var(--bg-base-default); }
-      .ds-token-section-head {
-        display: flex; align-items: center; gap: 8px;
-        padding: 14px 24px 12px;
-        border-bottom: 1px solid var(--border-neutral-l1);
-      }
-      .ds-token-section-head-title { font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.1em; }
-      .ds-token-section-body { padding: 20px 24px 24px; }
-
-      /* color palettes */
-      .ds-pal-group { margin-bottom: 24px; }
-      .ds-pal-group:last-child { margin-bottom: 0; }
-      .ds-pal-group-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: capitalize; margin-bottom: 10px; }
-      .ds-pal-row { display: flex; gap: 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-neutral-l1); }
-      .ds-pal-chip {
-        flex: 1; min-width: 0; padding: 0 0 10px; cursor: default;
-        display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
-        min-height: 80px; position: relative; transition: flex 0.15s;
-      }
-      .ds-pal-chip:hover { flex: 1.6; }
-      .ds-pal-chip-inner { padding: 0 8px; width: 100%; box-sizing: border-box; }
-      .ds-pal-chip-step { font-size: 10px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
-      .ds-pal-chip-hex { font-size: 9px; line-height: 1; font-family: var(--code-editor-font-family, monospace); opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-      /* font scale */
-      .ds-font-table { width: 100%; border-collapse: collapse; }
-      .ds-font-table tr { border-bottom: 1px solid var(--border-neutral-l1); }
-      .ds-font-table tr:last-child { border-bottom: none; }
-      .ds-font-table td { padding: 10px 8px; vertical-align: middle; }
-      .ds-font-td-meta { width: 200px; }
-      .ds-font-key { font-size: 11px; color: var(--text-default); font-weight: 600; font-family: var(--code-editor-font-family, monospace); }
-      .ds-font-attrs { font-size: 10px; color: var(--text-tertiary); font-family: var(--code-editor-font-family, monospace); margin-top: 2px; }
-      .ds-font-sample { color: var(--text-default); line-height: 1.2; }
-
-      /* shadow */
-      .ds-shadow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-      .ds-shadow-card {
-        display: flex; flex-direction: column; align-items: center; gap: 12px;
-        padding: 20px 16px 14px; border: 1px solid var(--border-neutral-l1); border-radius: 10px;
-        background: var(--bg-base-default);
-      }
-      .ds-shadow-preview { width: 80px; height: 48px; border-radius: 8px; background: var(--bg-base-default); }
-      .ds-shadow-label { font-size: 11px; color: var(--text-secondary); text-align: center; line-height: 1.4; }
-
-      /* radius */
-      .ds-radius-grid { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
-      .ds-radius-card { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-      .ds-radius-box { background: color-mix(in srgb, var(--bg-brand) 10%, var(--bg-base-default)); border: 2px solid var(--border-brand); }
-      .ds-tk-label { font-size: 11px; font-weight: 600; color: var(--text-default); text-align: center; }
-      .ds-tk-val { font-size: 10px; color: var(--text-tertiary); text-align: center; font-family: var(--code-editor-font-family, monospace); }
-
-      /* spacing */
-      .ds-spacing-grid { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
-      .ds-spacing-card { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-      .ds-spacing-bar { background: color-mix(in srgb, var(--bg-brand) 22%, transparent); border: 1.5px solid var(--border-brand); height: 14px; border-radius: 3px; min-width: 4px; }
-
-      /* size */
-      .ds-size-grid { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
-      .ds-size-card { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-      .ds-size-box { background: var(--bg-brand); border-radius: 4px; }
-
-      /* components split */
-      .ds-comp-split { display: flex; flex: 1; overflow: hidden; min-height: 0; }
-      .ds-comp-nav { width: 220px; flex-shrink: 0; border-right: 1px solid var(--border-neutral-l1); overflow-y: auto; background: var(--bg-base-default); }
-      .ds-comp-nav-group { padding: 8px 0; }
-      .ds-comp-nav-label { padding: 6px 16px 4px; font-size: 10px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; }
-      .ds-comp-nav-btn { display: flex; align-items: center; width: 100%; padding: 7px 16px; font-size: 13px; color: var(--text-secondary); border: 0; background: none; cursor: pointer; text-align: left; transition: background 0.12s, color 0.12s; }
-      .ds-comp-nav-btn:hover { background: var(--bg-overlay-l1); color: var(--text-default); }
-      .ds-comp-nav-btn.active { background: color-mix(in srgb, var(--bg-brand) 8%, transparent); color: var(--text-brand); font-weight: var(--font-weight-medium); }
-      .ds-comp-frame-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 16px; gap: 12px; background: var(--bg-base-secondary); }
-      .ds-comp-frame-bar { display: flex; align-items: center; padding: 8px 14px; border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8); font-size: 12px; color: var(--text-secondary); background: var(--bg-base-default); }
-      .ds-comp-frame { flex: 1; border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-12); background: #fff; }
-
-      /* icons */
-      .ds-icon-wrap { display: flex; flex-direction: column; flex: 1; overflow: hidden; min-height: 0; }
-      .ds-icon-toolbar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border-neutral-l1); background: var(--bg-base-default); }
-      .ds-icon-search { flex: 1; max-width: 300px; height: 32px; padding: 0 10px; border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8); font-size: 13px; color: var(--text-default); background: var(--bg-base-default); outline: none; transition: border-color 0.12s; }
-      .ds-icon-search:focus { border-color: var(--border-brand); }
-      .ds-icon-count { font-size: 12px; color: var(--text-tertiary); }
-      .ds-icon-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px; overflow-y: auto; align-content: flex-start; flex: 1; }
-      .ds-icon-item { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 12px 8px 8px; width: 84px; border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8); background: var(--bg-base-default); cursor: pointer; transition: border-color 0.12s, background 0.12s; }
-      .ds-icon-item:hover { border-color: var(--border-brand); background: color-mix(in srgb, var(--bg-brand) 6%, var(--bg-base-default)); }
-      .ds-icon-img { width: 24px; height: 24px; }
-      .ds-icon-name { font-size: 10px; color: var(--text-tertiary); text-align: center; word-break: break-all; line-height: 1.3; max-width: 68px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-
-      /* spec */
-      .ds-spec-split { display: flex; flex: 1; overflow: hidden; min-height: 0; }
-      .ds-spec-nav { width: 180px; flex-shrink: 0; border-right: 1px solid var(--border-neutral-l1); overflow-y: auto; padding: 8px 0; background: var(--bg-base-default); }
-      .ds-spec-nav-btn { display: block; width: 100%; padding: 8px 16px; font-size: 13px; color: var(--text-secondary); border: 0; background: none; cursor: pointer; text-align: left; transition: background 0.12s, color 0.12s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .ds-spec-nav-btn:hover { background: var(--bg-overlay-l1); color: var(--text-default); }
-      .ds-spec-nav-btn.active { background: color-mix(in srgb, var(--bg-brand) 8%, transparent); color: var(--text-brand); font-weight: var(--font-weight-medium); }
-      .ds-spec-content { flex: 1; overflow-y: auto; padding: 28px 36px 48px; background: var(--bg-base-default); }
-      .ds-spec-md { width: 100%; max-width: 860px; line-height: 1.75; font-size: 14px; color: var(--text-default); }
-      .ds-spec-md h1 { font-size: 24px; font-weight: 700; margin: 0 0 10px; color: var(--text-default); line-height: 1.35; }
-      .ds-spec-md h2 { font-size: 18px; font-weight: 700; margin: 28px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-neutral-l1); color: var(--text-default); line-height: 1.35; }
-      .ds-spec-md h3 { font-size: 15px; font-weight: 600; margin: 20px 0 6px; color: var(--text-default); line-height: 1.35; }
-      .ds-spec-md h4, .ds-spec-md h5, .ds-spec-md h6 { font-size: 13px; font-weight: 600; margin: 12px 0 4px; color: var(--text-default); line-height: 1.35; }
-      .ds-spec-md p { margin: 0 0 12px; color: var(--text-secondary); }
-      .ds-spec-md ul, .ds-spec-md ol { margin: 0 0 12px; padding-left: 20px; }
-      .ds-spec-md li { margin-bottom: 4px; color: var(--text-secondary); }
-      .ds-spec-md code { background: var(--bg-overlay-l1); border-radius: 5px; padding: 2px 6px; font-size: 12px; font-family: var(--code-editor-font-family, monospace); color: var(--text-brand); }
-      .ds-spec-md pre { background: var(--bg-base-secondary); border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8); padding: 14px 16px; overflow-x: auto; margin: 0 0 12px; }
-      .ds-spec-md pre code { background: none; border: none; padding: 0; color: inherit; }
-      .ds-spec-md table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 13px; }
-      .ds-spec-md th { background: var(--bg-base-secondary); font-weight: 600; padding: 9px 12px; border: 1px solid var(--border-neutral-l1); text-align: left; color: var(--text-default); }
-      .ds-spec-md td { padding: 9px 12px; border: 1px solid var(--border-neutral-l1); color: var(--text-secondary); vertical-align: top; }
-      .ds-spec-md tr:nth-child(even) td { background: var(--bg-base-secondary); }
-      .ds-spec-md blockquote { border-left: 3px solid var(--border-brand); margin: 0 0 12px; padding: 8px 16px; background: color-mix(in srgb, var(--bg-brand) 6%, var(--bg-base-default)); border-radius: 0 4px 4px 0; color: var(--text-secondary); }
-      .ds-spec-md a { color: var(--text-brand); text-decoration: none; }
-      .ds-spec-md a:hover { text-decoration: underline; }
-      .ds-spec-md hr { border: none; border-top: 1px solid var(--border-neutral-l1); margin: 20px 0; }
-      .ds-spec-md strong { font-weight: 700; color: var(--text-default); }
-
       /* ===== Toast ===== */
       #toast-container {
         position: fixed; bottom: var(--spacer-24); left: 50%; transform: translateX(-50%);
@@ -1681,6 +1652,7 @@
       const manifest = __MANIFEST__;
       const pages = manifest.pages || [];
       let skillsPage = manifest.skillsPage || null;
+      let designSystemPage = manifest.designSystemPage || null;
       const pageMap = new Map(pages.map((page) => [page.id, page]));
       const projectNameStorageKey = "zhangtu:customProjectName";
       const activeMenuStorageKey = "zhangtu:activeMenu";
@@ -1712,7 +1684,7 @@
         if (isIterationPreview()) {
           return pageMap.has(requestedMenu) ? requestedMenu : (pages[0]?.id || "");
         }
-        if (requestedMenu === "zhangtu-skills" || requestedMenu === "zhangwan-ui" || pageMap.has(requestedMenu)) {
+        if (requestedMenu === "zhangtu-skills" || requestedMenu === "zhangtu-design-system" || requestedMenu === "zhangtu-workflow" || pageMap.has(requestedMenu)) {
           return requestedMenu;
         }
         return "zhangtu-skills";
@@ -1730,11 +1702,6 @@
         activeRequirementAnchor: null,
         annotationMarkersVisible: supportsAuxiliaryMenus(),
         annotationThemeColor: "#1677ff",
-        dsTab: "theme",
-        zwuiData: null,
-        zwuiLoading: false,
-        zwuiSelComp: null,
-        zwuiSpecDocIdx: -1,
         openFolders: new Set(),
       };
       let projectPagesRefreshToken = 0;
@@ -1963,6 +1930,7 @@
           download: `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>`,
           sparkles: `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>`,
           arrowLeft: `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>`,
+          workflow: `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1"></rect><rect x="15" y="15" width="6" height="6" rx="1"></rect><path d="M9 6h6a2 2 0 0 1 2 2v7"></path><path d="M6 9v6a2 2 0 0 0 2 2h4"></path></svg>`,
           upload: `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="m7 8 5-5 5 5"></path><path d="M5 21h14"></path></svg>`,
           trash: `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>`
         };
@@ -2205,7 +2173,7 @@
       }
 
       function ensureActiveMenuAvailable() {
-        if (supportsAuxiliaryMenus() && (state.activeMenu === "zhangtu-skills" || state.activeMenu === "zhangwan-ui")) {
+        if (supportsAuxiliaryMenus() && (state.activeMenu === "zhangtu-skills" || state.activeMenu === "zhangtu-design-system" || state.activeMenu === "zhangtu-workflow")) {
           return;
         }
         if (pageMap.has(state.activeMenu)) {
@@ -2496,6 +2464,7 @@
           pages.length = 0;
           pages.push(...(manifest.pages || []));
           skillsPage = data.manifest.skillsPage || null;
+          designSystemPage = data.manifest.designSystemPage || null;
           pageMap.clear();
           pages.forEach((p) => pageMap.set(p.id, p));
           ensureActiveMenuAvailable();
@@ -2508,6 +2477,7 @@
         pages.length = 0;
         pages.push(...(manifest.pages || []));
         skillsPage = nextManifest.skillsPage || manifest.skillsPage || null;
+        designSystemPage = nextManifest.designSystemPage || manifest.designSystemPage || null;
         pageMap.clear();
         pages.forEach((page) => pageMap.set(page.id, page));
         ensureActiveMenuAvailable();
@@ -2859,16 +2829,21 @@
         const library = manifest.pageLibrary || { folders: [], rootPageIds: pages.map((p) => p.id), pageMeta: {} };
         const isReadOnlyVersion = isIterationPreview();
 
-        const uiKitActive = state.activeMenu === "zhangwan-ui";
         const skillsActive = state.activeMenu === "zhangtu-skills";
+        const designSystemActive = state.activeMenu === "zhangtu-design-system";
+        const workflowActive = state.activeMenu === "zhangtu-workflow";
         const coreHtml = isReadOnlyVersion ? "" : `
+          <button class="nav-item nav-item--skills ${workflowActive ? "active" : ""}" type="button" data-menu="zhangtu-workflow">
+            <span class="nav-item-icon">${svg("workflow", workflowActive ? "var(--icon-default)" : "var(--icon-tertiary)", 14)}</span>
+            <span class="nav-item-copy"><span class="nav-item-title">工作流</span></span>
+          </button>
           <button class="nav-item nav-item--skills ${skillsActive ? "active" : ""}" type="button" data-menu="zhangtu-skills">
             <span class="nav-item-icon">${svg("sparkles", skillsActive ? "var(--icon-default)" : "var(--icon-tertiary)", 14)}</span>
             <span class="nav-item-copy"><span class="nav-item-title">技能</span></span>
           </button>
-          <button class="nav-item nav-item--ui ${uiKitActive ? "active" : ""}" type="button" data-menu="zhangwan-ui">
-            <span class="nav-item-icon">${svg("palette", uiKitActive ? "var(--icon-default)" : "var(--icon-tertiary)", 16)}</span>
-            <span class="nav-item-copy"><span class="nav-item-title">zhangwanUI</span></span>
+          <button class="nav-item nav-item--skills ${designSystemActive ? "active" : ""}" type="button" data-menu="zhangtu-design-system">
+            <span class="nav-item-icon">${svg("palette", designSystemActive ? "var(--icon-default)" : "var(--icon-tertiary)", 14)}</span>
+            <span class="nav-item-copy"><span class="nav-item-title">设计系统</span></span>
           </button>
         `;
 
@@ -3232,7 +3207,7 @@
         const versionBadge = document.getElementById("version-preview-badge");
         if (versionBadge) versionBadge.classList.remove("is-visible");
 
-        if (state.activeMenu === "zhangwan-ui" || state.activeMenu === "zhangtu-skills") {
+        if (state.activeMenu === "zhangtu-skills" || state.activeMenu === "zhangtu-design-system" || state.activeMenu === "zhangtu-workflow") {
           headerEl.classList.add("hidden");
           return;
         }
@@ -3516,312 +3491,6 @@
         `;
       }
 
-      function zwuiMd(md) {
-        if (!md) return "";
-        const lines = String(md).replace(/^---[\s\S]*?---\n?/, "").split("\n");
-        let html = "", inList = false, inCode = false, inTable = false, codeBuf = [], tableRows = [];
-        const fl = () => { if (inList) { html += "</ul>"; inList = false; } };
-        const ft = () => {
-          if (!inTable) return;
-          html += "<table>";
-          if (tableRows.length) {
-            html += "<thead><tr>" + tableRows[0].map(c => `<th>${c}</th>`).join("") + "</tr></thead><tbody>";
-            for (let i = 1; i < tableRows.length; i++) {
-              if (tableRows[i].every(c => /^[\s:\-]+$/.test(c))) continue;
-              html += "<tr>" + tableRows[i].map(c => `<td>${c}</td>`).join("") + "</tr>";
-            }
-            html += "</tbody>";
-          }
-          html += "</table>"; inTable = false; tableRows = [];
-        };
-        const il = t => t
-          .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-          .replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>")
-          .replace(/\*(.*?)\*/g,"<em>$1</em>")
-          .replace(/`(.*?)`/g,"<code>$1</code>")
-          .replace(/\[(.*?)\]\((.*?)\)/g,'<a href="$2" target="_blank" rel="noreferrer">$1</a>');
-        for (const line of lines) {
-          const t = line.trim();
-          if (t.startsWith("```")) { if (inCode) { html += `<pre><code>${codeBuf.join("\n")}</code></pre>`; codeBuf=[]; inCode=false; } else inCode=true; continue; }
-          if (inCode) { codeBuf.push(line.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")); continue; }
-          if (t.startsWith("|") && t.endsWith("|")) { fl(); inTable=true; tableRows.push(line.split("|").slice(1,-1).map(c=>il(c.trim()))); continue; }
-          ft();
-          if (t.startsWith("#")) { fl(); const lv=Math.min((t.match(/^#+/)||[""])[0].length,6); html+=`<h${lv}>${il(t.replace(/^#+\s*/,""))}</h${lv}>`; continue; }
-          if (t.startsWith("- ")||t.startsWith("* ")) { if(!inList){inList=true;html+="<ul>";} html+=`<li>${il(t.slice(2))}</li>`; continue; }
-          if (t.startsWith(">")) { fl(); html+=`<blockquote>${il(t.slice(1).trim())}</blockquote>`; continue; }
-          if (t==="---"||t==="***") { fl(); html+="<hr/>"; continue; }
-          if (!t) { fl(); continue; }
-          fl(); html+=`<p>${il(line)}</p>`;
-        }
-        fl(); ft();
-        return html;
-      }
-
-      function zwuiShadowCss(shadow) {
-        return (shadow.layers || []).map(l => {
-          const hex = l.color.hex;
-          const a = Math.round(parseFloat(l.color.opacity) * 255).toString(16).padStart(2,"0");
-          return `${l.xOffset} ${l.yOffset} ${l.blur} ${l.spread} ${hex}${a === "ff" ? "" : a}`;
-        }).join(", ");
-      }
-
-      function hexLuminance(hex) {
-        const r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
-        const lc = c => c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
-        return 0.2126*lc(r) + 0.7152*lc(g) + 0.0722*lc(b);
-      }
-
-      function renderDesignSystemContent() {
-        const data = state.zwuiData;
-        if (!data) return '<div class="empty-state">正在加载…</div>';
-        const css = data.css || {};
-        const tab = state.dsTab;
-
-        /* ── THEME ─────────────────────────────────────────────────────── */
-        if (tab === "theme") {
-          const colorGroups = Object.entries(css.color || {});
-
-          const colorHtml = colorGroups.map(([gName, group]) => {
-            const chips = Object.entries(group).map(([tok, entry]) => {
-              const a = parseFloat(entry.opacity);
-              const bgHex = a >= 1 ? entry.hex : entry.hex + Math.round(a*255).toString(16).padStart(2,"0");
-              const lum = hexLuminance(entry.hex);
-              const textColor = lum > 0.35 ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.85)";
-              const step = tok.split("-").pop();
-              const isPrimary = entry.isPrimary ? ' style="flex:1.8"' : '';
-              return `<div class="ds-pal-chip" style="background:${bgHex}"${isPrimary}><div class="ds-pal-chip-inner"><div class="ds-pal-chip-step" style="color:${textColor}">${escapeHtml(step)}</div><div class="ds-pal-chip-hex" style="color:${textColor}">${escapeHtml(entry.hex)}</div></div></div>`;
-            }).join("");
-            return `<div class="ds-pal-group"><div class="ds-pal-group-label">${escapeHtml(gName)}</div><div class="ds-pal-row">${chips}</div></div>`;
-          }).join("");
-
-          const fontSizes = Object.entries((css.font||{}).size||{}).slice(0,14);
-          const fontHtml = `<table class="ds-font-table">${fontSizes.map(([key,val]) => {
-            const lh = ((css.font||{}).lineHeight||{})[key]||"";
-            const fw = ((css.font||{}).weight||{})[key]||"";
-            const attrs = [val, lh && "lh "+lh, fw && "w"+fw].filter(Boolean).join("  ·  ");
-            return `<tr><td class="ds-font-td-meta"><div class="ds-font-key">${escapeHtml(key)}</div><div class="ds-font-attrs">${escapeHtml(attrs)}</div></td><td><div class="ds-font-sample" style="font-size:${val};font-weight:${fw||400};line-height:${lh||1.5}">掌玩 Design · Aa 123</div></td></tr>`;
-          }).join("")}</table>`;
-
-          const shadows = Object.entries(css.shadow||{});
-          const shadowHtml = `<div class="ds-shadow-grid">${shadows.map(([key,val]) => {
-            const css2 = zwuiShadowCss(val);
-            const label = key.split("·").map(p=>p.trim()).join("\n");
-            return `<div class="ds-shadow-card"><div class="ds-shadow-preview" style="box-shadow:${css2}"></div><div class="ds-shadow-label">${escapeHtml(label)}</div></div>`;
-          }).join("")}</div>`;
-
-          const radii = Object.entries(css.radius||{});
-          const radiusHtml = `<div class="ds-radius-grid">${radii.map(([k,v]) => {
-            const label = k.replace("zhangwan-radius-","").replace("radius-","");
-            const raw = parseInt(v)||0;
-            const isFull = raw >= 1000 || /full|pill/i.test(k);
-            const size = isFull ? 16 : Math.min(raw, 32);
-            const w = isFull ? 96 : Math.max(40, size*4), h = isFull ? 36 : Math.max(32, size*3);
-            const radius = isFull ? "9999px" : v;
-            return `<div class="ds-radius-card"><div class="ds-radius-box${isFull?" is-full":""}" style="width:${w}px;height:${h}px;border-radius:${radius}"></div><div class="ds-tk-label">${escapeHtml(label)}</div><div class="ds-tk-val">${escapeHtml(v)}</div></div>`;
-          }).join("")}</div>`;
-
-          const spacings = Object.entries(css.spacing||{});
-          const spacingHtml = `<div class="ds-spacing-grid">${spacings.map(([k,v]) => {
-            return `<div class="ds-spacing-card"><div class="ds-spacing-bar" style="width:${v};min-width:4px"></div><div class="ds-tk-label">${escapeHtml(k)}</div><div class="ds-tk-val">${escapeHtml(v)}</div></div>`;
-          }).join("")}</div>`;
-
-          const sizes = Object.entries(css.size||{});
-          const sizeHtml = `<div class="ds-size-grid">${sizes.map(([k,v]) => {
-            const label = k.replace("size-","");
-            return `<div class="ds-size-card"><div class="ds-size-box" style="width:${v};height:${v}"></div><div class="ds-tk-label">${escapeHtml(label)}</div><div class="ds-tk-val">${escapeHtml(v)}</div></div>`;
-          }).join("")}</div>`;
-
-          const section = (title, body) => `<div class="ds-token-section"><div class="ds-token-section-head"><span class="ds-token-section-head-title">${title}</span></div><div class="ds-token-section-body">${body}</div></div>`;
-          return `<div class="ds-data-body">
-            ${section("颜色", colorHtml)}
-            ${section("字体", fontHtml)}
-            ${section("阴影", shadowHtml)}
-            ${section("圆角", radiusHtml)}
-            ${section("间距", spacingHtml)}
-            ${section("尺寸", sizeHtml)}
-          </div>`;
-        }
-
-        /* ── COMPONENTS ────────────────────────────────────────────────── */
-        if (tab === "components") {
-          const comps = (data.components || []).filter(c => c.previewUrl);
-          const kits = data.uiKits || [];
-          const selUrl = state.zwuiSelComp || (comps[0] ? comps[0].previewUrl : kits[0] ? kits[0].url : "");
-          const selName = state.zwuiSelCompName || (comps[0] ? comps[0].name : kits[0] ? kits[0].name : "");
-          const mkBtn = (url, name) => `<button class="ds-comp-nav-btn${selUrl===url?" active":""}" type="button" data-comp-url="${escapeHtml(url)}" data-comp-name="${escapeHtml(name)}">${escapeHtml(name)}</button>`;
-          const compNav = comps.map(c => mkBtn(c.previewUrl, c.name)).join("");
-          const kitNav  = kits.map(k => mkBtn(k.url, k.name)).join("");
-          return `<div class="ds-comp-split">
-            <nav class="ds-comp-nav">
-              ${comps.length ? `<div class="ds-comp-nav-group"><div class="ds-comp-nav-label">组件</div>${compNav}</div>` : ""}
-              ${kits.length  ? `<div class="ds-comp-nav-group"><div class="ds-comp-nav-label">UI Kits</div>${kitNav}</div>` : ""}
-            </nav>
-            <div class="ds-comp-frame-area">
-              <div class="ds-comp-frame-bar">${escapeHtml(selName)}</div>
-              ${selUrl ? `<iframe id="ds-comp-frame" class="ds-comp-frame" src="${escapeHtml(selUrl)}" title="${escapeHtml(selName)}" sandbox="allow-scripts allow-same-origin"></iframe>` : '<div class="empty-state">未找到预览</div>'}
-            </div>
-          </div>`;
-        }
-
-        /* ── ICONS ─────────────────────────────────────────────────────── */
-        if (tab === "icons") {
-          const icons = data.icons || [];
-          const iconItems = icons.map(ic => `<div class="ds-icon-item" title="${escapeHtml(ic.name)}" data-icon-name="${escapeHtml(ic.id.toLowerCase())}"><img class="ds-icon-img" src="${escapeHtml(ic.url)}" alt="${escapeHtml(ic.name)}" /><span class="ds-icon-name">${escapeHtml(ic.name)}</span></div>`).join("");
-          return `<div class="ds-icon-wrap">
-            <div class="ds-icon-toolbar">
-              <input id="ds-icon-search" class="ds-icon-search" type="search" placeholder="搜索图标名称…" />
-              <span class="ds-icon-count" id="ds-icon-count">${icons.length} 个图标</span>
-            </div>
-            <div class="ds-icon-grid" id="ds-icon-grid">${iconItems}</div>
-          </div>`;
-        }
-
-        /* ── SPEC ──────────────────────────────────────────────────────── */
-        if (tab === "spec") {
-          const docs = data.documents || [];
-          if (!docs.length) return '<div class="empty-state">未找到规范文档</div>';
-          const idx = getZwuiSpecDocIndex(docs);
-          const doc = docs[idx];
-          const nav = docs.map((d, i) => `<button class="ds-spec-nav-btn${i===idx?" active":""}" type="button" data-spec-idx="${i}">${escapeHtml(d.title)}</button>`).join("");
-          return `<div class="ds-spec-split">
-            <nav class="ds-spec-nav">${nav}</nav>
-            <div class="ds-spec-content"><div id="ds-spec-md" class="ds-spec-md">${zwuiMd(doc.content)}</div></div>
-          </div>`;
-        }
-
-        return '<div class="empty-state">请选择标签页</div>';
-      }
-
-      function getZwuiSpecDocIndex(docs) {
-        if (!Array.isArray(docs) || !docs.length) {
-          return 0;
-        }
-        if (Number.isInteger(state.zwuiSpecDocIdx) && state.zwuiSpecDocIdx >= 0) {
-          return Math.min(state.zwuiSpecDocIdx, docs.length - 1);
-        }
-        const designIdx = docs.findIndex((doc) => /(^|\/)design\.md$/i.test(String(doc.path || doc.title || "")));
-        return designIdx >= 0 ? designIdx : 0;
-      }
-
-      function renderDesignSystemView() {
-        return `
-          <section class="ds-page">
-            <div class="ds-topbar">
-              <div class="ds-topbar-left">
-                <div class="ds-brand">
-                  <button class="main-toggle-btn" type="button" id="ds-sidebar-toggle" title="展开/收起侧边栏">${svg("columns", "var(--icon-secondary)", 16)}</button>
-                  <div class="ds-brand-copy">
-                    <span class="ds-brand-title">掌玩 UI</span>
-                    <span class="ds-brand-meta">设计系统</span>
-                  </div>
-                </div>
-              </div>
-              <div class="ds-topbar-center">
-                <div class="ds-tab-bar">
-                  <button class="ds-tab-btn ${state.dsTab === "theme" ? "active" : ""}" type="button" data-ds-tab="theme">主题</button>
-                  <button class="ds-tab-btn ${state.dsTab === "components" ? "active" : ""}" type="button" data-ds-tab="components">组件</button>
-                  <button class="ds-tab-btn ${state.dsTab === "icons" ? "active" : ""}" type="button" data-ds-tab="icons">图标</button>
-                  <button class="ds-tab-btn ${state.dsTab === "spec" ? "active" : ""}" type="button" data-ds-tab="spec">设计规范</button>
-                </div>
-              </div>
-              <div class="ds-topbar-right">
-                <button class="ds-export-btn" type="button" id="ds-export-btn">${svg("download", "var(--icon-secondary)", 14)}<span>导出</span></button>
-              </div>
-            </div>
-            <div id="ds-tab-content" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0">${renderDesignSystemContent()}</div>
-          </section>
-        `;
-      }
-
-      function attachDsListeners() {
-        const sidebarToggle = document.getElementById("ds-sidebar-toggle");
-        if (sidebarToggle) sidebarToggle.addEventListener("click", toggleSidebar);
-
-        const exportBtn = document.getElementById("ds-export-btn");
-        if (exportBtn) {
-          exportBtn.addEventListener("click", async () => {
-            const exportUrl = state.zwuiData?.meta?.exportUrl;
-            const fallbackName = `${state.zwuiData?.meta?.displayName || "zhangwanUI"}.zip`;
-            if (!exportUrl) {
-              showToast("当前没有可导出的 zhangwanUI skill。");
-              return;
-            }
-            exportBtn.disabled = true;
-            showToast("正在导出 zhangwanUI skill…", 1800);
-            downloadSkillArchive(exportUrl, fallbackName);
-            showToast("导出已开始。");
-            window.setTimeout(() => {
-              exportBtn.disabled = false;
-            }, 800);
-          });
-        }
-
-        // tab buttons
-        document.querySelectorAll("[data-ds-tab]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            state.dsTab = btn.getAttribute("data-ds-tab");
-            state.zwuiSelComp = null;
-            state.zwuiSelCompName = null;
-            state.zwuiSpecDocIdx = -1;
-            const tabContent = document.getElementById("ds-tab-content");
-            if (tabContent) {
-              tabContent.innerHTML = renderDesignSystemContent();
-              attachDsTabListeners();
-            }
-            // update active tab button
-            document.querySelectorAll("[data-ds-tab]").forEach(b => b.classList.toggle("active", b.getAttribute("data-ds-tab") === state.dsTab));
-          });
-        });
-
-        attachDsTabListeners();
-      }
-
-      function attachDsTabListeners() {
-        // components: nav buttons
-        document.querySelectorAll("[data-comp-url]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const url = btn.getAttribute("data-comp-url");
-            const name = btn.getAttribute("data-comp-name");
-            state.zwuiSelComp = url;
-            state.zwuiSelCompName = name;
-            const frame = document.getElementById("ds-comp-frame");
-            const bar = frame && frame.previousElementSibling;
-            if (frame) frame.src = url;
-            if (bar) bar.textContent = name;
-            document.querySelectorAll("[data-comp-url]").forEach(b => b.classList.toggle("active", b.getAttribute("data-comp-url") === url));
-          });
-        });
-
-        // icons: search
-        const iconSearch = document.getElementById("ds-icon-search");
-        const iconGrid = document.getElementById("ds-icon-grid");
-        const iconCount = document.getElementById("ds-icon-count");
-        if (iconSearch && iconGrid) {
-          iconSearch.addEventListener("input", () => {
-            const q = iconSearch.value.toLowerCase().trim();
-            let shown = 0;
-            iconGrid.querySelectorAll(".ds-icon-item").forEach(item => {
-              const match = !q || item.getAttribute("data-icon-name").includes(q);
-              item.style.display = match ? "" : "none";
-              if (match) shown++;
-            });
-            if (iconCount) iconCount.textContent = shown + " 个图标";
-          });
-        }
-
-        // spec: doc nav buttons
-        document.querySelectorAll("[data-spec-idx]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const idx = parseInt(btn.getAttribute("data-spec-idx"), 10);
-            state.zwuiSpecDocIdx = idx;
-            const docs = (state.zwuiData || {}).documents || [];
-            const doc = docs[idx];
-            const mdEl = document.getElementById("ds-spec-md");
-            if (mdEl && doc) mdEl.innerHTML = zwuiMd(doc.content);
-            document.querySelectorAll("[data-spec-idx]").forEach(b => b.classList.toggle("active", parseInt(b.getAttribute("data-spec-idx"),10) === idx));
-          });
-        });
-      }
 
       function renderPageView(page) {
         const requirementsEnabled = supportsAuxiliaryMenus();
@@ -3838,8 +3507,111 @@
         `;
       }
 
+      // 工作流视图（第 3 期）：只读引导，横向泳道渲染四大块 + 贯穿层 + 回环，数据来自
+      // manifest.capabilities（按 block 首字符 ①②③④ 分组）。能在 Shell 内直达的做真跳转
+      // （设计系统 tab / 技能库 tab / 版本管理弹窗），具体技能触发与文档仍是引导文字。
+      function renderWorkflowView() {
+        const capabilities = Array.isArray(manifest.capabilities) ? manifest.capabilities : [];
+        const ORDER = ["①", "②", "③", "④"];
+        const BLOCK_TITLES = { "①": "需求对齐", "②": "原型设计", "③": "PRD 输出", "④": "版本管理" };
+        const supportLabel = (support) => (support === "full" ? "完整" : "待补");
+        const chip = (text, kind) => `<span class="wf-chip wf-chip--${kind}">${escapeHtml(text)}</span>`;
+
+        const renderCap = (cap) => {
+          const skills = Array.isArray(cap.skills) ? cap.skills : [];
+          const commands = Array.isArray(cap.commands) ? cap.commands : [];
+          const chips = [...skills.map((s) => chip(s, "skill")), ...commands.map((c) => chip(c, "cmd"))].join("");
+          return `
+            <div class="wf-cap">
+              <div class="wf-cap-top">
+                <span class="wf-cap-block">${escapeHtml(cap.block || "")}</span>
+                <span class="wf-cap-name">${escapeHtml(cap.name || "")}</span>
+                <span class="wf-support wf-support--${cap.support === "full" ? "full" : "partial"}">${supportLabel(cap.support)}</span>
+              </div>
+              <div class="wf-io">
+                <span class="wf-io-cell"><em>输入</em>${escapeHtml(cap.inputs || "—")}</span>
+                <span class="wf-io-sep">→</span>
+                <span class="wf-io-cell"><em>产出</em>${escapeHtml(cap.outputs || "—")}</span>
+              </div>
+              ${chips ? `<div class="wf-chips">${chips}</div>` : ""}
+              ${cap.defaultChannel ? `<div class="wf-default">默认通道 · ${escapeHtml(cap.defaultChannel)}</div>` : ""}
+            </div>
+          `;
+        };
+
+        const blocksHtml = ORDER
+          .map((key) => {
+            const caps = capabilities.filter((cap) => String(cap.block || "")[0] === key);
+            if (!caps.length) return "";
+            const jumps = [];
+            if (key === "②") jumps.push({ action: "design-system", label: "打开设计系统" });
+            if (key === "④") jumps.push({ action: "versions", label: "打开版本管理" });
+            if (caps.some((cap) => (Array.isArray(cap.skills) ? cap.skills.length : 0))) {
+              jumps.push({ action: "skills", label: "在技能库查看" });
+            }
+            const jumpsHtml = jumps
+              .map((jump) => `<button type="button" class="wf-jump" data-workflow-action="${jump.action}">${escapeHtml(jump.label)} →</button>`)
+              .join("");
+            return `
+              <div class="wf-block">
+                <div class="wf-block-head">
+                  <span class="wf-block-key">${key}</span>
+                  <span class="wf-block-title">${escapeHtml(BLOCK_TITLES[key] || "")}</span>
+                </div>
+                <div class="wf-block-caps">${caps.map(renderCap).join("")}</div>
+                ${jumpsHtml ? `<div class="wf-block-jumps">${jumpsHtml}</div>` : ""}
+              </div>
+            `;
+          })
+          .filter(Boolean)
+          .join(`<div class="wf-arrow" aria-hidden="true">→</div>`);
+
+        return `
+          <section class="live-preview-shell wf-shell">
+            <div class="wf-scroll">
+              <div class="wf-view">
+                <header class="wf-head">
+                  <h1>工作流</h1>
+                  <p>掌图给产品经理开箱的一条主线：需求 → 原型 → PRD → 版本，四大块之间有回环。此页只做引导，不直接触发 AI。</p>
+                </header>
+                <div class="wf-layer">
+                  <span class="wf-layer-tag">贯穿层</span>
+                  <div class="wf-layer-body">
+                    <strong>需求锚点</strong>
+                    <span>把「需求」钉在「原型」上，同时是 PRD 的数据来源。需求源在全局 <code>src/requirements/</code>，页面用 <code>data-zhangtu-requirement-anchor</code> + <code>ref</code> 引用。</span>
+                  </div>
+                </div>
+                <div class="wf-lane">${blocksHtml}</div>
+                <div class="wf-loop">
+                  <span class="wf-loop-icon">↺</span>
+                  <span><strong>评审反馈 / 需求变更</strong>：④ 版本管理评审出的反馈会回到 ① 需求对齐或 ②c 原型修改 —— 四大块不是瀑布，是有回环的。</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function attachWorkflowEvents() {
+        const stage = document.getElementById("main-stage");
+        if (!stage) return;
+        stage.querySelectorAll("[data-workflow-action]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const action = btn.getAttribute("data-workflow-action");
+            if (action === "skills") setActiveMenu("zhangtu-skills");
+            else if (action === "design-system") setActiveMenu("zhangtu-design-system");
+            else if (action === "versions") openVersionModal();
+          });
+        });
+      }
+
       function renderContent() {
         const mainStageEl = document.getElementById("main-stage");
+        if (state.activeMenu === "zhangtu-workflow") {
+          mainStageEl.innerHTML = renderWorkflowView();
+          attachWorkflowEvents();
+          return;
+        }
         if (state.activeMenu === "zhangtu-skills") {
           if (skillsPage) {
             mainStageEl.innerHTML = `
@@ -3857,27 +3629,20 @@
           return;
         }
 
-        if (state.activeMenu === "zhangwan-ui") {
-          if (!state.zwuiData && !state.zwuiLoading) {
-            state.zwuiLoading = true;
-            mainStageEl.innerHTML = renderDesignSystemView();
-            attachDsListeners();
-            fetch("/api/zhangwanui/overview")
-              .then(r => r.json())
-              .then(data => {
-                state.zwuiData = data;
-                state.zwuiLoading = false;
-                if (state.activeMenu === "zhangwan-ui") renderContent();
-              })
-              .catch(err => {
-                state.zwuiLoading = false;
-                const el = document.getElementById("ds-tab-content");
-                if (el) el.innerHTML = `<div class="empty-state">加载失败：${escapeHtml(err.message)}</div>`;
-              });
-            return;
+        if (state.activeMenu === "zhangtu-design-system") {
+          if (designSystemPage) {
+            mainStageEl.innerHTML = `
+              <section class="live-preview-shell">
+                <div class="frame-layout" id="frame-layout">
+                  <div class="frame-wrap desktop" id="frame-wrap">
+                    <iframe id="page-frame" src="${escapeHtml(designSystemPage.directPagePath)}" title="设计系统"></iframe>
+                  </div>
+                </div>
+              </section>
+            `;
+          } else {
+            mainStageEl.innerHTML = `<div class="empty-state">设计系统页面未找到，请检查 src/pages/design-system/ 目录。</div>`;
           }
-          mainStageEl.innerHTML = renderDesignSystemView();
-          attachDsListeners();
           return;
         }
 

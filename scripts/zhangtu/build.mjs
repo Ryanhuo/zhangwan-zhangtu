@@ -3,7 +3,7 @@
 // - bundle + minify the CLI and all local modules into a single self-contained
 //   dist/cli.mjs (the CLI has zero external npm deps, only node: builtins)
 // - copy the shell.html runtime template next to it
-// - copy the canonical project skills (incl. zhangwanUI design system) into
+// - copy the canonical project skills (incl. the zhangwan-design system skill) into
 //   dist/skills so `zhangtu sync-skills` can seed/update a user project
 //
 // The published package ships only ./dist — users install and run it, but the

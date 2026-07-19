@@ -21,6 +21,19 @@ const ARCHIVE_TOOL_PATHS = {
   unzip: ["/usr/bin/unzip", "/bin/unzip", "/opt/homebrew/bin/unzip", "/usr/local/bin/unzip"],
 };
 
+/**
+ * 框架运维技能 slug 清单（命中 → tier: "ops"，否则 "capability"）。
+ * 以 .agents/skills/project/ 实际目录名为准：
+ * - zhangtu-installer
+ * - zhangtu-init-prototype-project（任务草稿中的 init-prototype-project）
+ * - protolink（预留；当前 project 目录下可能尚未收录）
+ */
+const OPS_SKILL_SLUGS = new Set([
+  "zhangtu-installer",
+  "zhangtu-init-prototype-project",
+  "protolink",
+]);
+
 const SKILLS_DIR = [".agents", "skills"];
 const SKILLS_LOCK = "skills-lock.json";
 const SKILL_BUCKETS = {
@@ -232,6 +245,7 @@ function buildSkillSummary(rootDir, entry, lock, callableNameCounts = new Map())
     description: meta.description || "",
     author: meta.author || lockEntry?.author || lock.author || null,
     category: isProject ? "project" : "user",
+    tier: resolveSkillTier(entry.slug),
     storageBucket: entry.storageBucket,
     storageLabel: entry.storageBucket === SKILL_BUCKETS.project.dir ? SKILL_BUCKETS.project.label : SKILL_BUCKETS.imported.label,
     source: lockEntry?.source || (isProject ? "project-builtin" : "imported"),
@@ -241,6 +255,11 @@ function buildSkillSummary(rootDir, entry, lock, callableNameCounts = new Map())
     entryPath: relative(rootDir, entry.dir),
     skillPath: relative(rootDir, entry.skillFile),
   };
+}
+
+/** @param {string} slug */
+function resolveSkillTier(slug) {
+  return OPS_SKILL_SLUGS.has(slug) ? "ops" : "capability";
 }
 
 function listSkillEntries(rootDir) {

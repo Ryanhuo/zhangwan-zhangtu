@@ -4,6 +4,8 @@
 
 权限、SSO、审计和远程存储暂不包含。
 
+> 产品经理视角的完整工作流（需求描述澄清 → 原型侧落地 → 原型调整 → PRD 生成 → 版本管理）按阶段映射到各权威功能文件，主索引见 [docs/pm-workflow-harness.md](/Users/ryan/Desktop/zhangwan-zhangtu/docs/pm-workflow-harness.md)。本文只覆盖其中「原型落地/预览/版本管理」相关的 `zhangtu` 工具能力。
+
 ## 输入约定
 
 - 页面目录默认扫描 `src/pages`。
@@ -16,8 +18,8 @@
 ## 当前仓库实况
 
 - 当前可发现页面以仓库实况为准，可通过 `npm run zhangtu -- inspect-pages --json` 查看。
-- 目前实际存在的页面目录是 `src/pages/hr-management/`、`src/pages/hr-attendance-statistics/`、`src/pages/skills/`。
-- `src/pages/demo-workbench/` 当前并不在仓库内，若后续补入，需要按页面契约一起补齐入口和本地依赖文件。
+- 目前实际存在并满足页面契约的页面目录是 `src/pages/skills/`。
+- 若后续补入新的原型页目录，需要按页面契约一起补齐入口和本地依赖文件。
 
 ## 新接入页面补充清单
 
@@ -31,13 +33,13 @@
 ## 需求与设计对齐
 
 - 新建或明显更新原型、主题、项目文档等资源时，默认先执行需求与设计对齐流程，再进入规格、计划和实施。
-- 对齐流程包含上下文读取、产品需求确认、掌玩UI `DESIGN.md` 基底确认、设计决策确认和归档要求。
+- 对齐流程包含上下文读取、产品需求确认、zhangwan-design `readme.md` 基底确认、设计决策确认和归档要求。
 - 详细规则见 [docs/requirement-design-alignment.md](/Users/ryan/Desktop/zhangwan-zhangtu/docs/requirement-design-alignment.md)。
 
 ## 主题规则
 
-- 本项目主题只能使用掌玩UI。
-- 对应 skill 文件为 `.agents/skills/project/zhangwanUI/SKILL.md`，对应设计事实源为 `.agents/skills/project/zhangwanUI/DESIGN.md`。
+- 本项目主题只能使用 zhangwan-design（掌玩风格设计系统）。
+- 对应 skill 文件为 `.agents/skills/project/zhangwan-design/SKILL.md`，对应设计事实源为 `.agents/skills/project/zhangwan-design/readme.md`，令牌见 `tokens/*.css`。
 - 主题创建、更新和验收规则见 [docs/theme-guide.md](/Users/ryan/Desktop/zhangwan-zhangtu/docs/theme-guide.md)。
 
 ## 资源管理
@@ -55,6 +57,7 @@
 ## 常用命令
 
 ```bash
+npm run zhangtu -- doctor
 npm run zhangtu -- inspect-pages --json
 npm run zhangtu -- create-iteration "内部评审 V1" "原型工作台首轮评审"
 npm run zhangtu -- list-iterations --json
@@ -66,6 +69,8 @@ npm run zhangtu -- upload-prototype ./dist "信鸽" "V8.10 账单优化" --prd-f
 npm run zhangtu -- update-remote-version "信鸽" "V8.10 账单优化" --folder ./dist --changelog "按评审反馈调了账单页"
 npm run zhangtu -- publish-iteration "内部评审 V1" --prd-url https://bytedance.larkoffice.com/docx/xxx
 ```
+
+`doctor` 会聚合页面发现诊断、页面契约检查、迭代里的失效页面引用，以及 README / 工具文档中的过期页面目录引用，适合在发布或交接前先跑一遍。
 
 ## 本地预览
 

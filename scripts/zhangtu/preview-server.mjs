@@ -27,8 +27,7 @@ import {
   renameFolder,
   renamePage,
 } from "./page-library.mjs";
-import { deleteSkill, discoverSkills, exportSkillArchive, getSkillDetail, importSkill, resolveSkillDirectory } from "./skills.mjs";
-import { getZhangwanUiBundle } from "./zhangwanui.mjs";
+import { deleteSkill, discoverSkills, exportSkillArchive, getSkillDetail, importSkill } from "./skills.mjs";
 import { getProtoHubPublishStatus, publishIterationViaProtoHub, saveProtoHubPublishConfig } from "./proto-hub.mjs";
 import {
   applyTextReplacements,
@@ -144,12 +143,30 @@ function isSkillsManagementPage(page) {
     || htmlPath === "src/pages/skills/index.html";
 }
 
+function isDesignSystemPage(page) {
+  if (!page || typeof page !== "object") {
+    return false;
+  }
+  const sourcePath = String(page.sourcePath || "");
+  const pageDirectory = String(page.pageDirectory || "");
+  const htmlPath = String(page.htmlPath || "");
+  return sourcePath === "src/pages/design-system/index.tsx"
+    || pageDirectory === "src/pages/design-system"
+    || htmlPath === "src/pages/design-system/index.html";
+}
+
+function isSystemPage(page) {
+  return isSkillsManagementPage(page) || isDesignSystemPage(page);
+}
+
 function splitPreviewPages(pages) {
   const pageList = Array.isArray(pages) ? pages : [];
   const skillsPage = pageList.find(isSkillsManagementPage) || null;
+  const designSystemPage = pageList.find(isDesignSystemPage) || null;
   return {
     skillsPage,
-    regularPages: pageList.filter((page) => !isSkillsManagementPage(page)),
+    designSystemPage,
+    regularPages: pageList.filter((page) => !isSystemPage(page)),
   };
 }
 
@@ -167,7 +184,7 @@ function buildManifest(rootDir, discovery, scope, runtime) {
     ...page,
     directPagePath: `/${page.htmlPath}`,
   }));
-  const { skillsPage, regularPages } = splitPreviewPages(runtimePages);
+  const { skillsPage, designSystemPage, regularPages } = splitPreviewPages(runtimePages);
   const pages = applyPageLibrary(rootDir, regularPages);
 
   return {
@@ -177,10 +194,12 @@ function buildManifest(rootDir, discovery, scope, runtime) {
     brandName: discovery.brandName,
     brandLogo: discovery.brandLogo,
     theme: discovery.theme,
+    capabilities: discovery.capabilities,
     scope,
     runtime,
     pages,
     skillsPage,
+    designSystemPage,
     pageLibrary: createPageLibrarySnapshot(rootDir, pages),
     iterationRequirementSnapshots: {},
     navigation: groupNavigation(pages),
@@ -206,6 +225,7 @@ function buildIterationManifest({ rootDir, discovery, runtime, scope, iteration 
     brandName: discovery.brandName,
     brandLogo: discovery.brandLogo,
     theme: discovery.theme,
+    capabilities: discovery.capabilities,
     scope: {
       kind: "iteration",
       id: iteration.id,
@@ -220,6 +240,7 @@ function buildIterationManifest({ rootDir, discovery, runtime, scope, iteration 
     runtime,
     pages,
     skillsPage: null,
+    designSystemPage: null,
     // 用当前页面库（只读）排布该版本的页面，保证「页面列表」与「编辑版本的页面选择」目录结构一致，且移动文件即时生效。
     pageLibrary: createPageLibrarySnapshot(rootDir, pages, { includeEmptyFolders: false }),
     iterationRequirementSnapshots: requirementSnapshots,
@@ -687,171 +708,6 @@ async function handleRequest({ req, res, state, viteBaseUrl, rootDir }) {
     }
   }
 
-  if (pathname.startsWith("/api/zhangwanui/")) {
-    const zhangwanUiDir = resolveSkillDirectory(rootDir, "zhangwanUI");
-    const subpath = pathname.substring("/api/zhangwanui/".length);
-
-    if (!zhangwanUiDir) {
-      sendJson(res, { error: "未找到 zhangwanUI 技能目录。" }, 404);
-      return;
-    }
-
-    if (subpath === "overview") {
-      try {
-        sendJson(res, getZhangwanUiBundle(rootDir));
-      } catch (err) {
-        sendJson(res, { error: err.message }, 500);
-      }
-      return;
-    }
-
-    if (subpath === "css") {
-      try {
-        const fileContent = readFileSync(join(zhangwanUiDir, "css.json"), "utf8");
-        sendJson(res, JSON.parse(fileContent));
-      } catch (err) {
-        sendJson(res, { error: err.message }, 500);
-      }
-      return;
-    }
-
-    if (subpath === "components") {
-      try {
-        const fileContent = readFileSync(join(zhangwanUiDir, "components", "index.json"), "utf8");
-        sendJson(res, JSON.parse(fileContent));
-      } catch (err) {
-        sendJson(res, { error: err.message }, 500);
-      }
-      return;
-    }
-
-    if (subpath.startsWith("components/")) {
-      try {
-        const componentSlug = subpath.substring("components/".length);
-        const fileContent = readFileSync(join(zhangwanUiDir, "components", `${componentSlug}.json`), "utf8");
-        sendJson(res, JSON.parse(fileContent));
-      } catch (err) {
-        sendJson(res, { error: err.message }, 500);
-      }
-      return;
-    }
-
-    if (subpath === "spec/skill") {
-      try {
-        const fileContent = readFileSync(join(zhangwanUiDir, "SKILL.md"), "utf8");
-        res.writeHead(200, { "content-type": "text/markdown; charset=utf-8" });
-        res.end(fileContent);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-
-    if (subpath === "spec/readme") {
-      try {
-        const fileContent = readFileSync(join(zhangwanUiDir, "README.md"), "utf8");
-        res.writeHead(200, { "content-type": "text/markdown; charset=utf-8" });
-        res.end(fileContent);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-
-    if (subpath === "spec/tokens") {
-      try {
-        const fileContent = readFileSync(join(zhangwanUiDir, "references", "design-tokens.md"), "utf8");
-        res.writeHead(200, { "content-type": "text/markdown; charset=utf-8" });
-        res.end(fileContent);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-
-    if (subpath === "spec/components") {
-      try {
-        const fileContent = readFileSync(join(zhangwanUiDir, "references", "components.md"), "utf8");
-        res.writeHead(200, { "content-type": "text/markdown; charset=utf-8" });
-        res.end(fileContent);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-
-    if (subpath === "colors_and_type.css") {
-      try {
-        const fileContent = readFileSync(join(zhangwanUiDir, "colors_and_type.css"), "utf8");
-        res.writeHead(200, { "content-type": "text/css; charset=utf-8" });
-        res.end(fileContent);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-
-    if (subpath === "components.css") {
-      try {
-        const fileContent = readFileSync(join(zhangwanUiDir, "components.css"), "utf8");
-        res.writeHead(200, { "content-type": "text/css; charset=utf-8" });
-        res.end(fileContent);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-
-    if (subpath.startsWith("assets/icons/")) {
-      try {
-        const iconName = subpath.substring("assets/icons/".length);
-        const fileContent = readFileSync(join(zhangwanUiDir, "assets", "icons", iconName), "utf8");
-        res.writeHead(200, { "content-type": "image/svg+xml; charset=utf-8" });
-        res.end(fileContent);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-
-    if (subpath.startsWith("ui_kits/")) {
-      try {
-        const kitPath = subpath.substring("ui_kits/".length);
-        const fileContent = readFileSync(join(zhangwanUiDir, "ui_kits", kitPath), "utf8");
-        const ext = kitPath.split(".").pop().toLowerCase();
-        const ctype = ext === "html" ? "text/html; charset=utf-8" : ext === "css" ? "text/css; charset=utf-8" : ext === "json" ? "application/json; charset=utf-8" : "text/plain; charset=utf-8";
-        const rewritten = ext === "html" ? rewriteRelativeCss(fileContent, "/api/zhangwanui/") : fileContent;
-        res.writeHead(200, { "content-type": ctype });
-        res.end(rewritten);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-
-    if (subpath.startsWith("preview/")) {
-      try {
-        const previewFile = subpath.substring("preview/".length);
-        const fileContent = readFileSync(join(zhangwanUiDir, "preview", previewFile), "utf8");
-        const rewritten = rewriteRelativeCss(fileContent, "/api/zhangwanui/preview/");
-        res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-        res.end(rewritten);
-      } catch (err) {
-        res.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
-        res.end(err.message);
-      }
-      return;
-    }
-  }
-
   if (pathname.startsWith("/workspace/")) {
     await proxyToVite({
       req,
@@ -1050,6 +906,7 @@ function writeIterationPreviewManifest(rootDir, discovery, iteration) {
     },
     pages,
     skillsPage: null,
+    designSystemPage: null,
     pageLibrary: createPageLibrarySnapshot(rootDir, pages, { includeEmptyFolders: false }),
     iterationRequirementSnapshots: requirementSnapshots,
     generatedAt: new Date().toISOString(),
@@ -1202,16 +1059,6 @@ function sendHtml(res, html) {
     "cache-control": "no-store",
   });
   res.end(html);
-}
-
-function rewriteRelativeCss(html, basePath) {
-  // 把 HTML 中相对引用的 colors_and_type.css / components.css 重写为绝对 API 路径，
-  // 保证 iframe 内通过 /api/zhangwanui/preview/... 加载时 CSS 不会 404。
-  return String(html)
-    .replace(/href="(\.\.\/)+(colors_and_type\.css|components\.css)"/g, (m, _dots, file) => `href="/api/zhangwanui/${file}"`)
-    .replace(/href='(\.\.\/)+(colors_and_type\.css|components\.css)'/g, (m, _dots, file) => `href='/api/zhangwanui/${file}'`)
-    .replace(/href="(\.\.\/)+(ui_kits\/[^"]+)"/g, (m, _dots, rest) => `href="/api/zhangwanui/${rest}"`)
-    .replace(/href="(\.\.\/)+(preview\/[^"]+)"/g, (m, _dots, rest) => `href="/api/zhangwanui/${rest}"`);
 }
 
 function sendJson(res, value, status = 200) {

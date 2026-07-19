@@ -81,7 +81,7 @@ export default function MyApp() {
 @import "tailwindcss";
 ```
 
-- 使用主题 CSS Variables 时，按掌玩UI的 `DESIGN.md` 和主题规则引入，不复制另一套 token。
+- 使用主题 CSS Variables 时，按 zhangwan-design 的 `readme.md`/`tokens/*.css` 和主题规则引入，不复制另一套 token。
 
 ## 验收流程
 

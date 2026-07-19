@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "note": "掌图开箱能力清单（框架侧单一事实源）。由 zhangwan-zhangtu 维护，zhangtu init 复制进工作区、sync-system-files 随框架升级下发；工作区放同名文件即覆盖运行时读取（自定义逃生舱）。对应 docs/pm-capability-map.md 第三节。support: full=支持完整 / partial=机制在、编排入口待补。",
+  "capabilities": [
+    {
+      "id": "requirements-alignment",
+      "name": "需求对齐",
+      "block": "①",
+      "inputs": "用户口述需求、参考资料",
+      "skills": ["requirements-exploration", "explore-options"],
+      "commands": [],
+      "outputs": "确认的需求 + 设计决策快照",
+      "support": "partial",
+      "note": "有技能，缺需求独立落脚点（第 2 期新增 src/requirements/ 全局需求源）。"
+    },
+    {
+      "id": "legacy-migration",
+      "name": "老系统迁移",
+      "block": "②a",
+      "inputs": "旧系统页面 / 截图 / 导出原型",
+      "skills": ["screenshot-to-prototype"],
+      "commands": ["preview"],
+      "references": ["docs/legacy-prototype-import-guide.md"],
+      "outputs": "新页面（zhangwan-design 重做，内嵌需求锚点）",
+      "support": "partial",
+      "note": "有指南无 Shell 入口。"
+    },
+    {
+      "id": "build-from-scratch",
+      "name": "从零到一",
+      "block": "②b",
+      "inputs": "确认的需求 + 设计决策",
+      "skills": ["zhangwan-design", "zhangtu-init-prototype-project"],
+      "commands": ["preview"],
+      "references": ["docs/prototype-development-guide.md"],
+      "outputs": "满足页面契约的新页面",
+      "support": "full",
+      "note": "支持完整。"
+    },
+    {
+      "id": "prototype-edit",
+      "name": "原型修改",
+      "block": "②c",
+      "inputs": "已有页面 + 改动点",
+      "skills": [],
+      "commands": ["quick-edit", "preview"],
+      "outputs": "修改后的页面",
+      "support": "partial",
+      "note": "机制有（quick-edit 改文案/注 CSS + 直接改码），无编排入口。"
+    },
+    {
+      "id": "prd-output",
+      "name": "PRD 输出",
+      "block": "③",
+      "inputs": "页面实现 + spec.md + 需求锚点",
+      "skills": ["prd-generator", "pm-prd-html-writer"],
+      "commands": ["publish-iteration"],
+      "outputs": "Markdown PRD",
+      "defaultChannel": "prd-generator",
+      "support": "partial",
+      "note": "默认通道 prd-generator（研发测试向）；pm-prd-html-writer 为可选评审版；发布未提供 PRD 时 proto-hub 兜底。"
+    },
+    {
+      "id": "version-management",
+      "name": "版本管理",
+      "block": "④",
+      "inputs": "页面集合",
+      "skills": [],
+      "commands": ["create-iteration", "update-iteration", "preview-iteration", "publish-iteration"],
+      "outputs": "版本快照 + 远程分享链接",
+      "support": "full",
+      "note": "支持完整（发布需配 proto-hub token）。"
+    }
+  ]
+}

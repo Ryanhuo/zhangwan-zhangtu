@@ -1,0 +1,43 @@
+<!-- @dsCard group="Components" viewport="700x460" name="数据表格" subtitle="BiTable 还原：可排序、可多选、分组表头、固定列" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<div id="root" style="padding:20px;font-family:var(--font-ui);background:var(--surface-card);display:flex;flex-direction:column;gap:16px;"></div>
+<script type="text/babel">
+const { DataTable } = window.CompassDesignSystem_6dfef5;
+function Demo() {
+  const [page, setPage] = React.useState(1);
+  const [selected, setSelected] = React.useState([0]);
+  const [sortBy, setSortBy] = React.useState('price');
+  const [sortOrder, setSortOrder] = React.useState('desc');
+  const cols = [
+    { label: '短剧信息', prop: 'title', width: 180, fixed: 'left' },
+    { label: '渠道', prop: 'channel', width: 100 },
+    { label: '曝光', prop: 'views', align: 'right', sortable: true },
+    { label: '定价(虚拟币/集)', prop: 'price', align: 'right', sortable: true },
+    { label: '状态', prop: 'status', align: 'center' },
+  ];
+  const groups = [
+    { label: '基础信息', span: 2 },
+    { label: '数据表现', span: 2 },
+    { label: '', span: 1 },
+  ];
+  const rows = [
+    { title: '重生之我是首富', channel: '抖音', views: '182.3万', price: '120', status: '已上架' },
+    { title: '闪婚老公是首富', channel: '快手', views: '96.1万', price: '90', status: '已上架' },
+    { title: '999次告白', channel: '视频号', views: '54.0万', price: '150', status: '已下架' },
+  ];
+  return (
+    <React.Fragment>
+      <div style={{fontSize:12,color:'var(--text-faint)'}}>常规：排序 + 分页</div>
+      <DataTable columns={cols.slice(0,4)} rows={rows} page={page} pageSize={20} total={86} onPageChange={setPage}
+        sortBy={sortBy} sortOrder={sortOrder} onSortChange={(p,o)=>{setSortBy(p);setSortOrder(o);}} />
+      <div style={{fontSize:12,color:'var(--text-faint)'}}>多选 + 固定列 + 分组表头（横向可滚动）</div>
+      <DataTable columns={cols} rows={rows} groups={groups} selectable selectedKeys={selected} onSelectChange={setSelected} />
+    </React.Fragment>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>

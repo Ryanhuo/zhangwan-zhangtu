@@ -1,0 +1,79 @@
+/* Zhangwan (掌玩) — Color tokens */
+
+:root {
+  /* ---- Base palette ---- */
+  --color-brand-green: #00bf8a;      /* $themeColor — primary brand / Element primary */
+  --color-brand-green-bg: #e4fef1;   /* tag "type" bg */
+  --color-brand-green-border: #80eab5;
+  --color-press-bg: #e1fff0;         /* $backgroundPress — active menu / pressed state bg */
+  --color-hover-bg: #e1fff0;         /* $menuHover / $subMenuHover */
+
+  --color-blue: #409eff;             /* $menuActiveText — legacy Element blue, still used for top-level active menu text */
+  --color-blue-dark: #5b7df9;        /* driver.js tour accent */
+  --color-blue-tour: #41b2ff;
+
+  --color-red: #f53f3f;              /* el-message error icon */
+  --color-pink-bg: #ffe3e3;          /* tag "nvpin" (female) bg */
+  --color-pink-text: #f2595c;
+  --color-pink-border: #fb9193;
+
+  --color-cyan-bg: #daf6fc;          /* tag "nanpin" (male) bg */
+  --color-cyan-text: #02b8de;
+  --color-cyan-border: #80dbee;
+
+  --color-amber: #ffd591;            /* vip/gold accent family (from vip_bac imagery) */
+  --color-orange: #ff7d00;
+
+  /* ---- Neutrals (text) ---- */
+  --color-text-primary: #323335;     /* headings, card titles, primary body */
+  --color-text-secondary: #606266;   /* menu item default, secondary body */
+  --color-text-tertiary: #4e5969;    /* $menuText, muted labels */
+  --color-text-quaternary: #8c8c8c;  /* column-group-title, faint captions */
+  --color-text-placeholder: #8893aa; /* submenu icon color, placeholder */
+  --color-text-inverse: #ffffff;
+
+  /* ---- Neutrals (surfaces / lines) ---- */
+  --color-canvas: #e5e5e5;           /* html/#app background — the desk behind cards */
+  --color-surface: #ffffff;          /* card / app-container / sidebar / navbar background */
+  --color-surface-sunken: #f7f8fa;   /* stat-card / input fill */
+  --color-surface-muted: #f2f3f5;    /* checkbox-title bg, chip bg */
+  --color-surface-hover: #f0f0f0;    /* selected-column-item bg */
+
+  --color-border: #e0e0e0;
+  --color-border-light: #ebeef5;     /* el-table border */
+  --color-border-scrollbar: #d3dce6;
+  --color-border-scrollbar-thumb: #99a9bf;
+  --color-divider-dashed: #c9cdd4;
+
+  /* ---- Login (dark surface — only used on the login screen) ---- */
+  --color-login-bg: #2d3a4b;
+  --color-login-input-bg: #283443;
+  --color-login-text: #eeeeee;
+  --color-login-muted: #889aa4;
+
+  /* ---- Semantic aliases ---- */
+  --brand-primary: var(--color-brand-green);
+  --brand-primary-bg: var(--color-brand-green-bg);
+  --brand-primary-border: var(--color-brand-green-border);
+  --brand-active-bg: var(--color-press-bg);
+  --brand-hover-bg: var(--color-hover-bg);
+
+  --text-heading: var(--color-text-primary);
+  --text-body: var(--color-text-secondary);
+  --text-muted: var(--color-text-tertiary);
+  --text-faint: var(--color-text-quaternary);
+
+  --surface-canvas: var(--color-canvas);
+  --surface-card: var(--color-surface);
+  --surface-sunken: var(--color-surface-sunken);
+
+  --state-success-bg: var(--color-brand-green-bg);
+  --state-success-text: var(--color-brand-green);
+  --state-success-border: var(--color-brand-green-border);
+  --state-danger-bg: var(--color-pink-bg);
+  --state-danger-text: var(--color-pink-text);
+  --state-danger-border: var(--color-pink-border);
+  --state-info-bg: var(--color-cyan-bg);
+  --state-info-text: var(--color-cyan-text);
+  --state-info-border: var(--color-cyan-border);
+}

@@ -74,7 +74,25 @@ function prunePageLibrary(rootDir, pages) {
     prunedPages[pageId] = { ...meta, folderId };
   }
   library.pages = prunedPages;
-  library.deleted = library.deleted.filter((id) => livingIds.has(id));
+  // 文件系统是页面是否存在的唯一事实源：只要某个 ID 对应的页面又出现在磁盘上，
+  // 它的删除墓碑就已过期，必须清除，否则预览会永久隐藏一个"磁盘上存在却看不到"的页面。
+  library.deleted = library.deleted.filter((id) => !livingIds.has(id));
+  return library;
+}
+
+// 页面 ID 由路径确定性派生（见 discovery.mjs 的 pageIdFromPath）。若历史上删除过某页面，
+// 其 ID 会残留在 deleted 墓碑数组里；之后在同一路径重新建页会继承同一个 ID，从而被墓碑误伤：
+// inspect-pages / check-pages 直接扫盘能发现它，但预览以 page-library.json 为准把它排除掉。
+// 这里在预览发现阶段做一次对账——凡是墓碑里的 ID 又能在磁盘上找到对应页面，就撤销墓碑并回写，
+// 让"磁盘存在 ⇒ 预览可见"的不变式自愈，无需用户手动编辑 .zhangtu/page-library.json。
+function reconcileDeletedTombstones(rootDir, pages) {
+  const library = normalizePageLibrary(readPageLibrary(rootDir));
+  const livingIds = new Set(pages.map((page) => page.id));
+  const nextDeleted = library.deleted.filter((id) => !livingIds.has(id));
+  if (nextDeleted.length !== library.deleted.length) {
+    library.deleted = nextDeleted;
+    writePageLibrary(rootDir, library);
+  }
   return library;
 }
 
@@ -195,7 +213,8 @@ export function createPageLibrarySnapshot(rootDir, pages, options = {}) {
 }
 
 export function applyPageLibrary(rootDir, pages) {
-  const library = normalizePageLibrary(readPageLibrary(rootDir));
+  // 先对账：撤销那些页面已重新出现在磁盘上的过期删除墓碑，避免"磁盘有、预览无"。
+  const library = reconcileDeletedTombstones(rootDir, pages);
   const deleted = new Set(library.deleted || []);
   const snapshot = createPageLibrarySnapshot(rootDir, pages);
   const pageMeta = snapshot.pageMeta || {};
@@ -346,15 +365,23 @@ export function deletePage(rootDir, pages, pageId) {
   // 真实删除：移除页面目录；同时清理库内元数据。
   const page = pages.find((item) => item.id === pageId);
   const library = normalizePageLibrary(readPageLibrary(rootDir));
+  let removedFromDisk = false;
   if (page && page.pageDirectory) {
     const dir = join(rootDir, page.pageDirectory);
     const pagesRoot = join(rootDir, "src", "pages");
     if (dir.startsWith(pagesRoot) && existsSync(dir)) {
       rmSync(dir, { recursive: true, force: true });
+      removedFromDisk = !existsSync(dir);
     }
   }
   delete library.pages[pageId];
-  if (!library.deleted.includes(pageId)) library.deleted.push(pageId);
+  // 只有当目录没能真正从磁盘删除时（例如页面不在 src/pages 下、无法物理删除）才打墓碑来隐藏它；
+  // 目录已删除时不打墓碑——页面本就不会再被发现，残留墓碑只会在同路径重新建页时误伤新页面。
+  if (removedFromDisk) {
+    library.deleted = library.deleted.filter((id) => id !== pageId);
+  } else if (!library.deleted.includes(pageId)) {
+    library.deleted.push(pageId);
+  }
   writePageLibrary(rootDir, library);
   return { id: pageId };
 }

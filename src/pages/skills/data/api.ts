@@ -6,6 +6,8 @@ export interface SkillSummary {
   description: string;
   author: string | null;
   category: "project" | "user";
+  /** 能力技能 vs 框架运维技能 */
+  tier: "capability" | "ops";
   source: string;
   registered: boolean;
   callableConflict: boolean;

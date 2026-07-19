@@ -12,6 +12,7 @@ npm run dev:page              # 仅裸 Vite,调试单个原型页时用
 npm run build                 # 生产构建
 npm run typecheck             # tsc --noEmit
 npm run check:pages           # 校验每个页面的入口契约
+npm run zhangtu -- doctor     # 聚合页面 / 迭代 / 文档引用检查
 npm run zhangtu -- inspect-pages --json
 npm run zhangtu -- list-iterations --json
 npm run zhangtu -- create-iteration "<名称>" "<描述>" "<页面引用?>"
@@ -33,20 +34,24 @@ npm update @leihuohuo/zhangwan-zhangtu && npm install && npm run zhangtu -- sync
 
 `assets`、`data`、`styles`、`node_modules`、`dist` 是保留目录名,不会被当作嵌套页面。
 
+## 全局需求源(需求先于原型)
+
+需求的事实源可放在全局 `src/requirements/<分组>/<id>.md`(一文件一条需求):frontmatter 写 `id / title / category / color / block / order`,正文写 Markdown(需求描述 + 验收)。一条需求可被**多个页面**引用(一对多)。页面侧 `zhangtu.requirements.ts` 条目用 `{ ref: "<全局需求 id>", anchorId: "<页面锚点>", order }` 引用,发现逻辑从全局 `.md` 拉取标题/正文/分类;**旧的内联条目(直接写 title/bodyMarkdown、无 ref)仍向后兼容**。`npm run zhangtu -- doctor` 的「需求源」检查会校验 `ref` 是否指向存在的全局需求。
+
 ## 技术基线
 
 Vite + React 18 + TypeScript(strict)。路径别名 `@` → `src`。全局样式在 `src/styles/tokens.css` 和 `src/styles/app.css`;项目名称品牌逻辑集中在 `src/common/branding.ts`。
 
 ## 新建页面的前端设计:必须用 zhangwanUI
 
-**zhangwanUI** 是本项目的设计系统(高密度中文运营后台风格),唯一权威资产在 `.agents/skills/project/zhangwanUI/`(token `css.json`、运行时样式 `colors_and_type.css`、组件合同 `components/*.json`、预览 `preview/*.html`)。它是文档/参考,不被运行时页面 import —— 页面通过在自己的 `styles/page.css` 中落地 zhangwanUI 令牌来套用它的视觉规范。
+**zhangwanUI** 是本项目的设计系统(掌玩风格,高密度中文运营后台),权威资产在 `.agents/skills/project/zhangwanUI/`:令牌基准 `references/design-tokens.md`、组件规范 `references/components.md`、技能说明 `SKILL.md`,以及由令牌派生、仅供预览 Shell 面板渲染的 `css.json` + `library-consumption.json`。它是文档/参考,不被运行时页面 import —— 页面通过在自己的 `styles/page.css` 中落地 zhangwanUI 令牌来套用它的视觉规范。
 
 > ⚠️ **不要通过 Skill 工具按名字 `zhangwan-ui` 调用。** 这个名字在个人全局技能库里可能已被另一套无关的设计系统占用,按名调用会静默拿到错误的设计规范。**必须直接读取本项目 `.agents/skills/project/zhangwanUI/` 目录下的文件**作为唯一来源。
 
 **新建页面时一律按 zhangwanUI 设计系统设计前端。** 在写页面实现前:
 
-1. 直接读取 `.agents/skills/project/zhangwanUI/README.md`、`css.json`、相关 `components/*.json` + `preview/*.html`(每次都读取当前文件内容,不要依赖记忆或缓存——该 Skill 由用户持续维护更新,必须拿到最新版本),理解令牌与组件合同。
-2. 用 zhangwanUI 令牌设计页面并落到该页 `styles/page.css`。当前基线值(以第 1 步实际读到的内容为准):主色 `#16a56f`(仅主操作/成功)、画布 `#f4f6f8` + 白卡片 `#ffffff`、正文中性 `#6b7683`、描边 `#d8e0e6`、输入 32px / 按钮 36px / 导航 56px、间距 `4/8/12/16/20/24/32`、圆角 `4/6/8`(卡片/导航到 10、状态胶囊 9999)、字体 `Noto Sans SC`(中文)+ `Inter`(数字/拉丁)、弱阴影分级。
-3. 结构优先复用 zhangwanUI 组件:Smart Button、Metric Card、Filter Form、Data Table、Top Navigation、Sidebar Navigation。`antd` 仅用于 zhangwanUI 未覆盖的复杂交互控件,并对齐其令牌与密度。文案中文优先、专业克制、数据导向。
+1. 直接读取 `.agents/skills/project/zhangwanUI/SKILL.md`、`references/design-tokens.md`、`references/components.md`(每次都读取当前文件内容,不要依赖记忆或缓存——该资产由用户持续维护更新,必须拿到最新版本),理解令牌基准与组件规范。
+2. 用 zhangwanUI 令牌设计页面并落到该页 `styles/page.css`。当前基线值(以第 1 步实际读到的 `references/design-tokens.md` 为准):主色 `#00BF8A`(仅主操作/成功/激活态;hover `#00A87A`、active `#009468`)、画布 `#F2F3F5` + 白卡片/浮层 `#FFFFFF`、正文主色 `#323335`/次要 `#4A4C4F`/辅助 `#4E5769`/占位 `#86909C`、描边 `#E5E6EB`、语义色 warning `#FF7D00`/error `#F53F3F`/info `#165DFF`、输入 32px/按钮默认 32px(large 40)/列表行 44px、间距高频 `10px`(4/8/10/12/16/20/44)、圆角统一 `4px`(大卡 6/8、胶囊 9999)、字体 `Helvetica Neue`/`PingFang SC` 栈(大数字用 `dinFont`)、主阴影 `rgba(0,0,0,0.1) 0 4px 10px`。
+3. 结构优先复用 `references/components.md` 的组件规范:按钮、输入框/下拉、数据表格、KPI 数据卡、标签、Tabs、弹窗/抽屉、分页、面包屑、侧边导航(默认浅色,深色面板仅用于数据大屏/独立演示)。`antd` 仅用于该规范未覆盖的复杂交互控件,并对齐其令牌与密度。文案中文优先、专业克制、数据导向。
 
 仅当用户明确要求别的视觉风格/品牌时才偏离 zhangwanUI。

@@ -15,25 +15,34 @@ export async function checkPages(rootDir) {
 
   for (const entry of entries) {
     const htmlPath = join(entry.dir, "index.html");
-    const source = await readFile(entry.tsxPath, "utf8");
-    const relativeTsxPath = normalizePath(relative(rootDir, entry.tsxPath));
     const relativeHtmlPath = normalizePath(relative(rootDir, htmlPath));
+    const relativeTsxPath = normalizePath(relative(rootDir, entry.tsxPath));
 
-    if (!/createRoot\s*\(/.test(source) || !/\.render\s*\(/.test(source)) {
+    if (!entry.hasIndexTsx) {
       failures.push({
-        file: relativeTsxPath,
-        reason: "missing-react-root-render",
-        message: "页面入口必须调用 createRoot(...).render(...)，不能只写组件片段。",
+        file: relativeHtmlPath,
+        reason: "missing-index-tsx",
+        message: "页面目录必须包含 index.tsx。",
       });
+      continue;
     }
 
-    if (!existsSync(htmlPath)) {
+    if (!entry.hasIndexHtml) {
       failures.push({
         file: relativeHtmlPath,
         reason: "missing-index-html",
         message: "页面目录必须包含 index.html。",
       });
       continue;
+    }
+
+    const source = await readFile(entry.tsxPath, "utf8");
+    if (!/createRoot\s*\(/.test(source) || !/\.render\s*\(/.test(source)) {
+      failures.push({
+        file: relativeTsxPath,
+        reason: "missing-react-root-render",
+        message: "页面入口必须调用 createRoot(...).render(...)，不能只写组件片段。",
+      });
     }
 
     const html = await readFile(htmlPath, "utf8");
@@ -60,11 +69,14 @@ async function collectPageEntries(dir) {
   const result = [];
   const children = await readdir(dir, { withFileTypes: true });
   const hasIndexTsx = children.some((entry) => entry.isFile() && entry.name === "index.tsx");
+  const hasIndexHtml = children.some((entry) => entry.isFile() && entry.name === "index.html");
 
-  if (hasIndexTsx) {
+  if (hasIndexTsx || hasIndexHtml) {
     result.push({
       dir,
       tsxPath: join(dir, "index.tsx"),
+      hasIndexTsx,
+      hasIndexHtml,
     });
   }
 

@@ -14,11 +14,11 @@
   ],
   "pageNameMap": {},
   "theme": {
-    "primaryColor": "#2563eb",
-    "accentColor": "#0f766e",
-    "backgroundColor": "#f6f8fb",
+    "primaryColor": "#00bf8a",
+    "accentColor": "#02b8de",
+    "backgroundColor": "#f7f8fa",
     "surfaceColor": "#ffffff",
-    "textColor": "#111827"
+    "textColor": "#323335"
   },
   "notes": "Standalone zhangtu prototype system seed. Proto-hub publishing is supported; permission, SSO and audit systems remain out of scope."
 }

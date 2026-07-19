@@ -12,7 +12,7 @@
 ## 核心流程
 
 ```text
-读取上下文 -> 产品需求对齐 -> 产品需求确认 -> DESIGN.md 候选确认 -> 设计方案对齐 -> 设计决策确认 -> 规格/计划 -> 实施验证
+读取上下文 -> 产品需求对齐 -> 产品需求确认 -> 设计基底确认 -> 设计方案对齐 -> 设计决策确认 -> 规格/计划 -> 实施验证
 ```
 
 ## 何时触发
@@ -40,8 +40,9 @@
 
 - `src/pages/`：当前页面原型事实源，优先查看是否已有同类页面、参考布局或可复用结构。
 - `src/pages/*/spec.md`：页面级产品事实源。
-- `src/pages/*/zhangtu.requirements.ts`：已沉淀的需求锚点与评审模块。
-- `src/styles/` 与 `src/design-system/`：现有样式 token、设计系统和视觉约束入口。
+- `src/requirements/`：**全局需求源（需求先于原型）**，一文件一条需求（frontmatter + Markdown 正文），可被多页面 `ref` 引用；对齐需求时先看这里有没有可复用/关联的既有需求。
+- `src/pages/*/zhangtu.requirements.ts`：页面侧需求锚点 —— 用 `{ ref, anchorId }` 引用全局需求，或旧内联条目（向后兼容）。
+- `src/styles/` 与 `.agents/skills/project/zhangwan-design/`：现有样式 token、设计系统和视觉约束入口。
 - 页面目录内 `assets/`、`canvas-assets/` 等素材目录：如果存在，仅做与本次任务相关的读取。
 
 ### 扩展目录约定
@@ -70,21 +71,21 @@
 
 ## 设计方案对齐
 
-设计方案阶段负责回答“怎么表达”。进入视觉、主题或明显 UI 改版前，必须先确认 `DESIGN.md` 设计基底。
+设计方案阶段负责回答“怎么表达”。进入视觉、主题或明显 UI 改版前，必须先确认 `readme.md` 设计基底。
 
 ### 设计基底规则
 
-- 本项目设计基底固定为“掌玩UI”。
-- 对应 skill 文件为 `.agents/skills/project/zhangwanUI/SKILL.md`。
-- 对应设计事实源为 `.agents/skills/project/zhangwanUI/DESIGN.md`。
+- 本项目设计基底固定为“zhangwan-design”（掌玩风格设计系统）。
+- 对应 skill 文件为 `.agents/skills/project/zhangwan-design/SKILL.md`。
+- 对应设计事实源为 `.agents/skills/project/zhangwan-design/readme.md`，令牌见 `tokens/{colors,typography,spacing}.css`，组件见 `components/`。
 - 不再从多个主题中整理候选，也不为单个任务另起一套视觉系统。
-- `DESIGN.md` 确定后，颜色、字体、布局、动效、组件形态等零散需求都作为该基底上的调整处理。
+- 设计基底确定后，颜色、字体、布局、动效、组件形态等零散需求都作为该基底上的调整处理。
 
 ### 基底校验规则
 
-- 优先读取 `.agents/skills/project/zhangwanUI/DESIGN.md` 作为视觉与组件事实源。
-- 需要实现或消费设计系统时，再读取 `.agents/skills/project/zhangwanUI/SKILL.md` 与 `src/design-system/zhangwan-ui/SKILL.md`。
-- 若用户提出的新要求与掌玩UI基底冲突，先确认是否需要更新该事实源，再进入实现。
+- 优先读取 `.agents/skills/project/zhangwan-design/readme.md` 作为视觉与组件事实源，令牌以 `tokens/*.css` 为准。
+- 需要实现或消费设计系统时，再读取 `.agents/skills/project/zhangwan-design/SKILL.md` 与对应 `components/<category>/<Name>.prompt.md`。可视化浏览入口见 `src/pages/design-system/`。
+- 若用户提出的新要求与 zhangwan-design 基底冲突，先确认是否需要更新该事实源，再进入实现。
 
 ### 设计问题覆盖要求
 
@@ -97,11 +98,11 @@
 - 布局模式：看板、列表详情、仪表盘、向导、沉浸页或多步骤流程。
 - 交互路径：高频用户效率优先，还是首次用户理解优先。
 - 数据呈现：真实数据、文档推断、临时示例数据或空状态优先。
-- 视觉语气：严格继承 `DESIGN.md`，还是在其基础上加强某种风格倾向。
+- 视觉语气：严格继承设计基底（`readme.md`），还是在其基础上加强某种风格倾向。
 
 ### 落地约束
 
-- 优先复用所选 `DESIGN.md` 对应的 CSS Variables、tokens 和组件习惯。
+- 优先复用所选设计基底对应的 CSS Variables、tokens 和组件习惯。
 - 缺少 token 时，尽量贴近所选基底的视觉语言。
 - 若存在无法从基底直接落地的部分，需在方案说明或交付说明中写明假设。
 
@@ -134,7 +135,7 @@
 进入实现前，必须让用户确认产品需求和设计方案。确认产物可以是中文规格文档、执行计划或方案摘要，但至少包含：
 
 - 产品需求：目标用户、核心任务、范围、功能清单、内容/数据来源、验收重点。
-- 设计方案：采用的 `DESIGN.md`、整体设计方向、关键设计决策、设计假设。
+- 设计方案：采用的设计基底（zhangwan-design）、整体设计方向、关键设计决策、设计假设。
 - 实施边界：本轮会做什么，不会做什么。
 
 ### 归档规则

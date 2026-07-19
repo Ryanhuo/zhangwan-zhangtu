@@ -5,6 +5,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { discoverPages } from "./discovery.mjs";
 import { checkPages } from "../check-pages.mjs";
+import { runDoctor } from "./doctor.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = resolve(SCRIPT_DIR, "../../");
@@ -31,10 +32,10 @@ const INIT_ALLOWED_EXISTING_ENTRIES = new Set([".git", ".gitignore", ".DS_Store"
 // currently-installed package into the current project, overwriting local
 // copies.
 //
-// Note `.agents/skills/project` (baseline framework skills like zhangwanUI) is
+// Note `.agents/skills/project` (baseline framework skills like zhangwan-design) is
 // included, but `.agents/skills/imported` (user-uploaded skills) is NOT —
 // syncing must never clobber a project's own imported skills.
-const SYSTEM_FILE_SYNC_TARGETS = ["src/common", "src/pages/skills", ".agents/skills/project"];
+const SYSTEM_FILE_SYNC_TARGETS = ["src/common", "src/pages/skills", "src/pages/design-system", ".agents/skills/project", "zhangtu.capabilities.json"];
 
 const SYSTEM_VERSION = (() => {
   try {
@@ -75,6 +76,8 @@ async function main() {
       }
       return;
     }
+    case "doctor":
+      return handleDoctor(options);
     case "sync-system-files":
       return handleSyncSystemFiles(options);
     case "list-iterations":
@@ -155,6 +158,13 @@ function handleInit(positionals, options) {
     cpSync(skillsPageSrc, join(targetDir, "src/pages/skills"), { recursive: true });
   }
 
+  // Seed the design-system page: the shell's "设计系统" system tab UI (zhangwan-design
+  // 资产镜像),同样从常规页面列表中拆出(见 preview-server.mjs 的 splitPreviewPages)。
+  const designSystemPageSrc = resolve(PACKAGE_ROOT, "src/pages/design-system");
+  if (existsSync(designSystemPageSrc)) {
+    cpSync(designSystemPageSrc, join(targetDir, "src/pages/design-system"), { recursive: true });
+  }
+
   // Rename _gitignore → .gitignore (npm strips leading-dot files from published packages)
   const gitignoreSrc = join(targetDir, "_gitignore");
   if (existsSync(gitignoreSrc)) {
@@ -199,6 +209,15 @@ function handleInit(positionals, options) {
 }
 
 function handleSyncSystemFiles(options) {
+  // Guard: never mirror PACKAGE_ROOT onto itself. cwd === package root means
+  // we are inside the seed repo (or an unpacked package used as cwd); rm+cp
+  // would delete the only copy of framework files and leave an empty tree.
+  if (resolve(rootDir) === resolve(PACKAGE_ROOT)) {
+    throw new Error(
+      "sync-system-files 只能在工作区运行，不能在 zhangwan-zhangtu 种子仓自身运行，否则会 rm+cp 同一路径删除框架文件",
+    );
+  }
+
   const synced = [];
   const skipped = [];
 
@@ -224,14 +243,16 @@ function handleSyncSystemFiles(options) {
     return;
   }
 
+  // 目录带尾部 /，单文件（含扩展名）不带，避免把 zhangtu.capabilities.json 印成目录。
+  const label = (path) => (path.includes(".") ? path : `${path}/`);
   console.log(`已从 zhangwan-zhangtu v${SYSTEM_VERSION} 同步以下系统文件（本地改动会被覆盖）：`);
   for (const path of synced) {
-    console.log(`  - ${path}/`);
+    console.log(`  - ${label(path)}`);
   }
   if (skipped.length > 0) {
     console.log(`\n跳过（当前安装的包里没有这些路径）：`);
     for (const path of skipped) {
-      console.log(`  - ${path}/`);
+      console.log(`  - ${label(path)}`);
     }
   }
 }
@@ -341,6 +362,14 @@ async function handlePublishStatus(options) {
     systemName: String(discovery.brandName || discovery.title || "").trim(),
   });
   print(status, options);
+}
+
+async function handleDoctor(options) {
+  const result = await runDoctor(rootDir);
+  print(result, options);
+  if (!result.ok) {
+    process.exit(1);
+  }
 }
 
 function handleConfigurePublish(positionals, options) {
@@ -573,6 +602,18 @@ function print(value, options) {
     return;
   }
 
+  if (value.checks && value.summary) {
+    console.log(`Doctor: ${value.ok ? "ok" : "failed"}`);
+    console.log(`Checks: ${value.summary.checkCount}, Errors: ${value.summary.errorCount}, Warnings: ${value.summary.warningCount}`);
+    for (const check of value.checks) {
+      console.log(`- [${check.status}] ${check.label}: ${check.summary}`);
+      for (const detail of check.details || []) {
+        console.log(`  - ${detail.message}${detail.sourcePath ? ` (${detail.sourcePath})` : ""}`);
+      }
+    }
+    return;
+  }
+
   if (value.config) {
     console.log(`Publish config saved for system: ${value.config.systemName || "未配置"}`);
     console.log(`Base URL: ${value.config.baseUrl}`);
@@ -645,7 +686,8 @@ Commands:
   inspect-pages [--json]
   list-pages [--json]
   check-pages
-  sync-system-files [--json]     # 把 src/common/、src/pages/skills/、.agents/skills/project/ 更新到当前框架版本（覆盖本地，保留 imported 技能）
+  doctor [--json]
+  sync-system-files [--json]     # 把 src/common/、src/pages/skills/、src/pages/design-system/、.agents/skills/project/ 更新到当前框架版本（覆盖本地，保留 imported 技能）
   preview [--port 6320] [--vite-port 51720] [--json]
   list-iterations [--json]
   create-iteration <name> [description] [pageIdsOrNamesCommaSeparated] [--json]

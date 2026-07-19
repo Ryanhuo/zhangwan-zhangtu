@@ -1,0 +1,27 @@
+<!-- @dsCard group="Components" viewport="760x360" name="留存热力表" subtitle="热力表格 + 着色设置弹窗 + 对比模式转红 + 累计进度条" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<div id="root" style="padding:20px;font-family:var(--font-ui);background:var(--surface-card);display:flex;flex-direction:column;gap:16px;"></div>
+<script type="text/babel">
+const { RetentionTable } = window.CompassDesignSystem_6dfef5;
+const rows = [
+  { label: '2026-07-01', newUsers: 12840, cost: 38200, cumulative: 82, values: [62, 44, 31, 22, 15] },
+  { label: '2026-07-02', newUsers: 11020, cost: 35100, cumulative: 71, values: [58, 41, 28, 19, null] },
+  { label: '2026-07-03', newUsers: 13960, cost: 41800, cumulative: 88, values: [65, 47, 33, null, null] },
+  { label: '2026-07-04', newUsers: 9870, cost: 29900, cumulative: 60, values: [54, 38, null, null, null] },
+];
+const compareRows = [
+  { label: '2026-07-01 环比', newUsers: 12840, cost: 38200, values: [4, -6, -2, 3, -1] },
+  { label: '2026-07-02 环比', newUsers: 11020, cost: 35100, values: [-3, 2, -5, -1, null] },
+];
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.Fragment>
+    <RetentionTable metricLabel="次留率" cumulativeLabel="累计至今" dayLabels={['次日','3日','7日','14日','30日']} rows={rows} />
+    <div style={{fontSize:12,color:'var(--text-faint)'}}>对比模式（负值转红）</div>
+    <RetentionTable metricLabel="环比变化" dayLabels={['次日','3日','7日','14日','30日']} rows={compareRows} maxValue={10} allowColorSettings={false} />
+  </React.Fragment>
+);
+</script>

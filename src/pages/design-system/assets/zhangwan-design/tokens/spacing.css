@@ -1,0 +1,35 @@
+/* Zhangwan (掌玩) — Spacing, radius, shadow, layout tokens */
+
+:root {
+  /* ---- Spacing scale (4px base, as used across views) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;  /* .app-container padding, standard card gutter */
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+
+  /* ---- Radii — this brand stays tight/functional, not pill-happy ---- */
+  --radius-sm: 2px;   /* .app-container */
+  --radius-md: 4px;   /* stat-cards, inputs, buttons */
+  --radius-lg: 5px;   /* login form-item, drawers */
+  --radius-pill: 11px; /* el-tag pills only */
+
+  /* ---- Shadows — kept faint, used sparingly ---- */
+  --shadow-card: 0 0 5px #e8e8e8;
+  --shadow-navbar: 0 1px 4px rgba(0, 21, 41, 0.08);
+  --shadow-sidebar: 0 1px 4px rgb(0 21 41 / 8%);
+
+  /* ---- App chrome dimensions ---- */
+  --sidebar-width: 190px;
+  --sidebar-width-collapsed: 56px;
+  --navbar-height: 58px;
+  --navbar-height-compact: 50px;
+
+  /* ---- Motion — this brand uses short, functional transitions only ---- */
+  --ease-standard: ease-in-out; /* @kind other */
+  --duration-fast: 0.28s; /* @kind other */ /* sidebar collapse, navbar slide */
+  --duration-slow: 1.5s; /* @kind other */ /* logo fade-in on load */
+}

@@ -887,9 +887,31 @@ export function RequirementBadge({ id, title, anchorId }: RequirementBadgeProps)
   );
 }
 
+// 标注/编辑图层的活跃实例计数。自动挂载器（zhangtu-annotation-autoload）据此判重：
+// 页面若在自己的 JSX 里显式挂了 <AnnotationLayerPortal>（通常因为有页面备注），计数 > 0，
+// 自动挂载器就跳过，避免同一页出现两套图层。
+let activeAnnotationLayerCount = 0;
+
+function markAnnotationLayerMounted() {
+  activeAnnotationLayerCount += 1;
+}
+
+function releaseAnnotationLayerMounted() {
+  activeAnnotationLayerCount = Math.max(0, activeAnnotationLayerCount - 1);
+}
+
+export function hasActiveAnnotationLayer() {
+  return activeAnnotationLayerCount > 0;
+}
+
 export function AnnotationLayerPortal({ annotations, pageKey }: AnnotationLayerProps) {
   const isEmbedded = React.useMemo(() => window.parent !== window, []);
   const pageDirectory = React.useMemo(() => getPageDirectoryFromLocation(), []);
+  // 用 layout effect 在首帧绘制前登记本实例，保证自动挂载器在其 rAF 判重时能看到。
+  React.useLayoutEffect(() => {
+    markAnnotationLayerMounted();
+    return () => releaseAnnotationLayerMounted();
+  }, []);
   const [hackCssContent, setHackCssContent] = React.useState("");
   const [items, setItems] = React.useState<RequirementAnnotation[]>(() => {
     const storage = window.localStorage.getItem(getDraftStorageKey(pageKey));

@@ -1,0 +1,45 @@
+/* Zhangwan (掌玩) — Typography tokens */
+
+@font-face { font-family: 'PingFang SC'; src: url('../fonts/PingFangSC-Ultralight.ttf') format('truetype'); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: 'PingFang SC'; src: url('../fonts/PingFangSC-Thin.ttf') format('truetype'); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: 'PingFang SC'; src: url('../fonts/PingFangSC-Light.ttf') format('truetype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'PingFang SC'; src: url('../fonts/PingFangSC-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'PingFang SC'; src: url('../fonts/PingFangSC-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'PingFang SC'; src: url('../fonts/PingFangSC-Semibold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+
+@font-face {
+  font-family: 'DIN-Medium';
+  src: url('../assets/fonts/DIN-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---- Font stacks ---- */
+  --font-ui: Helvetica Neue, Helvetica, 'PingFang SC', 'Noto Sans SC', Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  --font-numeric: 'DIN-Medium', Helvetica Neue, Helvetica, Arial, sans-serif; /* stat numbers, KPI figures */
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; /* ids, codes in tables */
+
+  /* ---- Sizes ---- */
+  --text-xs: 12px;    /* table cell secondary, captions, column-group-title */
+  --text-sm: 14px;    /* body default, form labels, table cells */
+  --text-base: 16px;  /* submenu/menu item text */
+  --text-lg: 18px;    /* nav icon-adjacent text, right-menu items */
+  --text-xl: 24px;    /* stat-card data-num, dashboard greeting text */
+  --text-2xl: 26px;   /* login title */
+
+  /* ---- Weights ---- */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ---- Line heights ---- */
+  --leading-tight: 20px;
+  --leading-normal: 22px;
+  --leading-loose: 28px;
+
+  /* ---- Letter spacing ---- */
+  --tracking-normal: normal;
+}
