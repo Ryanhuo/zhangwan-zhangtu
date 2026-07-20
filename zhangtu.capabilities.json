@@ -41,7 +41,8 @@
       "inputs": "确认的需求 + 设计决策",
       "skills": [
         "zhangwan-design",
-        "zhangtu-init-prototype-project"
+        "zhangtu-init-prototype-project",
+        "design-review"
       ],
       "commands": [
         "preview"
@@ -58,7 +59,9 @@
       "name": "原型修改",
       "block": "②c",
       "inputs": "已有页面 + 改动点",
-      "skills": [],
+      "skills": [
+        "design-review"
+      ],
       "commands": [
         "quick-edit",
         "preview"
