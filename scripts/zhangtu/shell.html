@@ -1501,6 +1501,16 @@
         padding: var(--spacer-12) var(--spacer-20); border-top: 1px solid var(--border-neutral-l1);
         flex-shrink: 0;
       }
+      .page-edit-divider { border: none; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-4) 0; }
+      .page-edit-section-head { font-size: var(--body-sm-font-size); font-weight: var(--font-weight-medium); color: var(--text-secondary); }
+      .page-edit-css-actions { display: flex; justify-content: flex-end; gap: var(--spacer-8); }
+      .wf-copy-btn {
+        margin-top: var(--spacer-8); padding: 0 var(--spacer-10); height: 26px;
+        border: 1px solid var(--border-neutral-l2); border-radius: var(--radius-4);
+        background: var(--bg-base-default); color: var(--text-secondary);
+        font-size: var(--body-xs-font-size); cursor: pointer; white-space: nowrap;
+      }
+      .wf-copy-btn:hover { border-color: var(--color-brand-green); color: var(--color-brand-green); background: var(--bg-brand-soft); }
 
     </style>
   </head>
@@ -1687,6 +1697,17 @@
             <label>Spec 说明（spec.md）</label>
             <textarea id="page-edit-spec" rows="14" placeholder="页面目标、结构说明、关键交互…"></textarea>
             <span class="field-hint">直接写 Markdown，保存后会覆盖 spec.md 文件。</span>
+          </div>
+          <hr class="page-edit-divider" />
+          <span class="page-edit-section-head">样式覆盖（hack.css）</span>
+          <div class="page-edit-field">
+            <label>CSS 规则</label>
+            <textarea id="page-edit-hack-css" rows="8" placeholder=".some-class { color: red; }&#10;/* 临时样式，不修改源码 */"></textarea>
+            <span class="field-hint">写入页面目录 hack.css，立即生效；刷新 iframe 可看到效果。</span>
+          </div>
+          <div class="page-edit-css-actions">
+            <button class="tool-button" id="page-edit-css-clear" type="button">清空</button>
+            <button class="tool-button active" id="page-edit-css-save" type="button">保存样式</button>
           </div>
         </div>
         <div class="page-edit-footer">
@@ -2749,14 +2770,19 @@
         const modal = document.getElementById("page-edit-modal");
         const nameInput = document.getElementById("page-edit-name");
         const specArea = document.getElementById("page-edit-spec");
+        const hackCssArea = document.getElementById("page-edit-hack-css");
         const metaEl = document.getElementById("page-edit-meta");
 
         nameInput.value = page.name || "";
         specArea.value = "加载中…";
         specArea.disabled = true;
+        hackCssArea.value = "";
+        hackCssArea.disabled = true;
         metaEl.innerHTML = `<span class="page-edit-meta-tag">${escapeHtml(page.sourcePath || page.id)}</span>`;
         modal.classList.remove("hidden");
         nameInput.focus();
+
+        const pageDir = page.pageDirectory || "";
 
         try {
           const res = await fetch(`/api/page-library/pages/${encodeURIComponent(pageId)}/spec`);
@@ -2770,6 +2796,21 @@
             specArea.value = "";
             specArea.disabled = false;
           }
+        }
+
+        if (pageDir) {
+          try {
+            const cssRes = await fetch(`/api/quick-edit/hack-css?path=${encodeURIComponent(pageDir)}`);
+            const cssData = await cssRes.json();
+            if (_pageEditCurrentId === pageId) {
+              hackCssArea.value = cssData.content || "";
+              hackCssArea.disabled = false;
+            }
+          } catch {
+            if (_pageEditCurrentId === pageId) hackCssArea.disabled = false;
+          }
+        } else {
+          hackCssArea.disabled = false;
         }
 
         document.getElementById("page-edit-close").onclick = () => modal.classList.add("hidden");
@@ -2811,6 +2852,57 @@
           } finally {
             btn.disabled = false;
             btn.textContent = "保存 Spec";
+          }
+        };
+
+        document.getElementById("page-edit-css-save").onclick = async () => {
+          if (!pageDir) { showToast("无法获取页面目录"); return; }
+          const btn = document.getElementById("page-edit-css-save");
+          btn.disabled = true;
+          btn.textContent = "保存中…";
+          try {
+            const res = await fetch("/api/quick-edit/hack-css/save", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ path: pageDir, content: hackCssArea.value }),
+            });
+            if (!res.ok) {
+              const d = await res.json();
+              showToast(d.error || "保存失败");
+            } else {
+              const d = await res.json();
+              hackCssArea.value = d.merged || hackCssArea.value;
+              showToast("样式已保存，刷新 iframe 生效");
+            }
+          } catch (e) {
+            showToast(e.message || "保存失败");
+          } finally {
+            btn.disabled = false;
+            btn.textContent = "保存样式";
+          }
+        };
+
+        document.getElementById("page-edit-css-clear").onclick = async () => {
+          if (!pageDir) { showToast("无法获取页面目录"); return; }
+          const btn = document.getElementById("page-edit-css-clear");
+          btn.disabled = true;
+          try {
+            const res = await fetch("/api/quick-edit/hack-css/clear", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ path: pageDir }),
+            });
+            if (!res.ok) {
+              const d = await res.json();
+              showToast(d.error || "清空失败");
+            } else {
+              hackCssArea.value = "";
+              showToast("样式已清空");
+            }
+          } catch (e) {
+            showToast(e.message || "清空失败");
+          } finally {
+            btn.disabled = false;
           }
         };
       }
@@ -3580,6 +3672,16 @@
       // 工作流视图（第 3 期）：只读引导，横向泳道渲染四大块 + 贯穿层 + 回环，数据来自
       // manifest.capabilities（按 block 首字符 ①②③④ 分组）。能在 Shell 内直达的做真跳转
       // （设计系统 tab / 技能库 tab / 版本管理弹窗），具体技能触发与文档仍是引导文字。
+      // 第 5 期：每张能力卡追加「复制提示词」按钮，PM 粘贴到 IDE AI 即可启动对应能力。
+      const CAP_PROMPTS = {
+        "requirements-alignment": "请帮我用 requirements-exploration 技能整理本次需求，产出确认的需求清单和设计决策。",
+        "legacy-migration":       "请帮我用 screenshot-to-prototype 技能把旧页面截图迁移为符合 zhangwan-design 规范的新原型页。",
+        "build-from-scratch":     "请帮我用 zhangwan-design 技能从零新建一个原型页，按页面契约（spec.md + index.tsx + index.html）完成。",
+        "prototype-edit":         "请帮我修改当前页面：[描述具体改动点，例如：把标题改为…，筛选区加一个日期控件]",
+        "prd-output":             "请帮我用 prd-generator 技能为当前页面生成 PRD，输出到 src/pages/<slug>/prd.md。",
+        "version-management":     "请帮我创建一个新的迭代版本，包含以下页面：[列出页面名称或描述范围]",
+      };
+
       function renderWorkflowView() {
         const capabilities = Array.isArray(manifest.capabilities) ? manifest.capabilities : [];
         const ORDER = ["①", "②", "③", "④"];
@@ -3591,6 +3693,10 @@
           const skills = Array.isArray(cap.skills) ? cap.skills : [];
           const commands = Array.isArray(cap.commands) ? cap.commands : [];
           const chips = [...skills.map((s) => chip(s, "skill")), ...commands.map((c) => chip(c, "cmd"))].join("");
+          const prompt = CAP_PROMPTS[cap.id] || "";
+          const copyBtnHtml = prompt
+            ? `<button type="button" class="wf-copy-btn" data-cap-prompt="${escapeHtml(prompt)}">复制提示词</button>`
+            : "";
           return `
             <div class="wf-cap">
               <div class="wf-cap-top">
@@ -3605,6 +3711,7 @@
               </div>
               ${chips ? `<div class="wf-chips">${chips}</div>` : ""}
               ${cap.defaultChannel ? `<div class="wf-default">默认通道 · ${escapeHtml(cap.defaultChannel)}</div>` : ""}
+              ${copyBtnHtml}
             </div>
           `;
         };
@@ -3671,6 +3778,18 @@
             if (action === "skills") setActiveMenu("zhangtu-skills");
             else if (action === "design-system") setActiveMenu("zhangtu-design-system");
             else if (action === "versions") openVersionModal();
+          });
+        });
+        stage.querySelectorAll("[data-cap-prompt]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const text = btn.getAttribute("data-cap-prompt");
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(text)
+                .then(() => showToast("提示词已复制，粘贴到 AI 对话框即可开始"))
+                .catch(() => showToast(text));
+            } else {
+              showToast(text);
+            }
           });
         });
       }
