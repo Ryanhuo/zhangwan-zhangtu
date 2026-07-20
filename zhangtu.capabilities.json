@@ -7,20 +7,29 @@
       "name": "需求对齐",
       "block": "①",
       "inputs": "用户口述需求、参考资料",
-      "skills": ["requirements-exploration", "explore-options"],
+      "skills": [
+        "requirements-exploration",
+        "explore-options"
+      ],
       "commands": [],
       "outputs": "确认的需求 + 设计决策快照",
       "support": "partial",
-      "note": "有技能，缺需求独立落脚点（第 2 期新增 src/requirements/ 全局需求源）。"
+      "note": "有技能（requirements-exploration/explore-options）+ 工作流视图复制提示词入口；缺 Shell→AI 直接触发链（留待后续）。"
     },
     {
       "id": "legacy-migration",
       "name": "老系统迁移",
       "block": "②a",
       "inputs": "旧系统页面 / 截图 / 导出原型",
-      "skills": ["screenshot-to-prototype"],
-      "commands": ["preview"],
-      "references": ["docs/legacy-prototype-import-guide.md"],
+      "skills": [
+        "screenshot-to-prototype"
+      ],
+      "commands": [
+        "preview"
+      ],
+      "references": [
+        "docs/legacy-prototype-import-guide.md"
+      ],
       "outputs": "新页面（zhangwan-design 重做，内嵌需求锚点）",
       "support": "partial",
       "note": "有指南无 Shell 入口。"
@@ -30,9 +39,16 @@
       "name": "从零到一",
       "block": "②b",
       "inputs": "确认的需求 + 设计决策",
-      "skills": ["zhangwan-design", "zhangtu-init-prototype-project"],
-      "commands": ["preview"],
-      "references": ["docs/prototype-development-guide.md"],
+      "skills": [
+        "zhangwan-design",
+        "zhangtu-init-prototype-project"
+      ],
+      "commands": [
+        "preview"
+      ],
+      "references": [
+        "docs/prototype-development-guide.md"
+      ],
       "outputs": "满足页面契约的新页面",
       "support": "full",
       "note": "支持完整。"
@@ -43,18 +59,26 @@
       "block": "②c",
       "inputs": "已有页面 + 改动点",
       "skills": [],
-      "commands": ["quick-edit", "preview"],
+      "commands": [
+        "quick-edit",
+        "preview"
+      ],
       "outputs": "修改后的页面",
-      "support": "partial",
-      "note": "机制有（quick-edit 改文案/注 CSS + 直接改码），无编排入口。"
+      "support": "full",
+      "note": "Shell page-edit-modal 已内置 CSS 覆盖面板（hack.css），quick-edit API 完整，编排入口已补齐。"
     },
     {
       "id": "prd-output",
       "name": "PRD 输出",
       "block": "③",
       "inputs": "页面实现 + spec.md + 需求锚点",
-      "skills": ["prd-generator", "pm-prd-html-writer"],
-      "commands": ["publish-iteration"],
+      "skills": [
+        "prd-generator",
+        "pm-prd-html-writer"
+      ],
+      "commands": [
+        "publish-iteration"
+      ],
       "outputs": "Markdown PRD",
       "defaultChannel": "prd-generator",
       "support": "partial",
@@ -66,7 +90,12 @@
       "block": "④",
       "inputs": "页面集合",
       "skills": [],
-      "commands": ["create-iteration", "update-iteration", "preview-iteration", "publish-iteration"],
+      "commands": [
+        "create-iteration",
+        "update-iteration",
+        "preview-iteration",
+        "publish-iteration"
+      ],
       "outputs": "版本快照 + 远程分享链接",
       "support": "full",
       "note": "支持完整（发布需配 proto-hub token）。"

@@ -2873,6 +2873,7 @@
               const d = await res.json();
               hackCssArea.value = d.merged || hackCssArea.value;
               showToast("样式已保存，刷新 iframe 生效");
+              const pf = document.getElementById('page-frame'); if (pf) pf.src = pf.src;
             }
           } catch (e) {
             showToast(e.message || "保存失败");
