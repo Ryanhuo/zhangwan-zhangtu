@@ -854,7 +854,10 @@
         border-left: 0;
         color: var(--text-tertiary);
       }
-      .requirement-table-wrap, .requirement-table { display: none; }
+      .requirement-table-wrap { overflow-x: auto; margin: 8px 0; }
+      .requirement-table { border-collapse: collapse; font-size: 12px; width: 100%; }
+      .requirement-table th, .requirement-table td { border: 1px solid var(--border-default); padding: 4px 8px; text-align: left; }
+      .requirement-table thead th { background: var(--bg-base-secondary); font-weight: 600; }
 
       .requirements-search-row { padding: var(--spacer-10) var(--spacer-12) var(--spacer-6); }
       .requirements-search-input {
@@ -883,7 +886,11 @@
       }
 
       /* ===== 工作流视图（第 3 期）：横向泳道 + 贯穿层 + 回环，绿色为掌玩品牌主色 ===== */
-      .wf-shell { height: 100%; background: var(--bg-base-secondary); }
+      .wf-shell { height: 100%; background: var(--bg-base-secondary); display: flex; flex-direction: column; }
+      .wf-topbar { height: 48px; display: flex; align-items: center; padding: 0 16px; gap: 10px; flex-shrink: 0; background: #fff; border-bottom: 1px solid rgba(15, 23, 42, 0.08); }
+      .wf-menu-btn { width: 32px; height: 32px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; color: var(--text-secondary); }
+      .wf-menu-btn:hover { background: var(--bg-base-secondary); }
+      .wf-topbar-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
       .wf-scroll { height: 100%; overflow: auto; padding: 28px 32px 40px; box-sizing: border-box; }
       .wf-view { max-width: 1240px; margin: 0 auto; }
       .wf-head h1 { margin: 0 0 6px; font-size: 20px; font-weight: 600; color: var(--text-default); letter-spacing: -0.01em; }
@@ -1675,6 +1682,46 @@
       </section>
     </div>
 
+    <div id="req-wizard-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="需求向导">
+      <div class="modal-card publish-config-card">
+        <div class="modal-header">
+          <div>
+            <h3>需求向导</h3>
+            <p id="req-wizard-step-label">步骤 1 / 3 · 页面目标</p>
+          </div>
+          <button type="button" class="text-btn" onclick="closeReqWizard()">关闭</button>
+        </div>
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:16px;">
+          <div class="wizard-step" data-step="1">
+            <label class="publish-field" for="req-wizard-goal">
+              <span>页面目标</span>
+              <textarea id="req-wizard-goal" class="publish-textarea" placeholder="描述这个页面的核心目的"></textarea>
+            </label>
+          </div>
+          <div class="wizard-step hidden" data-step="2">
+            <div class="publish-field">
+              <span>目标用户</span>
+              <label class="publish-radio"><input type="radio" name="req-wizard-user" value="内部运营人员" checked />内部运营人员</label>
+              <label class="publish-radio"><input type="radio" name="req-wizard-user" value="外部C端用户" />外部C端用户</label>
+              <label class="publish-radio"><input type="radio" name="req-wizard-user" value="管理员" />管理员</label>
+              <label class="publish-radio"><input type="radio" name="req-wizard-user" value="other" />其他</label>
+              <input id="req-wizard-user-other" class="publish-input hidden" type="text" placeholder="请输入目标用户" />
+            </div>
+          </div>
+          <div class="wizard-step hidden" data-step="3">
+            <label class="publish-field" for="req-wizard-features">
+              <span>核心功能</span>
+              <textarea id="req-wizard-features" class="publish-textarea" placeholder="每行一条：查看数据报表 / 筛选导出 / 状态管理"></textarea>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="text-btn" id="req-wizard-prev" onclick="wizardPrev()" disabled>上一步</button>
+          <button type="button" class="primary-btn" id="req-wizard-next" onclick="wizardNext()">下一步</button>
+        </div>
+      </div>
+    </div>
+
     <div id="page-edit-modal" class="hidden" role="dialog" aria-modal="true" aria-label="编辑页面">
       <div class="page-edit-panel">
         <div class="page-edit-head">
@@ -1982,6 +2029,8 @@
       const versionDescEl = document.getElementById("version-desc");
       const versionPageChecksEl = document.getElementById("version-page-checks");
       const publishConfigModalEl = document.getElementById("publish-config-modal");
+      const reqWizardModalEl = document.getElementById("req-wizard-modal");
+      let reqWizardStep = 1;
       const publishConfigFormEl = document.getElementById("publish-config-form");
       const publishConfigHeadingEl = document.getElementById("publish-config-heading");
       const publishConfigSubtitleEl = document.getElementById("publish-config-subtitle");
@@ -3683,6 +3732,88 @@
         "version-management":     "请帮我创建一个新的迭代版本，包含以下页面：[列出页面名称或描述范围]",
       };
 
+      function getReqWizardUser() {
+        const selected = document.querySelector('input[name="req-wizard-user"]:checked');
+        if (!selected) return "内部运营人员";
+        if (selected.value !== "other") return selected.value;
+        const otherInput = document.getElementById("req-wizard-user-other");
+        return (otherInput?.value || "其他").trim() || "其他";
+      }
+
+      function syncReqWizardStep() {
+        if (!reqWizardModalEl) return;
+        reqWizardModalEl.querySelectorAll(".wizard-step").forEach((stepEl) => {
+          stepEl.classList.toggle("hidden", Number(stepEl.getAttribute("data-step")) !== reqWizardStep);
+        });
+        const stepLabel = document.getElementById("req-wizard-step-label");
+        const prevBtn = document.getElementById("req-wizard-prev");
+        const nextBtn = document.getElementById("req-wizard-next");
+        const labels = {
+          1: "步骤 1 / 3 · 页面目标",
+          2: "步骤 2 / 3 · 目标用户",
+          3: "步骤 3 / 3 · 核心功能",
+        };
+        if (stepLabel) stepLabel.textContent = labels[reqWizardStep] || labels[1];
+        if (prevBtn) prevBtn.disabled = reqWizardStep === 1;
+        if (nextBtn) nextBtn.textContent = reqWizardStep === 3 ? "生成提示词并复制" : "下一步";
+      }
+
+      function closeReqWizard() {
+        reqWizardModalEl?.classList.add("hidden");
+      }
+
+      function openReqWizard() {
+        reqWizardStep = 1;
+        const goalEl = document.getElementById("req-wizard-goal");
+        const featuresEl = document.getElementById("req-wizard-features");
+        const otherInput = document.getElementById("req-wizard-user-other");
+        if (goalEl) goalEl.value = "";
+        if (featuresEl) featuresEl.value = "";
+        if (otherInput) {
+          otherInput.value = "";
+          otherInput.classList.add("hidden");
+        }
+        const defaultRadio = document.querySelector('input[name="req-wizard-user"][value="内部运营人员"]');
+        if (defaultRadio) defaultRadio.checked = true;
+        syncReqWizardStep();
+        reqWizardModalEl?.classList.remove("hidden");
+      }
+
+      function wizardPrev() {
+        if (reqWizardStep <= 1) return;
+        reqWizardStep -= 1;
+        syncReqWizardStep();
+      }
+
+      function wizardNext() {
+        if (reqWizardStep < 3) {
+          reqWizardStep += 1;
+          syncReqWizardStep();
+          return;
+        }
+        const goal = (document.getElementById("req-wizard-goal")?.value || "").trim();
+        const features = (document.getElementById("req-wizard-features")?.value || "")
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+        const user = getReqWizardUser();
+        const featureLines = features.length ? features.map((item) => `- ${item}`).join("\n") : "- ";
+        const text = `请用 zhangwan-design 技能帮我新建一个原型页：\n\n页面目标：${goal}\n目标用户：${user}\n核心功能：\n${featureLines}\n\n请先输出 spec.md 草稿确认，再生成 index.tsx + index.html。`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text)
+            .then(() => showToast("需求提示词已复制，粘贴到 AI 对话框即可开始"))
+            .catch(() => showToast(text));
+        } else {
+          showToast(text);
+        }
+        closeReqWizard();
+      }
+
+      window.openReqWizard = openReqWizard;
+      window.closeReqWizard = closeReqWizard;
+      window.wizardPrev = wizardPrev;
+      window.wizardNext = wizardNext;
+
       function renderWorkflowView() {
         const capabilities = Array.isArray(manifest.capabilities) ? manifest.capabilities : [];
         const ORDER = ["①", "②", "③", "④"];
@@ -3696,7 +3827,7 @@
           const chips = [...skills.map((s) => chip(s, "skill")), ...commands.map((c) => chip(c, "cmd"))].join("");
           const prompt = CAP_PROMPTS[cap.id] || "";
           const copyBtnHtml = prompt
-            ? `<button type="button" class="wf-copy-btn" data-cap-prompt="${escapeHtml(prompt)}">复制提示词</button>`
+            ? `<button type="button" class="wf-copy-btn" data-cap-id="${escapeHtml(cap.id)}" data-cap-prompt="${escapeHtml(prompt)}">${cap.id === "requirements-alignment" ? "需求向导" : "复制提示词"}</button>`
             : "";
           return `
             <div class="wf-cap">
@@ -3746,6 +3877,7 @@
 
         return `
           <section class="live-preview-shell wf-shell">
+            <div class="wf-topbar"><button class="wf-menu-btn" onclick="toggleSidebar()" title="展开/收起侧边栏"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button><span class="wf-topbar-title">工作流</span></div>
             <div class="wf-scroll">
               <div class="wf-view">
                 <header class="wf-head">
@@ -3783,6 +3915,10 @@
         });
         stage.querySelectorAll("[data-cap-prompt]").forEach((btn) => {
           btn.addEventListener("click", () => {
+            if (btn.getAttribute("data-cap-id") === "requirements-alignment") {
+              openReqWizard();
+              return;
+            }
             const text = btn.getAttribute("data-cap-prompt");
             if (navigator.clipboard) {
               navigator.clipboard.writeText(text)
@@ -3791,6 +3927,15 @@
             } else {
               showToast(text);
             }
+          });
+        });
+
+        stage.querySelectorAll('input[name="req-wizard-user"]').forEach((input) => {
+          input.addEventListener("change", () => {
+            const otherInput = document.getElementById("req-wizard-user-other");
+            const isOther = input.checked && input.value === "other";
+            otherInput?.classList.toggle("hidden", !isOther);
+            if (isOther) otherInput?.focus();
           });
         });
       }

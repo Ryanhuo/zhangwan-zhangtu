@@ -142,4 +142,13 @@ Vite + React 18 + TypeScript(strict)。当前仓库已安装 `antd` 与 `@ant-de
 - 需要罗盘那类**页面结构/交互**(树形表格、可排序列、抽屉、标红、维度切换等)时,用 zhangwan-design 的 DataTable/Drawer/Tag/Tabs 等组件规范**自行搭建**,不照抄罗盘的 DOM 与 CSS。
 - 两套主色恰好都是 `#00bf8a`(同出掌玩品牌),但**同源只到主色为止**;其余令牌一律以 zhangwan-design 的 `tokens/*.css` 为唯一来源,不引用 compass-ui 的任何值。
 
+### 统计区/顶部数据总览:不留空占位
+
+生成含「顶部数据总览」/统计区的页面时,StatCard 与同类统计卡**必须填写具体 mock 数值**,Shell 预览里不允许出现空白占位符。
+
+- 每张统计卡的 `value` 必须是贴合业务的 mock 数值(如 `value: '1,234'`、`'89.5%'`、`'¥12.8万'`),**禁止**留空字符串、`undefined`、`null`,或仅写 `'TODO'`/`'占位'`/`'—'`。
+- mock 数据统一放该页 `data/mock.ts`,数值贴合本页业务场景(新增用户数、留存率、GMV 等),不要用 `0` 或 `'—'` 充数。
+- 顶部统计区若出现,至少 3 张卡,每张含**标题 + 数值**(可附说明/同环比),不渲染空卡或无数据占位块。
+- 页面在 Shell iframe 内预览时不应出现任何空白占位符——空 StatCard、空表格(`<DataTable>` 无 `dataSource`)、空图表容器(`<LineChart>` 无 series)等没有真实数据的区块一律不渲染(条件渲染或补全 mock),避免评审时出现难看的空白格。
+
 仅当用户明确要求别的视觉风格/品牌时才偏离 zhangwan-design。
